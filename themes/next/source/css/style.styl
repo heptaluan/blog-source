@@ -330,6 +330,23 @@ img.thumbnail
     line-height: inherit
 
 /* ---------------------------------
+ *         Avatar & forkMe
+ * --------------------------------- */
+.avatar
+    width: 150px !important
+    height: 150px !important
+
+#forkMe svg {
+    color: #fff;
+    fill: #a0a1a7;
+    height: 80px;
+    width: 80px;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+/* ---------------------------------
  *        Fix content elements
  * --------------------------------- */
 .content
@@ -358,10 +375,11 @@ img.thumbnail
                 margin-left: 0.5em
     .hljs-comment
         font-style: normal
-    ul li p 
+    ul li p, ol li p 
         margin-bottom: 0 !important
-    ul li ul
-        margin-bottom: 0.5em;
+    ul li ul, ol li ul
+        margin-bottom: 0.5em
+        margin-top: 0.5em
 
 /* ---------------------------------
  *        Fix code highlight
