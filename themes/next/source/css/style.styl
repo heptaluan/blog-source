@@ -376,6 +376,17 @@ img.thumbnail
         margin-top: 0.5em
     p
         word-break: break-all
+    & > table
+        border: 1px solid #d5dbe0
+        th
+            border-width: 1px !important
+        td, th
+            border-width: 0 0 1px 1px !important
+        tr:nth-child(odd) td
+            background-color: #f3f4f5
+            transition: all .25s cubic-bezier(.645, .045, .355, 1)
+        tr:hover td
+            background-color: #cfd1d6
 
 /* ---------------------------------
  *        Fix code highlight
