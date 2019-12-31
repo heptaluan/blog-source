@@ -11,7 +11,7 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/111.jpg
 
 之前有很多内容都是在工作当中遇到，然后查阅资料解决后随手记录的一些知识点，可能看上去比较零散
 
-所以在这里打算对照当下的前端知识体系，将博文当中的内容从新过一遍，整体的梳理一下
+所以在这里打算对照当下的前端知识体系，将博文当中的内容从新过一遍，从新的整理一下
 
 剔除掉一些过时的内容和补充一些之前没有涉及到的知识点，不过主要目的还是为了梳理一下自己所掌握的前端知识体系和为年后的面试做准备
 
@@ -100,7 +100,7 @@ WebRTC、静态生成、人工智能前端化
 * [样式来源与层叠规则](http://heptaluan.github.io/2017/09/03/CSS/11/)
 * [link 和 @import](https://heptaluan.github.io/2017/11/11/CSS/10/)
 * 选择器
-  * 优先级策略
+  * [优先级策略（I-C-E）](http://localhost:4000/2017/09/22/CSS/03/#%E7%89%B9%E6%8C%87%E5%BA%A6%EF%BC%88I-C-E%EF%BC%89)
   * [伪类与伪元素](http://heptaluan.github.io/2018/11/25/CSS/04/)
 * 样式表继承
 * [常见布局方式](https://heptaluan.github.io/2019/09/12/CSS/12/)
@@ -133,21 +133,22 @@ WebRTC、静态生成、人工智能前端化
 
 * ECMAScript
   * ES5
-    * 基本数据类型
-      * [基本类型，引用类型](https://heptaluan.github.io/2017/02/22/JavaScript/06/)
+    * [基本数据类型](https://heptaluan.github.io/2017/02/22/JavaScript/06/)
       * [类型判断](http://heptaluan.github.io/2018/03/17/JavaScript/30/)
       * [类型转换](https://heptaluan.github.io/2017/03/17/JavaScript/09/)
-    * 运算符
-      * [运算符优先级](http://heptaluan.github.io/2018/05/27/JavaScript/33/)
+    * [运算符](http://heptaluan.github.io/2018/05/27/JavaScript/33/)
+      * [== 和 ===](http://localhost:4000/2017/03/17/JavaScript/09/)
       * [|| 和 &&](https://heptaluan.github.io/2017/05/19/JavaScript/19/)
     * [函数](http://heptaluan.github.io/2017/10/08/JavaScript/26/)
-      * [作用域](https://heptaluan.github.io/2017/01/18/JavaScript/03/)
-      * [事件流](https://heptaluan.github.io/2016/11/14/JavaScript/01/)
+      * [作用域与执行上下文栈](https://heptaluan.github.io/2017/01/18/JavaScript/03/)
+      * [事件与事件流](https://heptaluan.github.io/2016/11/14/JavaScript/01/)
       * [parseInt](https://heptaluan.github.io/2017/04/15/JavaScript/12/)
     * [对象](http://heptaluan.github.io/2017/10/07/JavaScript/25/)
       * [如何遍历对象](http://heptaluan.github.io/2019/06/28/JavaScript/42/)
     * [this](http://heptaluan.github.io/2017/10/09/JavaScript/27/)
-    * [闭包](https://heptaluan.github.io/2017/05/12/JavaScript/16/)
+    * [原型和原型对象](http://localhost:4000/2017/04/08/JavaScript/11/)
+    * [闭包](http://localhost:4000/2017/05/12/JavaScript/17/)
+    * [深浅拷贝](http://localhost:4000/2018/01/14/JavaScript/29/)
     * 高阶函数
     * 模块加载
   * ES6+
@@ -161,15 +162,8 @@ WebRTC、静态生成、人工智能前端化
     * [迭代器与生成器](http://heptaluan.github.io/2019/07/13/JavaScript/56/)
     * proxy
     * 箭头函数
-  * [原型链](https://heptaluan.github.io/2017/04/06/JavaScript/10/)
-    * [原型继承和类式继承](http://heptaluan.github.io/2018/01/10/JavaScript/28/)
-    * new 操作符
-    * [bind](https://heptaluan.github.io/2017/05/07/JavaScript/15/)
-    * [call、apply](https://heptaluan.github.io/2018/04/16/JavaScript/32/)
-    * [深浅拷贝](http://heptaluan.github.io/2018/01/14/JavaScript/29/)
 * [DOM](http://heptaluan.github.io/2017/06/26/JavaScript/21/)
-  * 创建节点 && 插入节点 && 删除节点 && 替换节点 && 克隆节点
-* 浏览器对象
+  * 创建节点 / 插入节点 / 删除节点 / 替换节点 / 克隆节点 / 览器对象
   * Window 对象
   * History 对象
   * Location 对象
@@ -179,16 +173,7 @@ WebRTC、静态生成、人工智能前端化
 * XHR API
   * 同源策略
   * [跨域](http://heptaluan.github.io/2018/04/26/JavaScript/39/)
-    * JSONP
-    * CORS
-    * form
-    * document.domain
-    * window.name
-    * location.hash
-    * postMessage
-    * Nginx
-    * webpack proxy
-    * WebSocket
+    * JSONP / CORS / form / document.domain / window.name / location.hash / postMessage / Nginx / webpack proxy / WebSocket
 * [并发模型](http://heptaluan.github.io/2018/08/12/JavaScript/36/)
   * Event Loop
   * 进程与线程
@@ -233,10 +218,11 @@ WebRTC、静态生成、人工智能前端化
     * [State，Getter，Mutation，Action](http://heptaluan.github.io/2018/08/15/Vue/06/)
     * [Store](http://heptaluan.github.io/2018/08/25/Vue/09/)
     * [installModule，resetStoreVM，plugins](http://heptaluan.github.io/2018/09/04/Vue/10/)
-  * Virtual Dom
-    * Diff 原理
 * React
-  * Virtual Dom
+  * [Virtual DOM 与 Diff 算法](http://localhost:4000/2019/12/22/React/18/)
+    * [什么是 Virtual DOM？](http://localhost:4000/2019/12/15/React/15/)
+    * [渲染器](http://localhost:4000/2019/12/20/React/16/)
+    * [渲染器的核心 Diff 算法](http://localhost:4000/2019/12/22/React/17/)
   * 生命周期
   * jsx
   * [路由](http://heptaluan.github.io/2019/01/12/React/04/)
@@ -257,23 +243,14 @@ WebRTC、静态生成、人工智能前端化
 
 ## 工程实践
 
-* 模块化
-  * ES5
-    * CommonJS && AMD && CMD
-  * ES6+
-    * Class
-    * Polyfill
+* 模块化 && 组件化
 * 用户鉴权
   * OAuth
-* 组件化
 * 依赖构建
   * Webpack
     * [loader 和 plugin](http://heptaluan.github.io/2018/09/12/Vue/13/)
   * Gulp
   * Rollup
-* 版本管理
-  * Git
-    * 分支机制
 * 包管理
 * 性能优化
   * [前端字体优化](https://heptaluan.github.io/2019/08/18/Essay/04/)
@@ -282,10 +259,6 @@ WebRTC、静态生成、人工智能前端化
   * 静态资源的渲染阻塞
   * CSS 选择器优化 && 表达式优化
   * CDN
-  * 缓存控制
-    * Ajax 缓存
-    * header 字段
-
 
 
 
