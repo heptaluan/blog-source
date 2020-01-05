@@ -97,7 +97,7 @@ WebRTC、静态生成、人工智能前端化
 * [link 和 @import](https://heptaluan.github.io/2017/11/11/CSS/10/)
 * 选择器
   * 优先级策略（I-C-E）
-  * 伪类与伪元素
+* [伪类与伪元素](https://heptaluan.github.io/2018/11/25/CSS/04/)
 * 样式表继承
 * 常见布局方式
   * 文档流布局 / 浮动布局 / 定位布局 / 圣杯布局 / 双飞翼布局 / flex 布局 / grid 布局
@@ -107,13 +107,13 @@ WebRTC、静态生成、人工智能前端化
   * Transform && Animation
   * px，em，rem，vw 和 vh
   * [文本溢出隐藏](https://heptaluan.github.io/2016/12/02/CSS/02/)
-* BFC
+* [BFC](https://heptaluan.github.io/2018/12/03/CSS/06/)
   * 高度塌陷
   * Margin 塌陷
   * position 嵌套 && 覆盖
   * [浮动清除](https://heptaluan.github.io/2016/11/09/CSS/01/)
-* IFC
-* haslayout
+* [IFC](https://heptaluan.github.io/2018/12/05/CSS/07/)
+* [haslayout](https://heptaluan.github.io/2018/10/12/CSS/08/)
 
 
 
@@ -125,6 +125,7 @@ WebRTC、静态生成、人工智能前端化
       * [类型判断](https://heptaluan.github.io/2018/03/17/JavaScript/25/)
       * 类型转换
     * 运算符
+      * [优先级](https://heptaluan.github.io/2018/05/27/JavaScript/28/)
       * [== 和 ===](https://heptaluan.github.io/2017/03/17/JavaScript/08/)
       * [|| 和 &&](https://heptaluan.github.io/2017/05/19/JavaScript/15/)
     * [函数](https://heptaluan.github.io/2017/10/08/JavaScript/21/)
@@ -133,7 +134,7 @@ WebRTC、静态生成、人工智能前端化
       * parseInt
     * [值和引用](https://heptaluan.github.io/2017/02/22/JavaScript/06/)
     * [对象](https://heptaluan.github.io/2017/10/07/JavaScript/20/)
-      * 如何遍历对象
+      * [对象的遍历](https://heptaluan.github.io/2019/06/28/JavaScript/35/)
     * [this](https://heptaluan.github.io/2017/10/09/JavaScript/22/)
       * 常用的调用方式
       * 如何确定 this 的值（reference）
@@ -153,7 +154,7 @@ WebRTC、静态生成、人工智能前端化
     * Async
     * [Class](https://heptaluan.github.io/2017/09/20/JavaScript/19/)
     * [Reflect](https://heptaluan.github.io/2017/09/21/JavaScript/43/)
-    * 迭代器与生成器
+    * [迭代器与生成器](https://heptaluan.github.io/2019/07/13/JavaScript/46/)
     * proxy
     * 箭头函数
 * DOM
@@ -166,20 +167,23 @@ WebRTC、静态生成、人工智能前端化
 * Event 事件
 * XHR API
   * 同源策略
-  * 跨域
+  * [跨域](https://heptaluan.github.io/2018/04/26/JavaScript/33/)
     * JSONP / CORS / form / document.domain / window.name / location.hash / postMessage
     * Nginx / webpack proxy / WebSocket
-* 并发模型
+* 原生 API
+  * [IntersectionObserver](https://heptaluan.github.io/2019/09/22/JavaScript/48/)
+* [并发模型](https://heptaluan.github.io/2018/08/12/JavaScript/30/)
   * Event Loop
-  * 进程与线程
   * MacroTask && MicroTask
   * 单线程执行机制
   * 栈和堆
+* [数据双向绑定](https://heptaluan.github.io/2018/07/10/JavaScript/29/)
+  * 数据劫持
+  * proxy
 * [垃圾回收机制](https://heptaluan.github.io/2017/12/25/Essay/02/)
   * 标记清除
   * 引用计数
 * WebAssembly
-* IntersectionObserver
 * [异步加载](https://heptaluan.github.io/2017/09/19/JavaScript/42/)
 * 正则表达式
 * 设计模式
@@ -188,6 +192,7 @@ WebRTC、静态生成、人工智能前端化
   * [jQuery](https://heptaluan.github.io/2017/06/23/jQuery/02/)
     * [jQuery.fn.init()](https://heptaluan.github.io/2017/07/11/jQuery/03/)
     * [辅助方法](https://heptaluan.github.io/2017/07/15/jQuery/04/)
+  * [Zepto](https://heptaluan.github.io/2019/05/28/JavaScript/34/)
 
 
 
@@ -196,14 +201,22 @@ WebRTC、静态生成、人工智能前端化
 ## 主流框架
 
 * Angular
+  * [Angular-CLI](https://heptaluan.github.io/2018/12/12/Angular/01/)
   * 生命周期
+  * [变化检测机制](https://heptaluan.github.io/2019/07/22/Angular/16/)
   * [:host 和 ::ng-deep](https://heptaluan.github.io/2018/01/16/Angular/06/)
+  * [[] 和 {{}}](https://heptaluan.github.io/2019/06/22/Angular/14/)
+  * [Angular Component](https://heptaluan.github.io/2019/08/27/Angular/09/)
   * 依赖注入
+    * [为什么要使用依赖注入](https://heptaluan.github.io/2018/12/14/Angular/02/)
+    * [Angular 中的依赖注入](https://heptaluan.github.io/2018/12/26/Angular/03/)
   * [装饰器](https://heptaluan.github.io/2018/01/15/Angular/05/)
+  * [表单](https://heptaluan.github.io/2019/05/27/Angular/10/)
   * [管道](https://heptaluan.github.io/2018/01/11/Angular/04/)
-  * 动态加载
-  * 变化检测机制
-  * rxjs
+  * [动态加载](https://heptaluan.github.io/2019/05/12/Angular/08/)
+  * [WebSocket](https://heptaluan.github.io/2019/05/20/Angular/15/)
+  * [rxjs](https://heptaluan.github.io/2019/06/04/Angular/11/)
+    * [高阶操作符](https://heptaluan.github.io/2019/06/08/Angular/12/)
   * ngrx
   * @effect
 * Vue
@@ -215,25 +228,25 @@ WebRTC、静态生成、人工智能前端化
   * Router原理
   * [Mixin](https://heptaluan.github.io/2018/04/15/Vue/01/)
   * Vuex
-    * State，Getter，Mutation，Action
-    * Store
-    * installModule，resetStoreVM，plugins
+    * [初始化装载](https://heptaluan.github.io/2018/08/13/Vue/03/)
+    * [Store](https://heptaluan.github.io/2018/08/25/Vue/04/)
 * React
-  * Virtual DOM 与 Diff 算法
+  * [Virtual DOM 与 Diff 算法](https://heptaluan.github.io/2019/12/15/React/06/)
     * 什么是 Virtual DOM？
     * 渲染器
     * 渲染器的核心 Diff 算法
   * 生命周期
   * jsx
   * 路由
-  * Redux
-    * Flux
-    * Redux
-    * Redux 官方示例剖析
-    * React-Redux
-    * Redux、Flux 和 React-Redux 三者之间的区别
-    * Redux 源码初探
-  * Hook
+  * [Flux 与 Redux](https://heptaluan.github.io/2019/02/22/React/01/)
+    * [Redux、Flux 和 React-Redux](https://heptaluan.github.io/2019/04/02/React/02/)
+    * [Redux](https://heptaluan.github.io/2019/06/05/React/03/)
+      * compose()
+      * bindActionCreators()
+      * createStore()
+      * applyMiddleware()
+  * [Hook](https://heptaluan.github.io/2019/11/23/React/04/)
+  * [Middleware](https://heptaluan.github.io/2019/12/13/React/05/)
   * 组件状态管理
 
 
@@ -253,7 +266,7 @@ WebRTC、静态生成、人工智能前端化
   * Rollup
 * 包管理
 * 性能优化
-  * 前端字体优化
+  * [前端字体优化](https://heptaluan.github.io/2019/08/18/Essay/03/)
   * base64编码 && 精灵图
   * 懒加载 && 预加载
   * 静态资源的渲染阻塞
@@ -269,11 +282,10 @@ WebRTC、静态生成、人工智能前端化
 ## 浏览器
 
 * [输入网址到页面显示经历的过程](https://heptaluan.github.io/2017/11/07/HTTP/01/)
-* 渲染机制
-  * DOM
-  * CSSOM
+* [渲染机制](https://heptaluan.github.io/2019/07/07/JavaScript/37/)
+  * FOUC
+  * DOM / CSSOM / Render Tree
   * 重绘 && 回流
-  * shadow DOM
 * 浏览器缓存
   * Cookie
   * localStorage / sessionStorage
@@ -312,14 +324,15 @@ WebRTC、静态生成、人工智能前端化
 ## 服务端
 
 * Node.js
+  * [什么是 Node.js](https://heptaluan.github.io/2019/09/01/Node/05/)
   * [CommonJS、AMD 和 CMD](https://heptaluan.github.io/2017/02/03/JavaScript/05/)
-  * Node.js 中的 libuv
+  * [Node.js 中的 libuv](https://heptaluan.github.io/2019/07/05/Node/04/)
+  * [module.exports 和 exports](https://heptaluan.github.io/2018/06/05/Node/03/)
   * 原生模块
-    * module.exports 和 exports
     * Node.js 中的模块机制
     * Node.js 中的 Http 模块
-    * Node.js 中的 Buffer 模块
-    * Node.js 中的 EventEmitter 模块
+    * [Node.js 中的 Buffer 模块](https://heptaluan.github.io/2019/09/22/Node/07/)
+    * [Node.js 中的 EventEmitter 模块](https://heptaluan.github.io/2019/09/12/Node/06/)
     * Stream
       * Readable && Writable
       * Duplex && transform
@@ -327,7 +340,7 @@ WebRTC、静态生成、人工智能前端化
       * 背压（back pressure）
       * Browserify && Gulp 设计机制
   * 第三方模块
-    * co
+    * [co](https://heptaluan.github.io/2019/01/02/Node/02/)
   * koa
     * 简易 koa 的实现
     * 中间件
@@ -335,14 +348,13 @@ WebRTC、静态生成、人工智能前端化
     * koa.js 源码解析
   * egg
 * 数据库
-  * SQL
+  * MySQL
     * 时间函数
-    * 读锁和写锁
     * 数据类型
       * char && varchar
     * 命令调用
       * drop，delete，truncate
-    * 事务和锁
+    * [事务和锁](https://heptaluan.github.io/2018/11/04/MySQL/02/)
     * [缓存穿透和缓存雪崩](https://heptaluan.github.io/2018/03/03/MySQL/01/)
 * ELK
 * 进程与线程
@@ -362,15 +374,14 @@ WebRTC、静态生成、人工智能前端化
 
 * 七层 OSI 模型
 * HTTP
-  * 1.0 && 1.1 && 2.0
-    * 1.0
-    * 1.1 持久化
-    * http 2.0
-      * 二进制协议
-      * 多工
-      * 数据流（连接共享）
-      * 头信息压缩
-      * 服务端推送
+  * 1.0
+  * 1.1 持久化
+  * [http 2.0](https://heptaluan.github.io/2018/05/09/HTTP/06/)
+    * 二进制协议
+    * 多工
+    * 数据流（连接共享）
+    * 头信息压缩
+    * 服务端推送
   * 状态码
   * [HTTP 缓存机制](https://heptaluan.github.io/2017/12/12/HTTP/04/)
     * 强缓存和协商缓存
@@ -379,8 +390,8 @@ WebRTC、静态生成、人工智能前端化
     * Expires
     * Last-Modified && If-Modified-Since
     * ETag && If-None-Match
-  * http 报文头
-* TCP
+  * [http 报文头](https://heptaluan.github.io/2019/08/17/HTTP/07/)
+* [TCP](https://heptaluan.github.io/2018/05/05/HTTP/05/)
   * 三次握手 && 四次挥手
   * 滑动窗口（慢启动 && 拥塞控制）
   * 可靠通信（TCP 状态机）
