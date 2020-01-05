@@ -81,7 +81,7 @@ WebRTC、静态生成、人工智能前端化
 * HTML5
   * 语义化标签
   * [ALT 与 TITLE](https://heptaluan.github.io/2016/10/10/JavaScript/02/)
-  * canvas && svg
+  * Canvas && Svg
   * 响应式 meta
 * 渐进增强与优雅降级
 
@@ -94,11 +94,10 @@ WebRTC、静态生成、人工智能前端化
 
 * 盒模型
 * [样式来源与层叠规则](https://heptaluan.github.io/2017/09/22/CSS/03/)
-* [link 和 @import](https://heptaluan.github.io/2017/11/11/CSS/10/)
-* 选择器
   * 优先级策略（I-C-E）
+  * 样式表继承
+* [link 和 @import](https://heptaluan.github.io/2017/11/11/CSS/10/)
 * [伪类与伪元素](https://heptaluan.github.io/2018/11/25/CSS/04/)
-* 样式表继承
 * 常见布局方式
   * 文档流布局 / 浮动布局 / 定位布局 / 圣杯布局 / 双飞翼布局 / flex 布局 / grid 布局
 * CSS3
@@ -129,9 +128,9 @@ WebRTC、静态生成、人工智能前端化
       * [== 和 ===](https://heptaluan.github.io/2017/03/17/JavaScript/08/)
       * [|| 和 &&](https://heptaluan.github.io/2017/05/19/JavaScript/15/)
     * [函数](https://heptaluan.github.io/2017/10/08/JavaScript/21/)
+      * [length 和 callee 属性](https://heptaluan.github.io/2017/07/04/JavaScript/17/)
       * [作用域与执行上下文栈](https://heptaluan.github.io/2017/01/18/JavaScript/03/)
       * [事件与事件流](https://heptaluan.github.io/2016/11/14/JavaScript/01/)
-      * parseInt
     * [值和引用](https://heptaluan.github.io/2017/02/22/JavaScript/06/)
     * [对象](https://heptaluan.github.io/2017/10/07/JavaScript/20/)
       * [对象的遍历](https://heptaluan.github.io/2019/06/28/JavaScript/35/)
@@ -171,7 +170,15 @@ WebRTC、静态生成、人工智能前端化
     * JSONP / CORS / form / document.domain / window.name / location.hash / postMessage
     * Nginx / webpack proxy / WebSocket
 * 原生 API
+  * [parseInt() 与 parseFloat()](https://heptaluan.github.io/2017/04/15/JavaScript/10/)
   * [IntersectionObserver](https://heptaluan.github.io/2019/09/22/JavaScript/48/)
+  * [call 和 apply](https://heptaluan.github.io/2018/04/16/JavaScript/27/)
+  * [bind](https://heptaluan.github.io/2017/05/07/JavaScript/13/)
+  * [JSON.parse() 与 JSON.stringify()](https://heptaluan.github.io/2017/07/06/JavaScript/18/)
+  * [Map 与 forEach](https://heptaluan.github.io/2018/09/12/JavaScript/31/)
+  * [Object.defineProperty](https://heptaluan.github.io/2017/05/02/JavaScript/12/)
+  * [Object.keys](https://heptaluan.github.io/2019/03/16/JavaScript/32/)
+  * [requestAnimationFrame](https://heptaluan.github.io/2018/06/11/JavaScript/38/)
 * [并发模型](https://heptaluan.github.io/2018/08/12/JavaScript/30/)
   * Event Loop
   * MacroTask && MicroTask
@@ -256,8 +263,6 @@ WebRTC、静态生成、人工智能前端化
 ## 工程实践
 
 * 模块化 && 组件化
-* 用户鉴权
-  * OAuth
 * 依赖构建
   * Webpack
     * loader 和 plugin
