@@ -2,20 +2,18 @@
 title: 前端知识体系整理
 date: 2019-12-27
 toc: true
-thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/111.jpg
+thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/88.jpg
 ---
 
 > 最后更新于 2019-12-27
 
-因为年后有换工作的打算，所以准备在年前这最后一段时间当中好好复习一下，梳理一下掌握的知识结构
+因为博客当中的许多内容都是在工作当中遇到，然后查阅资料解决后随手记录的一些知识点，可能看上去比较零散
 
-之前有很多内容都是在工作当中遇到，然后查阅资料解决后随手记录的一些知识点，可能看上去比较零散
+所以在这里打算对照当下的前端知识体系，将博文当中的内容从新过一遍，从新的整理成一份前端知识体系
 
-所以在这里打算对照当下的前端知识体系，将博文当中的内容从新过一遍，从新的整理一下
+剔除掉一些过时的内容和补充一些之前没有涉及到的知识点，不过主要目的还是为了梳理一下自己所掌握的知识点
 
-剔除掉一些过时的内容和补充一些之前没有涉及到的知识点，不过主要目的还是为了梳理一下自己所掌握的前端知识体系和为年后的面试做准备
-
-与君共勉
+目标是能将这个个人版本的前端知识体系渐渐扩充起来，达到一定的广度和深度，不过路漫漫其修远兮，与君共勉
 
 <!--more-->
 
@@ -148,12 +146,12 @@ WebRTC、静态生成、人工智能前端化
   * ES6+
     * 块级作用域
     * 模板字符串
-    * [Symbol，Set 和 Map](https://heptaluan.github.io/2019/11/07/JavaScript/50/)
+    * [Symbol，Set 和 Map](https://heptaluan.github.io/2019/11/07/JavaScript/48/)
     * [Promise](https://heptaluan.github.io/2018/03/19/JavaScript/26/)
     * Async
     * [Class](https://heptaluan.github.io/2017/09/20/JavaScript/19/)
     * [Reflect](https://heptaluan.github.io/2017/09/21/JavaScript/43/)
-    * [迭代器与生成器](https://heptaluan.github.io/2019/07/13/JavaScript/46/)
+    * [迭代器与生成器](https://heptaluan.github.io/2019/07/13/JavaScript/44/)
     * proxy
     * 箭头函数
 * DOM
@@ -171,7 +169,7 @@ WebRTC、静态生成、人工智能前端化
     * Nginx / webpack proxy / WebSocket
 * 原生 API
   * [parseInt() 与 parseFloat()](https://heptaluan.github.io/2017/04/15/JavaScript/10/)
-  * [IntersectionObserver](https://heptaluan.github.io/2019/09/22/JavaScript/48/)
+  * [IntersectionObserver](https://heptaluan.github.io/2019/09/22/JavaScript/46/)
   * [call 和 apply](https://heptaluan.github.io/2018/04/16/JavaScript/27/)
   * [bind](https://heptaluan.github.io/2017/05/07/JavaScript/13/)
   * [JSON.parse() 与 JSON.stringify()](https://heptaluan.github.io/2017/07/06/JavaScript/18/)
@@ -180,10 +178,10 @@ WebRTC、静态生成、人工智能前端化
   * [Object.keys](https://heptaluan.github.io/2019/03/16/JavaScript/32/)
   * [requestAnimationFrame](https://heptaluan.github.io/2018/06/11/JavaScript/38/)
 * [并发模型](https://heptaluan.github.io/2018/08/12/JavaScript/30/)
-  * Event Loop
-  * MacroTask && MicroTask
   * 单线程执行机制
   * 栈和堆
+  * Event Loop
+  * MacroTask && MicroTask
 * [数据双向绑定](https://heptaluan.github.io/2018/07/10/JavaScript/29/)
   * 数据劫持
   * proxy
@@ -191,7 +189,7 @@ WebRTC、静态生成、人工智能前端化
   * 标记清除
   * 引用计数
 * [异步加载](https://heptaluan.github.io/2017/09/19/JavaScript/42/)
-* [正则表达式](https://heptaluan.github.io/2019/10/17/JavaScript/49/)
+* [正则表达式](https://heptaluan.github.io/2019/10/17/JavaScript/47/)
 * 设计模式
   * 单例模式 / 工厂模式 / 代理模式 / 观察者模式 / 发布订阅模式
 * 第三方库
@@ -211,7 +209,7 @@ WebRTC、静态生成、人工智能前端化
   * 生命周期
   * [变化检测机制](https://heptaluan.github.io/2019/07/22/Angular/16/)
   * [:host 和 ::ng-deep](https://heptaluan.github.io/2018/01/16/Angular/06/)
-  * [[] 和 {{}}](https://heptaluan.github.io/2019/06/22/Angular/14/)
+  * [&#91;&#91;&#93;&#93; 和 &#123;&#123;&#125;&#125; 的区别](https://heptaluan.github.io/2019/06/22/Angular/14/)
   * [Angular Component](https://heptaluan.github.io/2019/08/27/Angular/09/)
   * 依赖注入
     * [为什么要使用依赖注入](https://heptaluan.github.io/2018/12/14/Angular/02/)
@@ -314,7 +312,11 @@ WebRTC、静态生成、人工智能前端化
     * XSS
     * CSRF
     * 数据库注入
-
+* 体系结构与操作系统
+  * 二进制 / 字节序 / 字节对齐
+  * 多任务（进程与线程）
+  * 内存管理
+  * 磁盘调度
 
 
 
@@ -330,7 +332,6 @@ WebRTC、静态生成、人工智能前端化
 * Node.js
   * [什么是 Node.js](https://heptaluan.github.io/2019/09/01/Node/05/)
   * [CommonJS、AMD 和 CMD](https://heptaluan.github.io/2017/02/03/JavaScript/05/)
-  * [Node.js 中的 libuv](https://heptaluan.github.io/2019/07/05/Node/04/)
   * [module.exports 和 exports](https://heptaluan.github.io/2018/06/05/Node/03/)
   * 原生模块
     * [模块机制](https://heptaluan.github.io/2019/09/28/Node/08/)
@@ -345,6 +346,8 @@ WebRTC、静态生成、人工智能前端化
       * Browserify && Gulp 设计机制
   * 第三方模块
     * [co](https://heptaluan.github.io/2019/01/02/Node/02/)
+  * [Node.js 中的事件轮询机制](https://heptaluan.github.io/2019/07/05/Node/04/)
+  * [Node.js 中的多进程](http://localhost:4000/2019/05/04/Node/16/)
   * koa
     * [实现原理](https://heptaluan.github.io/2019/10/25/Node/13/)
       * 常用中间件的实现
@@ -361,9 +364,6 @@ WebRTC、静态生成、人工智能前端化
     * [事务和锁](https://heptaluan.github.io/2018/11/04/MySQL/02/)
     * [缓存穿透和缓存雪崩](https://heptaluan.github.io/2018/03/03/MySQL/01/)
 * ELK
-* 进程与线程
-  * 互斥与死锁
-
 
 
 
