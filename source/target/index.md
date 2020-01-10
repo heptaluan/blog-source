@@ -138,6 +138,7 @@ WebRTC、静态生成、人工智能前端化
     * [闭包](https://heptaluan.github.io/2017/05/12/JavaScript/14/)
     * 继承
       * [原型继承和类式继承](https://heptaluan.github.io/2018/01/10/JavaScript/23/)
+    * [防抖和节流](https://heptaluan.github.io/2020/01/05/JavaScript/49/)
     * [深浅拷贝](https://heptaluan.github.io/2018/01/14/JavaScript/24/)
     * 高阶函数
     * 模块加载
@@ -154,12 +155,12 @@ WebRTC、静态生成、人工智能前端化
     * 箭头函数
 * DOM
   * [DOM 增删改查](https://heptaluan.github.io/2017/06/26/JavaScript/16/)
+* BOM
   * Window 对象
-  * History 对象
-  * Location 对象
-  * Screen 对象
-* offset，scroll，client
-* Event 事件
+    * Navigator
+    * Screen
+    * History
+    * Location
 * XHR API
   * 同源策略
   * [跨域](https://heptaluan.github.io/2018/04/26/JavaScript/33/)
@@ -345,7 +346,7 @@ WebRTC、静态生成、人工智能前端化
   * 第三方模块
     * [co](https://heptaluan.github.io/2019/01/02/Node/02/)
   * [Node.js 中的事件轮询机制](https://heptaluan.github.io/2019/07/05/Node/04/)
-  * [Node.js 中的多进程](http://localhost:4000/2019/05/04/Node/16/)
+  * [Node.js 中的多进程](https://heptaluan.github.io/2019/05/04/Node/16/)
   * koa
     * [实现原理](https://heptaluan.github.io/2019/10/25/Node/13/)
       * 常用中间件的实现
