@@ -153,29 +153,33 @@ WebRTC、静态生成、人工智能前端化
     * [迭代器与生成器](https://heptaluan.github.io/2019/07/13/JavaScript/44/)
     * proxy
     * 箭头函数
-* DOM
-  * [DOM 增删改查](https://heptaluan.github.io/2017/06/26/JavaScript/16/)
-* BOM
-  * Window 对象
-    * Navigator
-    * Screen
-    * History
-    * Location
-* XHR API
-  * 同源策略
-  * [跨域](https://heptaluan.github.io/2018/04/26/JavaScript/33/)
-    * JSONP / CORS / form / document.domain / window.name / location.hash / postMessage
-    * Nginx / webpack proxy / WebSocket
-* 原生 API
-  * [parseInt() 与 parseFloat()](https://heptaluan.github.io/2017/04/15/JavaScript/10/)
-  * [IntersectionObserver](https://heptaluan.github.io/2019/09/22/JavaScript/46/)
-  * [call 和 apply](https://heptaluan.github.io/2018/04/16/JavaScript/27/)
-  * [bind](https://heptaluan.github.io/2017/05/07/JavaScript/13/)
-  * [JSON.parse() 与 JSON.stringify()](https://heptaluan.github.io/2017/07/06/JavaScript/18/)
-  * [Map 与 forEach](https://heptaluan.github.io/2018/09/12/JavaScript/31/)
-  * [Object.defineProperty](https://heptaluan.github.io/2017/05/02/JavaScript/12/)
-  * [Object.keys](https://heptaluan.github.io/2019/03/16/JavaScript/32/)
-  * [requestAnimationFrame](https://heptaluan.github.io/2018/06/11/JavaScript/38/)
+* [BOM 和 DOM](https://heptaluan.github.io/2017/11/17/JavaScript/16/)
+  * DOM
+    * 节点类型
+    * 节点关系
+    * 节点操作
+  * BOM
+    * Window 对象
+      * Navigator 对象
+      * Screen 对象
+      * History 对象
+      * Location 对象
+* 相关 API
+  * XHR API
+    * [跨域](https://heptaluan.github.io/2018/04/26/JavaScript/33/)
+      * 同源策略
+      * JSONP / CORS / form / document.domain / window.name / location.hash / postMessage
+      * Nginx / webpack proxy / WebSocket
+  * 原生 API
+    * [parseInt() 与 parseFloat()](https://heptaluan.github.io/2017/04/15/JavaScript/10/)
+    * [IntersectionObserver](https://heptaluan.github.io/2019/09/22/JavaScript/46/)
+    * [call 和 apply](https://heptaluan.github.io/2018/04/16/JavaScript/27/)
+    * [bind](https://heptaluan.github.io/2017/05/07/JavaScript/13/)
+    * [JSON.parse() 与 JSON.stringify()](https://heptaluan.github.io/2017/07/06/JavaScript/18/)
+    * [Map 与 forEach](https://heptaluan.github.io/2018/09/12/JavaScript/31/)
+    * [Object.defineProperty](https://heptaluan.github.io/2017/05/02/JavaScript/12/)
+    * [Object.keys](https://heptaluan.github.io/2019/03/16/JavaScript/32/)
+    * [requestAnimationFrame](https://heptaluan.github.io/2018/06/11/JavaScript/38/)
 * [并发模型](https://heptaluan.github.io/2018/08/12/JavaScript/30/)
   * 单线程执行机制
   * 栈和堆
