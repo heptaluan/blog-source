@@ -95,7 +95,7 @@ WebRTC、静态生成、人工智能前端化
 * [link 和 @import](https://heptaluan.github.io/2017/11/11/CSS/10/)
 * [伪类与伪元素](https://heptaluan.github.io/2018/11/25/CSS/04/)
 * 常见布局方式
-  * 文档流布局 / 浮动布局 / 定位布局 / 圣杯布局 / 双飞翼布局 / flex 布局 / grid 布局
+  * [文档流布局](https://heptaluan.github.io/demos/css/%E6%96%87%E6%A1%A3%E6%B5%81%E5%B8%83%E5%B1%80.html) / [浮动布局](https://heptaluan.github.io/demos/css/%E6%B5%AE%E5%8A%A8%E5%B8%83%E5%B1%80.html) / [定位布局](https://heptaluan.github.io/demos/css/%E5%AE%9A%E4%BD%8D%E5%B8%83%E5%B1%80.html) / [圣杯布局](https://heptaluan.github.io/demos/css/%E5%9C%A3%E6%9D%AF%E5%B8%83%E5%B1%80.html) / [双飞翼布局](https://heptaluan.github.io/demos/css/%E5%8F%8C%E9%A3%9E%E7%BF%BC%E5%B8%83%E5%B1%80.html) / flex 布局 / [grid 布局](https://heptaluan.github.io/demos/css/%E7%BD%91%E6%A0%BC%E5%B8%83%E5%B1%80.html)
 * CSS3
   * filter
   * 媒体查询
