@@ -80,7 +80,7 @@ WebRTC、静态生成、人工智能前端化
 * 文档类型（DOCTYPE）
 * HTML5
   * 语义化标签
-  * [ALT 与 TITLE](https://heptaluan.github.io/2016/10/10/JavaScript/02/)
+  * ALT 与 TITLE
   * Canvas && Svg
   * 响应式 meta
 * 渐进增强与优雅降级
@@ -93,26 +93,26 @@ WebRTC、静态生成、人工智能前端化
 ## CSS
 
 * 盒模型
-* [样式来源与层叠规则](https://heptaluan.github.io/2017/09/22/CSS/03/)
+* 样式来源与层叠规则
   * 优先级策略（I-C-E）
   * 样式表继承
-* [link 和 @import](https://heptaluan.github.io/2017/11/11/CSS/10/)
-* [伪类与伪元素](https://heptaluan.github.io/2018/11/25/CSS/04/)
+* link 和 @import
+* 伪类与伪元素
 * 常见布局方式
-  * [文档流布局](https://heptaluan.github.io/demos/css/%E6%96%87%E6%A1%A3%E6%B5%81%E5%B8%83%E5%B1%80.html) / [浮动布局](https://heptaluan.github.io/demos/css/%E6%B5%AE%E5%8A%A8%E5%B8%83%E5%B1%80.html) / [定位布局](https://heptaluan.github.io/demos/css/%E5%AE%9A%E4%BD%8D%E5%B8%83%E5%B1%80.html) / [圣杯布局](https://heptaluan.github.io/demos/css/%E5%9C%A3%E6%9D%AF%E5%B8%83%E5%B1%80.html) / [双飞翼布局](https://heptaluan.github.io/demos/css/%E5%8F%8C%E9%A3%9E%E7%BF%BC%E5%B8%83%E5%B1%80.html) / flex 布局 / [grid 布局](https://heptaluan.github.io/demos/css/%E7%BD%91%E6%A0%BC%E5%B8%83%E5%B1%80.html)
+  * 文档流布局 / 浮动布局 / 定位布局 / 圣杯布局 / 双飞翼布局 / flex 布局 / grid 布局
 * CSS3
   * filter
   * 媒体查询
   * Transform && Animation
   * px，em，rem，vw 和 vh
-  * [文本溢出隐藏](https://heptaluan.github.io/2016/12/02/CSS/02/)
-* [BFC](https://heptaluan.github.io/2018/12/03/CSS/06/)
+  * 文本溢出隐藏
+* BFC
   * 高度塌陷
   * Margin 塌陷
   * position 嵌套 && 覆盖
-  * [浮动清除](https://heptaluan.github.io/2016/11/09/CSS/01/)
-* [IFC](https://heptaluan.github.io/2018/12/05/CSS/07/)
-* [haslayout](https://heptaluan.github.io/2018/10/12/CSS/08/)
+  * 浮动清除
+* IFC
+* haslayout
 
 
 
