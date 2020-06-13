@@ -126,7 +126,7 @@ WebRTC、静态生成、人工智能前端化
 * ECMAScript
   * ES5
     * 基本数据类型（类型判断与类型转换）
-    * 运算符（优先级，[== 和 ===](http://localhost:4000/2017/03/17/JavaScript/08/)，|| 和 &&）
+    * 运算符（优先级，[== 和 ===](http://localhost:4000/2017/03/17/JavaScript/08/)，[|| 和 &&](http://localhost:4000/2017/05/19/JavaScript/15/)）
     * 函数
       * length 和 callee
       * [事件流，冒泡与捕获](http://localhost:4000/2016/12/12/JavaScript/01/)
@@ -195,6 +195,7 @@ WebRTC、静态生成、人工智能前端化
   * 单例模式，工厂模式，代理模式，观察者模式，发布订阅模式
 * 第三方库
   * jQuery
+    * [总体架构](http://localhost:4000/2017/06/23/jQuery/02/)
     * jQuery.fn.init()
     * 辅助方法
   * Zepto
