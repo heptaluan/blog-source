@@ -197,7 +197,7 @@ WebRTC、静态生成、人工智能前端化
   * jQuery
     * [总体架构](http://localhost:4000/2017/06/23/jQuery/02/)
     * [jQuery.fn.init()](http://localhost:4000/2017/07/11/jQuery/03/)
-    * 辅助方法
+    * [辅助方法](http://localhost:4000/2017/07/15/jQuery/04/)
   * Zepto
 * TypeScript
 * 正则表达式
