@@ -47,8 +47,6 @@ var fn = function () { }
 console.log(fn instanceof Object)  // true
 ```
 
-> 至于为什么 `typeof null` 会返回 `object`，可以参考 [The history of typeof null](https://2ality.com/2013/10/typeof-null.html) 这篇文章
-
 下面来看看创建 `JavaScript` 对象的几种方式
 
 
