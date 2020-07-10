@@ -99,7 +99,7 @@ for (var i = 0; i < arr.length; i++) {
 }
 ```
 
-这里需要注意区分单纯的 `{}` 和通过 `Object.create(null)` 创建出来的 `{}` 之间的差异，详细见 [Object.create(null)](http://localhost:4000/2017/03/03/JavaScript/07/#Object-create-null)
+这里需要注意区分单纯的 `{}` 和通过 `Object.create(null)` 创建出来的 `{}` 之间的差异，详细见 [Object.create(null)](https://heptaluan.github.io/2017/03/03/JavaScript/07/#Object-create-null)
 
 
 

@@ -87,7 +87,7 @@ WebRTC、静态生成、人工智能前端化
 * 基本的表单标签
 * HTML5
   * 语义化标签
-  * [ALT 与 TITLE](http://localhost:4000/2016/10/10/JavaScript/02/)
+  * [ALT 与 TITLE](https://heptaluan.github.io/2016/10/10/JavaScript/02/)
   * Canvas && Svg
   * 响应式 meta
 * 渐进增强与优雅降级
@@ -113,7 +113,7 @@ WebRTC、静态生成、人工智能前端化
   * px，em，rem，vw 和 vh
   * 文本溢出隐藏
 * BFC
-  * [高度塌陷与清除浮动](http://localhost:4000/2016/11/17/CSS/01/)
+  * [高度塌陷与清除浮动](https://heptaluan.github.io/2016/11/17/CSS/01/)
   * Margin 塌陷
   * position 嵌套 && 覆盖
 * IFC
@@ -126,23 +126,23 @@ WebRTC、静态生成、人工智能前端化
 * ECMAScript
   * ES5
     * 基本数据类型（类型判断与类型转换）
-    * 运算符（优先级，[== 和 ===](http://localhost:4000/2017/03/17/JavaScript/08/)，[|| 和 &&](http://localhost:4000/2017/05/19/JavaScript/15/)）
+    * 运算符（优先级，[== 和 ===](https://heptaluan.github.io/2017/03/17/JavaScript/08/)，[|| 和 &&](https://heptaluan.github.io/2017/05/19/JavaScript/15/)）
     * 函数
-      * [length 和 callee](http://localhost:4000/2017/07/04/JavaScript/17/)
-      * [事件流，冒泡与捕获](http://localhost:4000/2016/12/12/JavaScript/01/)
-      * [值和引用](http://localhost:4000/2017/02/22/JavaScript/06/)
+      * [length 和 callee](https://heptaluan.github.io/2017/07/04/JavaScript/17/)
+      * [事件流，冒泡与捕获](https://heptaluan.github.io/2016/12/12/JavaScript/01/)
+      * [值和引用](https://heptaluan.github.io/2017/02/22/JavaScript/06/)
     * 调用堆栈
-      * [变量提升，作用域，执行上下文栈，变量对象和活动对象](http://localhost:4000/2017/01/18/JavaScript/03/)
+      * [变量提升，作用域，执行上下文栈，变量对象和活动对象](https://heptaluan.github.io/2017/01/18/JavaScript/03/)
       * 内存空间与机制，常见内存泄漏及如何避免
     * 对象
       * 对象的创建
-      * [遍历和枚举](http://localhost:4000/2017/04/22/JavaScript/11/)
-      * [Object.defineProperty](http://localhost:4000/2017/05/02/JavaScript/12/)
-      * [原型和原型对象](http://localhost:4000/2017/04/08/JavaScript/09/)
-      * [Object.create()](http://localhost:4000/2017/03/03/JavaScript/07/)
+      * [遍历和枚举](https://heptaluan.github.io/2017/04/22/JavaScript/11/)
+      * [Object.defineProperty](https://heptaluan.github.io/2017/05/02/JavaScript/12/)
+      * [原型和原型对象](https://heptaluan.github.io/2017/04/08/JavaScript/09/)
+      * [Object.create()](https://heptaluan.github.io/2017/03/03/JavaScript/07/)
       * 原型继承和类式继承
     * this（常见的调用方式，如何确定 this 的值）
-    * [闭包（柯里化与偏函数）](http://localhost:4000/2017/05/12/JavaScript/14/)
+    * [闭包（柯里化与偏函数）](https://heptaluan.github.io/2017/05/12/JavaScript/14/)
     * 深浅拷贝
     * 高阶函数
     * 防抖和节流
@@ -170,10 +170,10 @@ WebRTC、静态生成、人工智能前端化
       * Nginx，webpack proxy，WebSocket
     * XHR Level 2
   * 原生 API
-    * [parseInt() 与 parseFloat()](http://localhost:4000/2017/04/15/JavaScript/10/)
+    * [parseInt() 与 parseFloat()](https://heptaluan.github.io/2017/04/15/JavaScript/10/)
     * IntersectionObserver
-    * call，apply，[bind](http://localhost:4000/2017/05/07/JavaScript/13/)
-    * [JSON.parse() 与 JSON.stringify()](http://localhost:4000/2017/07/06/JavaScript/18/)
+    * call，apply，[bind](https://heptaluan.github.io/2017/05/07/JavaScript/13/)
+    * [JSON.parse() 与 JSON.stringify()](https://heptaluan.github.io/2017/07/06/JavaScript/18/)
     * Map 与 forEach
     * Object.keys
     * requestAnimationFrame
@@ -195,9 +195,9 @@ WebRTC、静态生成、人工智能前端化
   * 单例模式，工厂模式，代理模式，观察者模式，发布订阅模式
 * 第三方库
   * jQuery
-    * [总体架构](http://localhost:4000/2017/06/23/jQuery/02/)
-    * [jQuery.fn.init()](http://localhost:4000/2017/07/11/jQuery/03/)
-    * [辅助方法](http://localhost:4000/2017/07/15/jQuery/04/)
+    * [总体架构](https://heptaluan.github.io/2017/06/23/jQuery/02/)
+    * [jQuery.fn.init()](https://heptaluan.github.io/2017/07/11/jQuery/03/)
+    * [辅助方法](https://heptaluan.github.io/2017/07/15/jQuery/04/)
   * Zepto
 * TypeScript
 * 正则表达式
@@ -340,7 +340,7 @@ WebRTC、静态生成、人工智能前端化
 ## 服务端
 
 * Node.js
-  * [CommonJS、AMD 和 CMD](http://localhost:4000/2017/02/03/JavaScript/05/)
+  * [CommonJS、AMD 和 CMD](https://heptaluan.github.io/2017/02/03/JavaScript/05/)
   * module.exports 和 exports
   * 原生模块
     * Http，Buffer，EventEmitter
