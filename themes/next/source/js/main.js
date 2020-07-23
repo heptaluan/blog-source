@@ -66,4 +66,11 @@ var _hmt = _hmt || [];
   // 导航添加新开
   $('.navbar-start .navbar-item').last().attr('target', '_blank')
 
+  // 移动端图片处理
+  if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) || /(Android)/i.test(navigator.userAgent)) {
+    $('.article .gallery-item img').css('max-width', '100%')
+  } else {
+    $('.article .gallery-item img').css('max-width', '380px')
+  }
+
 })(jQuery);
