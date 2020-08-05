@@ -70,7 +70,8 @@ var _hmt = _hmt || [];
   if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) || /(Android)/i.test(navigator.userAgent)) {
     $('.article .gallery-item img').css('max-width', '100%')
   } else {
-    $('.article .gallery-item img').css('max-width', '380px')
+    $('.article .gallery-item img').css('max-width', '600px')
+    $('.article .gallery-item img').css('max-height', '350px')
   }
 
 })(jQuery);
