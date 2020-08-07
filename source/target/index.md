@@ -15,7 +15,7 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 目的是希望能让自己达到一定的深度和广度，其实说那么多，最主要的目的还是明确未来的方向，并有一个比较好的规划，这样才能让自己的职业生涯走的更远不是，这里推荐一篇文章 [《一个程序员的成长之路》](https://github.com/fouber/blog/issues/41)，虽然文章是很早之前的了，但是依然给了我比较多关于未来的思考，也明确了我未来短期内的一个方向
 
-本文当中所涉及到的知识点绝大部分都可以在 [博客](https://heptaluan.github.io/) 和 [随笔](https://github.com/heptaluan/web-warehouse/tree/master/backups) 当中找到，路漫漫其修远兮，与君共勉
+本文当中所涉及到的知识点绝大部分都可以在 [博客](https://heptaluan.github.io/) 和 [随笔](https://github.com/heptaluan/web-warehouse/tree/master/interview) 当中找到，路漫漫其修远兮，与君共勉
 
 <!--more-->
 
@@ -93,6 +93,9 @@ Service Workers
 * 设计模式
   * 单例模式，工厂模式，代理模式，观察者模式，发布订阅模式
 * `TypeScript`
+  * 常用语法（基础类型/枚举/元祖等）
+  * 类型断言/变量声明
+  * 接口/泛型/类型判断/高级类型
 * 正则表达式
 
 
