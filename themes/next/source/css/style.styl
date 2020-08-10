@@ -18,6 +18,9 @@ body
 body, button, input, select, textarea
     font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif
 
+@media screen and (max-width: 1280px)
+    img 
+        max-width: 100% !important
 @media screen and (min-width: screen-widescreen)
     .is-1-column .container
     .is-2-column .container
@@ -190,6 +193,8 @@ img.thumbnail
         padding: 15px 8%
         img
             box-shadow: 2px 2px 10px #d7d9d8
+            max-width: 600px
+            max-height: 350px
 
 .rtl
      direction: rtl
