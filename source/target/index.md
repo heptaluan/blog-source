@@ -49,6 +49,19 @@ docker
 
 angular 自动化测试 12月
 
+Deno
+
+
+
+------
+
+v8
+
+常用算法完善
+
+
+
+
 
 -->
 
@@ -89,38 +102,28 @@ angular 自动化测试 12月
 
 * `ECMAScript`
   * `ES5`
-    * 基本数据类型
-    * 运算符
-    * 对象
-    * 函数
-    * `this`（常见的调用方式，如何确定 `this` 的值）
-    * 闭包（柯里化与偏函数）
+    * 基本数据类型（类型转换/类型判断）
+    * 运算符（优先级/隐式类型转换）
+    * 对象（定义方式/原型链/继承）
+    * 函数（事件流/基本类型与引用类型/作用域/执行上下文栈）
+    * `this`（调用方式/如何确定 `this` 的值）
+    * 闭包（闭包模型/柯里化/柯里化）
     * 深浅拷贝
-    * 高阶函数
-    * 防抖和节流
-    * 模块加载
   * `ES6+`
     * 块级作用域/模板字符串
     * `Class/Reflect/Symbol/Set/Map/Generator/Iterator/Arrow Function`
 * `BOM` 和 `DOM`
-  * `DOM`（节点类型/节点类型/节点操作）
+  * `DOM`（节点类型/节点关系/节点操作）
   * `BOM`（`Window/Navigator/Screen/History/Location`）
-* 相关 `API`
-  * `XHR API`
-    * 跨域（同源策略/解决方式）
-    * `XHR Level 2`
-  * 原生 API
-    * `call/apply/bind`
-    * `parseInt/parseFloat/JSON.parse/JSON.stringify`
-    * `IntersectionObserver`
-    * `requestAnimationFrame`
+* 手写 `API`
+  * `call/apply/bind`
+  * `once/debounce/thorttle`
 * 异步（`Callback/Promise/Generator/Async/Await`）
-* `V8` 引擎工作原理
-  * 内存回收
+* `V8` 引擎机制
+  * `AST`
   * 并发模型（`EventLoop/MacroTask/MicroTask`）
   * `V8` 优化
-* 设计模式
-  * 单例模式，工厂模式，代理模式，观察者模式，发布订阅模式
+* 设计模式（单例模式/工厂模式/代理模式/观察者模式/发布订阅模式）
 * `TypeScript`
   * 常用语法（基础类型/枚举/元祖等）
   * 类型断言/变量声明
