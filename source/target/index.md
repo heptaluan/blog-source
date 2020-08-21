@@ -23,8 +23,6 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 
 
-
-
 <!-- 
 
 IndexDB
@@ -35,9 +33,11 @@ Service Workers
 
 ------------
 
+装饰器相关，更新js当中的设计模式
+
 react/angular 9月
 
-rxjs
+
 
 http 10月
 
@@ -45,17 +45,14 @@ webpack
 
 ts  11 月 
 
-docker
-
 angular 自动化测试 12月
 
-Deno
+
 
 
 
 ------
 
-v8
 
 常用算法完善
 
@@ -70,7 +67,7 @@ v8
 
 ## HTML
 
-更多详细内容可以参考 [HTML 知识梳理](https://heptaluan.github.io/2020/07/25/HTML/01/)
+更多相关内容可以参考 [HTML 知识梳理](https://heptaluan.github.io/2020/07/25/HTML/00/)
 
 * `Web` 标准
 * 文档类型（`DOCTYPE`）
@@ -85,7 +82,7 @@ v8
 
 ## CSS
 
-更多详细内容可以参考 [CSS 知识梳理](https://heptaluan.github.io/2020/07/29/CSS/19/)
+更多相关内容可以参考 [CSS 知识梳理](https://heptaluan.github.io/2020/07/29/CSS/00/)
 
 * 盒子模型
 * 样式来源与层叠规则（层叠权重值）
@@ -93,12 +90,12 @@ v8
 * 经典布局
 * `BFC`
 * 清除浮动的方法
-* `float`、`display`、`position`、`z-index`、`line-height`、`vertical-align`
+* `float/display/position/z-index/line-height/vertical-align`
 
 
 ## JavaScript
 
-更多详细内容可以参考 [JavaScript 知识梳理](https://heptaluan.github.io/2020/08/02/JavaScript/53/)
+更多相关内容可以参考 [JavaScript 知识梳理](https://heptaluan.github.io/2020/08/02/JavaScript/00/)
 
 * `ECMAScript`
   * `ES5`
@@ -107,7 +104,7 @@ v8
     * 对象（定义方式/原型链/继承）
     * 函数（事件流/基本类型与引用类型/作用域/执行上下文栈）
     * `this`（调用方式/如何确定 `this` 的值）
-    * 闭包（闭包模型/柯里化/柯里化）
+    * 闭包（闭包模型/柯里化/偏函数）
     * 深浅拷贝
   * `ES6+`
     * 块级作用域/模板字符串
@@ -119,11 +116,12 @@ v8
   * `call/apply/bind`
   * `once/debounce/thorttle`
 * 异步（`Callback/Promise/Generator/Async/Await`）
-* `V8` 引擎机制
-  * `AST`
-  * 并发模型（`EventLoop/MacroTask/MicroTask`）
-  * `V8` 优化
-* 设计模式（单例模式/工厂模式/代理模式/观察者模式/发布订阅模式）
+* `V8` 引擎
+  * 解析器与 `AST`(基线编译器 `Ignition`/优化编译器 `TurboFan`)
+  * 垃圾回收机制（标记清除/引用计数）
+    * 新生代（`Scavenge/Cheney`）
+    * 老生代（`Mark-Sweep/Mark-Compact`）
+* 设计模式（单例模式/工厂模式/代理模式/观察者模式/发布订阅模式/适配器模式/装饰器模式）
 * `TypeScript`
   * 常用语法（基础类型/枚举/元祖等）
   * 类型断言/变量声明
@@ -138,6 +136,8 @@ v8
 
 
 ## 主流框架
+
+更多相关内容可以参考 [框架相关知识梳理](http://localhost:4000/2020/08/22/Frame/00/)
 
 * `Angular`
   * 生命周期流程
@@ -174,12 +174,15 @@ v8
 
 ## 计算机网络
 
-* 网络基础知识
-* 七层 `OSI` 模型
+更多相关内容可以参考 [计算机网络知识梳理](http://localhost:4000/2020/08/16/HTTP/00/)
+
+* 网络 `OSI` 七层模型
 * `HTTP/HTTPS`
   * 状态码
-  * 缓存机制
+  * `GET` 和 `POST` 区别
   * 报文头
+  * `HTTP 1.0/2.0/3.0`
+  * `HTTPS` 加密
 * `TCP/IP`
   * 三次握手/四次挥手
   * 滑动窗口（慢启动/拥塞控制）
@@ -191,25 +194,23 @@ v8
 
 
 
-
-
-
-
 ## 浏览器
 
+更多相关内容可以参考 [浏览器相关知识梳理](http://localhost:4000/2020/07/26/Essay/00/)
+
 * `HTTP` 请求流程
-* 浏览器缓存
 * 渲染机制
-  * `DOM/CSSOM/Render-Tree`
+  * `DOM/CSSOM/渲染树`
   * 重绘/回流
-* 用户认证（`Session`，`Cookie`，`Token`，`JWT`）
-* 安全
-  * `TLS`（非对称加密原理）
-  * 网络攻击（`XSS`，`CSRF`，数据库注入）
+* 浏览器缓存
+* 用户认证（`Session/Cookie/Token/JWT`）
+* 前端安全（`XSS/CSRF`）
 
 
 
 ## 服务端
+
+更多相关内容可以参考 [服务端知识梳理](http://localhost:4000/2020/08/23/Node/00/)
 
 * `Node.js`
   * `CommonJS/AMD/CMD`
@@ -263,18 +264,20 @@ v8
 
 * 待补充
 
-## 趋势
+## 待整理
 
-想捣鼓但没时间折腾，记录一下
+想捣鼓但没暂时没时间折腾，记录一下
 
 * `PWA`
+* `RxJS`
+* `Docker`
+* `Deno`
 * `WebAssembly`
 * `Flutter`
 * `Microservices`
 * `ServerLess/GraphSQL`
 * `D3/WebGL`
-* `WebRTC`/静态生成/人工智能前端化
-
+* `WebRTC`
 
 
 
