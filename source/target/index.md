@@ -140,24 +140,26 @@ angular 自动化测试 12月
 更多相关内容可以参考 [框架相关知识梳理](http://localhost:4000/2020/08/22/Frame/00/)
 
 * `Angular`
+  * `Angular-CLI`
   * 生命周期流程
   * 变化检测机制
   * 依赖注入
   * 装饰器
+  * 管道
   * 动态加载
   * `rxjs`
   * `ngrx` 与 `@effect`
-* `Vue`
-  * 生命周期流程
-  * 双向绑定原理
-  * `Router` 原理
-  * `Vuex`
 * `React`
   * 生命周期流程
   * `Virtual DOM` 与 `Diff` 算法
   * `Redux/Flux/React-Redux`
   * `Middleware`
   * `Hook`
+* `Vue`
+  * 生命周期流程
+  * 双向绑定原理
+  * `Router` 原理
+  * `Vuex`
 
 
 
