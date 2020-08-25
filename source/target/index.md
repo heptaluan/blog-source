@@ -23,6 +23,8 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 
 
+
+
 <!-- 
 
 IndexDB
@@ -55,6 +57,17 @@ angular 自动化测试 12月
 
 
 常用算法完善
+
+
+浏览器缓存机制 04
+
+http 与 tcp   05
+
+http 2.0      06
+
+Http 报文头   07
+
+重新整理
 
 
 
@@ -101,8 +114,8 @@ angular 自动化测试 12月
   * `ES5`
     * 基本数据类型（类型转换/类型判断）
     * 运算符（优先级/隐式类型转换）
-    * 对象（定义方式/原型链/继承）
-    * 函数（事件流/基本类型与引用类型/作用域/执行上下文栈）
+    * 对象（定义方式/原型链）
+    * 函数（事件流/基本类型与引用类型/作用域/执行上下文栈/继承）
     * `this`（调用方式/如何确定 `this` 的值）
     * 闭包（闭包模型/柯里化/偏函数）
     * 深浅拷贝
@@ -117,7 +130,7 @@ angular 自动化测试 12月
   * `once/debounce/thorttle`
 * 异步（`Callback/Promise/Generator/Async/Await`）
 * `V8` 引擎
-  * 解析器与 `AST`(基线编译器 `Ignition`/优化编译器 `TurboFan`)
+  * 解析器与 `AST`(基线编译器/优化编译器)
   * 垃圾回收机制（标记清除/引用计数）
     * 新生代（`Scavenge/Cheney`）
     * 老生代（`Mark-Sweep/Mark-Compact`）
@@ -127,8 +140,6 @@ angular 自动化测试 12月
   * 类型断言/变量声明
   * 接口/泛型/类型判断/高级类型
 * 正则表达式
-
-
 
 
 
@@ -179,6 +190,7 @@ angular 自动化测试 12月
 更多相关内容可以参考 [计算机网络知识梳理](http://localhost:4000/2020/08/08/HTTP/00/)
 
 * 网络 `OSI` 七层模型
+* 域名发散与收敛
 * `HTTP/HTTPS`
   * 状态码
   * `GET` 和 `POST` 区别
