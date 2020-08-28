@@ -27,36 +27,44 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 <!-- 
 
-IndexDB
 
-Service Workers
 
 
 
 ------------
 
+
+09 月  http/缓存/浏览器存储（IndexDB）
+
+10 月  webpack/babel/插件/loader
+
+11 月  angular/自动化测试/typescript/rxjs
+
+12 月  Docker
+
+01 月  书签面试相关内容梳理
+
+
+------------
+
+
 装饰器相关，更新js当中的设计模式
 
-react/angular 9月
+promise 实现
 
+Service Workers
 
+Deno
 
-http 10月
+PWA
 
-webpack
+微前端
 
-ts  11 月 
-
-angular 自动化测试 12月
-
-
+动态表单
 
 
 
 ------
-
-
-常用算法完善
 
 
 浏览器缓存机制 04
@@ -66,11 +74,6 @@ http 与 tcp   05
 http 2.0      06
 
 Http 报文头   07
-
-重新整理
-
-
-
 
 
 -->
@@ -129,6 +132,7 @@ Http 报文头   07
   * `call/apply/bind`
   * `once/debounce/thorttle`
 * 异步（`Callback/Promise/Generator/Async/Await`）
+* 并发模型（单线程执行机制/`Event Loop`/任务队列/执行顺序/`requestAnimationFrame`）
 * `V8` 引擎
   * 解析器与 `AST`(基线编译器/优化编译器)
   * 垃圾回收机制（标记清除/引用计数）
