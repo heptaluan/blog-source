@@ -50,7 +50,7 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 装饰器相关，更新js当中的设计模式
 
-promise 实现
+深入 promise 原理与实现
 
 Service Workers
 
