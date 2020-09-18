@@ -36,11 +36,11 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 09 月  http/缓存/浏览器存储（IndexDB）
 
-10 月  webpack/babel/插件/loader
+10 月  react（重点）
 
-11 月  angular/自动化测试/typescript/rxjs
+11 月  webpack/babel/插件/loader
 
-12 月  Docker
+12 月  Docker/自动化测试/typescript/rxjs/PWA/微前端
 
 01 月  书签面试相关内容梳理
 
@@ -55,10 +55,6 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 Service Workers
 
 Deno
-
-PWA
-
-微前端
 
 动态表单
 
@@ -195,15 +191,29 @@ Http 报文头   07
 
 * `HTTP/HTTPS`
   * `HTTP` 概述
+    * 网络模型划分/分层管理/通信传输流
+    * `IP`、`TCP` 和 `DNS`
+    * `TCP` 和 `UDP` 的比较
   * `HTTP` 协议
   * `HTTP` 报文
   * `HTTP` 首部字段
   * `HTTP` 报文实体
+    * 内容编码/传输编码/分块编码
+    * 多部分媒体类型/范围请求/内容协商
   * `HTTP` 状态码
   * 代理、缓存、网关、隧道
   * `HTTPS`
   * 用户认证
   * 追加协议
+    * `HTTP/2`
+      * 连接、流和帧
+      * 消息/流量控制/请求优先级
+      * 多路复用/首部压缩/服务端推送
+    * `HTTP/3`
+      * `RTT`
+      * `QUIC` 协议
+      * 零 `RTT` 建立连接
+      * 连接迁移/队头阻塞/多路复用/拥塞控制/流量控制
   * 安全
 * `TCP/IP`
 * 域名发散与收敛
@@ -213,7 +223,7 @@ Http 报文头   07
 
 ## 浏览器
 
-更多相关内容可以参考 [浏览器相关知识梳理](https://heptaluan.github.io/2020/07/26/Essay/00/)
+更多相关内容可以参考 [浏览器相关知识梳理](https://heptaluan.github.io/2020/07/26/Web/00/)
 
 * `HTTP` 请求流程
 * 渲染机制
@@ -243,7 +253,7 @@ Http 报文头   07
 
 ## 数据结构与算法
 
-更多相关内容可以参考 [数据结构与算法知识梳理](https://heptaluan.github.io/2020/08/23/Essay/0000/)
+更多相关内容可以参考 [数据结构与算法知识梳理](https://heptaluan.github.io/2020/08/23/Essay/00/)
 
 * 线性表（顺序存储结构/链式存储结构/循环链表/双向循环链表）
 * 栈和队列
