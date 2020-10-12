@@ -5,7 +5,7 @@ toc: true
 thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 ---
 
-> 最后更新于 `2020-07-26`
+> 最后更新于 `2020-10-04`
 
 虽然工作时间不短了，但是却从来没有静下心来好好梳理一下自己所掌握的东西，博客当中的许多内容都是在工作当中遇到，然后查阅资料解决后随手记录的一些知识点，亦或是无意间看到个新东西觉得好玩学一下，明天又看到那个有意思学一下，但是却没有真正的整理构建过属于自己的知识体系，所以在这里打算对照当下比较流行的一些方向，从新的整理一份个人的前端知识体系，主要目的是
 
@@ -33,9 +33,6 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 ------------
 
-
-09 月  http/缓存/浏览器存储（IndexDB）
-
 10 月  react（重点）
 
 11 月  webpack/babel/插件/loader
@@ -43,7 +40,6 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 12 月  Docker/自动化测试/typescript/rxjs/PWA/微前端
 
 01 月  书签面试相关内容梳理
-
 
 ------------
 
@@ -57,20 +53,6 @@ Service Workers
 Deno
 
 动态表单
-
-
-
-------
-
-
-浏览器缓存机制 04
-
-http 与 tcp   05
-
-http 2.0      06
-
-Http 报文头   07
-
 
 -->
 
@@ -294,10 +276,12 @@ Http 报文头   07
 
 想捣鼓但没暂时没时间折腾，记录一下
 
+* 正则表达式
 * `PWA`
 * `RxJS`
 * `Docker`
 * `Deno`
+* `Golang`
 * `WebAssembly`
 * `Flutter`
 * `Microservices`
