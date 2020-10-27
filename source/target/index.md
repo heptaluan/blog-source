@@ -33,13 +33,13 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 ------------
 
-10 月  react（重点）
+10 - 11 月  react（重点）
 
-11 月  webpack/babel/插件/loader
+12 月  webpack/babel/插件/loader
 
-12 月  Docker/自动化测试/typescript/rxjs/PWA/微前端
+01 月  Docker/自动化测试/typescript/rxjs/PWA/微前端
 
-01 月  书签面试相关内容梳理
+02 月  书签面试相关内容梳理
 
 ------------
 
@@ -53,6 +53,10 @@ Service Workers
 Deno
 
 动态表单
+
+二建
+
+
 
 -->
 
