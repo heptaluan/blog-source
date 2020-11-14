@@ -292,6 +292,6 @@ Deno
 * `ServerLess/GraphSQL`
 * `D3/WebGL`
 * `WebRTC`
-
+* `Svelte`
 
 
