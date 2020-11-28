@@ -2,7 +2,7 @@
 title: 前端知识体系整理
 date: 2019-12-22
 toc: true
-thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
+thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.jpg
 ---
 
 > 最后更新于 `2020-10-04`
@@ -39,14 +39,10 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/12.jpg
 
 01 月  Docker/自动化测试/typescript/rxjs/PWA/微前端
 
-02 月  书签面试相关内容梳理
+02 月  刷算法，刷面试题
 
 ------------
 
-
-装饰器相关，更新js当中的设计模式
-
-深入 promise 原理与实现
 
 Service Workers
 
@@ -150,8 +146,10 @@ Deno
   * 生命周期流程
   * `Virtual DOM` 与 `Diff` 算法
   * `Redux/Flux/React-Redux`
+  * `Redux` 与 `React-Redux` 的实现
   * `Middleware`
-  * `Hook`
+  * `Mixin/HOC/Hook`
+  * 深入 `useEffect`
 * `Vue`
   * 生命周期流程
   * 双向绑定原理
