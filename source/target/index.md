@@ -28,7 +28,7 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.jpg
 <!-- 
 
 
-
+「 」
 
 
 ------------
@@ -148,7 +148,7 @@ Deno
   * `Redux/Flux/React-Redux`
   * `Redux` 与 `React-Redux` 的实现
   * `Middleware`
-  * `Mixin/HOC/Hook`
+  * `Mixin/Render Props/HOC/Hook`
   * 深入 `useEffect`
 * `Vue`
   * 生命周期流程
