@@ -67,7 +67,7 @@ Deno
 * 文档类型（`DOCTYPE`）
 * `HTML5` 标签新特性
 * `href/src` 与 `link/@import`
-* `html` 和 `body` 的区别
+* `HTML` 和 `body` 的区别
 * `alt` 与 `title` 的区别
 * `meta` 标签有哪些属性，作用是什么
 * 渐进增强与优雅降级
