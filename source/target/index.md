@@ -25,7 +25,19 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.jpg
 
 
 
+
+
+
+
 <!-- 
+
+深入 React Fiber
+
+深入 TypeScript
+
+webpack && babel && loader && plugins
+
+
 
 
 「
@@ -34,10 +46,6 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.jpg
 
 
 ------------
-
-10 - 11 月  react（重点）
-
-12 月  webpack/babel/插件/loader
 
 01 月  Docker/自动化测试/typescript/rxjs/PWA/微前端
 
