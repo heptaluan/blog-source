@@ -68,3 +68,9 @@ class Dog {
 ```
 
 TS 重载的作用主要用于类型识别上。比如在各种工具库的源码中（如 Redux、Ramda），对于不同的传参情况，会得到不同的对应类型提示，这就需要借助重载。
+
+
+
+## 编译 与 AST 入门
+
+https://fe.rualc.com/note/js-foundation-old.html#xiang-guan-ci-hui-4
