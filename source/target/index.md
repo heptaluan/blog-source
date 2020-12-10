@@ -33,10 +33,45 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.webp
 
 深入 React Fiber
 
+React核心原理/Preact 这个库
+
+====
+
+Redux/hook 复习一下
+
+Redux
+https://fe.rualc.com/note/redux.html#redux-jian-jie
+
+React Hooks
+https://fe.rualc.com/note/react-hooks.html#hooks-jian-jie
+
+====
+
+
+Egg + React 实战日记本（总结收夜）
+
+
+
+
+
+
+
+
+
+
 深入 TypeScript
+https://fe.rualc.com/note/typescript.html
 
 webpack && babel && loader && plugins
 
+正则表达式
+https://fe.rualc.com/note/regexp.html
+
+RxJS（从新整理，复习）
+https://fe.rualc.com/note/rxjs.html#rxjs-jian-jie
+
+redux-observable
+https://fe.rualc.com/note/redux-observable.html#redux-observable-jian-jie
 
 
 
