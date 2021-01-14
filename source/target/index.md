@@ -48,19 +48,6 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.webp
 
 React核心原理/Preact 这个库
 
-====
-
-Redux/hook 复习一下
-
-Redux
-https://fe.rualc.com/note/redux.html#redux-jian-jie
-
-React Hooks
-https://fe.rualc.com/note/react-hooks.html#hooks-jian-jie
-
-====
-
-
 Egg + React 实战日记本（总结收夜）
 
 
@@ -162,9 +149,11 @@ Deno
     * 老生代（`Mark-Sweep/Mark-Compact`）
 * 设计模式（单例模式/工厂模式/代理模式/观察者模式/发布订阅模式/适配器模式/装饰器模式）
 * `TypeScript`
-  * 常用语法（基础类型/枚举/元祖等）
-  * 类型断言/变量声明
-  * 接口/泛型/类型判断/高级类型
+  * 基础类型/内置对象/对象类型/数组类型/函数类型
+  * 元组/枚举/类与接口（`readonly`/抽象类/私有字段）
+  * 泛型（接口/类/约束/参数默认类型/条件类型/工具类型）
+  * `React + TypeScript`
+    * 组件 `Props` 与 `Hooks`
 * 正则表达式
 
 
@@ -194,6 +183,7 @@ Deno
   * `middleware`
   * `Mixin/Render Props/HOC/Hook`
   * 深入 `useEffect`
+  * `React Fiber`
 * `Vue`
   * 生命周期流程
   * 双向绑定原理
