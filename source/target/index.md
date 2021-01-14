@@ -81,7 +81,7 @@ https://fe.rualc.com/note/redux-observable.html#redux-observable-jian-jie
 
 ------------
 
-01 月  Docker/自动化测试/typescript/rxjs/PWA/微前端
+01 月  Docker/自动化测试/rxjs/PWA/微前端
 
 02 月  刷算法，刷面试题
 
@@ -191,7 +191,7 @@ Deno
   * `Virtual DOM` 与 `Diff` 算法
   * `Redux/Flux/React-Redux`
   * `Redux` 与 `React-Redux` 的实现
-  * `Middleware`
+  * `middleware`
   * `Mixin/Render Props/HOC/Hook`
   * 深入 `useEffect`
 * `Vue`
