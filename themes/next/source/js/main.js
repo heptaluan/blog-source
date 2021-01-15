@@ -1,11 +1,3 @@
-var _hmt = _hmt || [];
-(function () {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?f0399d35b846ccd84f70acc7b232fb2e";
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(hm, s);
-})();
-
 (function ($) {
   $('.article img:not(".not-gallery-item")').each(function () {
     // wrap images with link and add caption if possible
