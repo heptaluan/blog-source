@@ -141,7 +141,7 @@ Deno
   * `call/apply/bind`
   * `once/debounce/thorttle`
 * 异步（`Callback/Promise/Generator/Async/Await`）
-* 并发模型（单线程执行机制/`Event Loop`/任务队列/执行顺序/`requestAnimationFrame`）
+* 并发模型（渲染进程/`Event Loop`/任务队列）
 * `V8` 引擎
   * 解析器与 `AST`(基线编译器/优化编译器)
   * 垃圾回收机制（标记清除/引用计数）
