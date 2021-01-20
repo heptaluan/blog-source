@@ -9,21 +9,3 @@
         </div>
     </div>
 </div>
-<script>
-    (function ($) {
-        $('.search-form').on('submit', function (e) {
-            var keyword = $('.searchbox-input[name="wd"]').val();
-            window.location = 'https://www.baidu.com/s?wd=site:<%= config.url.replace(/http(s)*:\/\//, "") %> ' + keyword;
-            return false;
-        });
-    })(jQuery);
-    (function (document, $) {
-        $(document).on('click', '.navbar-main .search', function () {
-            $('.searchbox').toggleClass('show');
-        }).on('click', '.searchbox .searchbox-mask', function () {
-            $('.searchbox').removeClass('show');
-        }).on('click', '.searchbox-close', function () {
-            $('.searchbox').removeClass('show');
-        });
-    })(document, jQuery);
-</script>
