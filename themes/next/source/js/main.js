@@ -1,3 +1,5 @@
+
+
 (function ($) {
   $('.article img:not(".not-gallery-item")').each(function () {
     // wrap images with link and add caption if possible
@@ -57,5 +59,5 @@
 
   // 导航添加新开
   $('.navbar-start .navbar-item').last().attr('target', '_blank')
-  
+
 })(jQuery);
