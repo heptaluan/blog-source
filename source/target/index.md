@@ -13,9 +13,9 @@ thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.webp
 * 复习之前已经掌握但并不算熟练的知识
 * 补习自身没有掌握，但是知道是必须要掌握的知识
 
-希望通过梳理可以让自己的知识面达到一定的深度和广度，其实说那么多，最主要的目的还是明确未来的方向，并有一个比较好的规划，这样才能让自己的职业生涯走的更远，这里推荐一篇文章 [《一个程序员的成长之路》](https://github.com/fouber/blog/issues/41)，虽然文章是很早之前的了，但是依然给了我比较多关于未来的思考，也明确了未来短期内的一个方向，另外博客当中的一些在入门时期整理的基础性文章全部移动到了 [这里](https://github.com/heptaluan/web-warehouse/tree/master/interview)，下面所涉及到的东西在这两个地方均能找到相关内容
+希望通过梳理可以让自己的知识面达到一定的深度和广度，其实最主要的目的还是明确未来的方向，并有一个比较好的规划，这样才能让自己的职业生涯走的更远，另外博客当中的一些在初学时期整理的文章全部移动到了 [这里](https://github.com/heptaluan/web-warehouse/tree/master/interview)，本文中所涉及到的内容均可在这两个地方找到
 
-路漫漫其修远兮，与君共勉
+这里推荐一篇文章 [《一个程序员的成长之路》](https://github.com/fouber/blog/issues/41)，虽然文章是很早之前的了，但是依然给了我比较多关于未来的思考，也明确了未来短期内的一个方向，路漫漫其修远兮，与君共勉
 
 <!--more-->
 
@@ -131,10 +131,10 @@ Deno
 * 执行过程
   * 同步（调用栈/执行上下文栈/作用域链/`VO`/`AO`）
   * 异步（`Callback/Promise/Generator/Async/Await`）
-  * 事件轮询机制（渲染进程/`Event Loop`/任务队列/`requestAnimationFrame`）
+  * 事件轮询机制（渲染进程/`EventLoop`/任务队列/`requestAnimationFrame`）
 * `V8` 引擎
   * 解析器与 `AST`（基线编译器/优化编译器）
-  * 内存管理（分配/使用/回收）/内存泄漏
+  * 内存管理（分配/使用/回收/内存泄漏）
   * 垃圾回收机制
     * 标记清除/引用计数
     * `V8` 垃圾回收策略（内存限制/新生代/晋升/老生代）
