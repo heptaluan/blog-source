@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>为什么要使用依赖注入 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="前端应用在不断壮大的过程中，内部模块间的依赖可能也会随之越来越复杂，模块间的低复用性导致应用难以维护，不过我们可以借助计算机领域的一些优秀的编程理念来一定程度上解决这些问题 接下来我们要介绍的依赖注入就是其中之一，也是 Angular 当中比较重要的一部分，但是在展开之前我们先来看看 IOC 的概念">
+<meta name="keywords" content="Angular">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么要使用依赖注入">
+<meta property="og:url" content="http://yoursite.com/2018/12/14/Angular/02/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="前端应用在不断壮大的过程中，内部模块间的依赖可能也会随之越来越复杂，模块间的低复用性导致应用难以维护，不过我们可以借助计算机领域的一些优秀的编程理念来一定程度上解决这些问题 接下来我们要介绍的依赖注入就是其中之一，也是 Angular 当中比较重要的一部分，但是在展开之前我们先来看看 IOC 的概念">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/02.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为什么要使用依赖注入">
+<meta name="twitter:description" content="前端应用在不断壮大的过程中，内部模块间的依赖可能也会随之越来越复杂，模块间的低复用性导致应用难以维护，不过我们可以借助计算机领域的一些优秀的编程理念来一定程度上解决这些问题 接下来我们要介绍的依赖注入就是其中之一，也是 Angular 当中比较重要的一部分，但是在展开之前我们先来看看 IOC 的概念">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/02.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="为什么要使用依赖注入" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/02.webp" alt="为什么要使用依赖注入">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2018-12-14</div>
+                <!-- <time class="level-item has-text-grey" datetime="2018-12-13T16:00:00.000Z">2018-12-14</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Angular/">Angular</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    22 分钟 读完 (大约 3278 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                为什么要使用依赖注入
+            
+        </h1>
+        <div class="content">
+            <p>前端应用在不断壮大的过程中，内部模块间的依赖可能也会随之越来越复杂，模块间的低复用性导致应用难以维护，不过我们可以借助计算机领域的一些优秀的编程理念来一定程度上解决这些问题</p>
+<p>接下来我们要介绍的依赖注入就是其中之一，也是 <code>Angular</code> 当中比较重要的一部分，但是在展开之前我们先来看看 <code>IOC</code> 的概念</p>
+<a id="more"></a>
+
+<h2 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h2><p><code>IOC</code> 的全称叫做 <code>Inversion of Control</code>，可翻译为为『控制反转』或『依赖倒置』，它主要包含了以下三个准则</p>
+<ul>
+<li>高层次的模块不应该依赖于低层次的模块，它们都应该依赖于抽象</li>
+<li>抽象不应该依赖于具体实现，具体实现应该依赖于抽象</li>
+<li>面向接口编程 而不要面向实现编程</li>
+</ul>
+<p>概念总是抽象的，所以下面我们用一个例子来解释上述的概念，假设我们需要构建一款应用叫 <code>App</code>，它包含一个路由模块 <code>Router</code> 和一个页面监控模块 <code>Track</code>，一开始我们可能会这么实现</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// app.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> Router <span class="hljs-keyword">from</span> <span class="hljs-string">'./modules/Router'</span></span><br><span class="line"><span class="hljs-keyword">import</span> Track <span class="hljs-keyword">from</span> <span class="hljs-string">'./modules/Track'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.options = options</span><br><span class="line">    <span class="hljs-keyword">this</span>.router = <span class="hljs-keyword">new</span> Router()</span><br><span class="line">    <span class="hljs-keyword">this</span>.track = <span class="hljs-keyword">new</span> Track()</span><br><span class="line">    <span class="hljs-keyword">this</span>.init()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  init() &#123;</span><br><span class="line">    <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'DOMContentLoaded'</span>, () =&gt; &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.router.to(<span class="hljs-string">'home'</span>)</span><br><span class="line">      <span class="hljs-keyword">this</span>.track.tracking()</span><br><span class="line">      <span class="hljs-keyword">this</span>.options.onReady()</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// index.js</span></span><br><span class="line"><span class="hljs-keyword">new</span> App(&#123;</span><br><span class="line">  onReady() &#123;</span><br><span class="line">    <span class="hljs-comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>看起来似乎没什么问题，但是实际应用中需求是非常多变的，比如需要给路由新增新的功能（比如实现 <code>history</code> 模式）或者更新配置，这样一来就不得不在 <code>App</code> 内部去修改这两个模块，这是一个 <code>INNER BREAKING</code> 的操作，而对于之前测试通过了的 <code>App</code> 来说，也必须重新测试</p>
+<p>很明显这不是一个好的应用结构，高层次的模块 <code>App</code> 依赖了两个低层次的模块 <code>Router</code> 和 <code>Track</code>，对低层次模块的修改都会影响高层次的模块 <code>App</code>，那么如何解决这个问题呢？解决方案就是我们接下将要介绍到的依赖注入（<code>Dependency Injection</code>）</p>
+<h2 id="使用依赖注入"><a href="#使用依赖注入" class="headerlink" title="使用依赖注入"></a>使用依赖注入</h2><p>所谓的依赖注入，简单来说就是把高层模块所依赖的模块通过传参的方式把依赖『注入』到模块内部，上面的代码可以通过依赖注入的方式改造成如下方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// app.js</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.options = options</span><br><span class="line">    <span class="hljs-keyword">this</span>.router = options.router</span><br><span class="line">    <span class="hljs-keyword">this</span>.track = options.track</span><br><span class="line">    <span class="hljs-keyword">this</span>.init()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  init() &#123;</span><br><span class="line">    <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'DOMContentLoaded'</span>, () =&gt; &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.router.to(<span class="hljs-string">'home'</span>)</span><br><span class="line">      <span class="hljs-keyword">this</span>.track.tracking()</span><br><span class="line">      <span class="hljs-keyword">this</span>.options.onReady()</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// index.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'path/to/App'</span></span><br><span class="line"><span class="hljs-keyword">import</span> Router <span class="hljs-keyword">from</span> <span class="hljs-string">'./modules/Router'</span></span><br><span class="line"><span class="hljs-keyword">import</span> Track <span class="hljs-keyword">from</span> <span class="hljs-string">'./modules/Track'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">new</span> App(&#123;</span><br><span class="line">  router: <span class="hljs-keyword">new</span> Router(),</span><br><span class="line">  track: <span class="hljs-keyword">new</span> Track(),</span><br><span class="line">  onReady() &#123;</span><br><span class="line">    <span class="hljs-comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>我们将依赖提升到了入口处的 <code>new App({})</code> 当中，可以看到，通过依赖注入解决了上面所说的 <code>INNER BREAKING</code> 的问题，这时我们可以直接在 <code>App</code> 外部对各个模块进行修改而不影响内部，但是这样是不是就万事大吉了呢？仔细观察的话，如果我们现在想给 <code>App</code> 添加一个分享模块 <code>Share</code>，那么这样就又回到了之前所提到的 <code>INNER BREAKING</code> 的问题上，也就是我们不得不对 <code>App</code> 模块进行修改加上一行 <code>this.share = options.share</code>，这明显不是我们所期望的</p>
+<p>虽然 <code>App</code> 通过依赖注入的方式在一定程度上解耦了与其他几个模块的依赖关系，但是还不够彻底，其中的 <code>this.router</code> 和 <code>this.track</code> 等属性其实都还是对『具体实现』的依赖，明显违背了 <code>IOC</code> 思想的准则，那我们该如何进一步的抽象 <code>App</code> 模块呢？往下看</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">static</span> modules = []</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.options = options</span><br><span class="line">    <span class="hljs-keyword">this</span>.init()</span><br><span class="line">  &#125;</span><br><span class="line">  init() &#123;</span><br><span class="line">    <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'DOMContentLoaded'</span>, () =&gt; &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.initModules()</span><br><span class="line">      <span class="hljs-keyword">this</span>.options.onReady(<span class="hljs-keyword">this</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">static</span> use(<span class="hljs-built_in">module</span>) &#123;</span><br><span class="line">    <span class="hljs-built_in">Array</span>.isArray(<span class="hljs-built_in">module</span>) ? <span class="hljs-built_in">module</span>.map(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> App.use(item)) : App.modules.push(<span class="hljs-built_in">module</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  initModules() &#123;</span><br><span class="line">    App.modules.map(<span class="hljs-function"><span class="hljs-params">module</span> =&gt;</span> <span class="hljs-built_in">module</span>.init &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span>.init == <span class="hljs-string">'function'</span> &amp;&amp; <span class="hljs-built_in">module</span>.init(<span class="hljs-keyword">this</span>))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们把依赖保存在了 <code>App.modules</code> 属性中，等待后续初始化模块的时候被调用，而 <code>initModules()</code> 方法就是遍历 <code>App.modules</code> 中所有的模块，判断模块是否包含 <code>init</code> 属性且该属性必须是一个函数，如果判断通过的话，该方法就会去执行模块的 <code>init</code> 方法并把 <code>App</code> 的实例 <code>this</code> 传入其中，以便在模块中引用它</p>
+<p>从这个方法中可以看出，要实现一个可以被 <code>App.use()</code> 的模块，就必须满足两个『约定』</p>
+<ul>
+<li>模块必须包含 <code>init</code> 属性</li>
+<li><code>init</code> 必须是一个函数</li>
+</ul>
+<p>这其实就是 <code>IOC</code> 思想中对『面向接口编程，而不要面向实现编程』这一准则的很好的体现，<code>App</code> 不关心模块具体实现了什么，只要满足对接口 <code>init</code> 的『约定』就可以了，下面我们在来看看如何使用 <code>App</code> 来管理我们的依赖，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// modules/Router.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> Router <span class="hljs-keyword">from</span> <span class="hljs-string">'path/to/Router'</span></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> &#123;</span><br><span class="line">  init(app) &#123;</span><br><span class="line">    app.router = <span class="hljs-keyword">new</span> Router(app.options.router)</span><br><span class="line">    app.router.to(<span class="hljs-string">'home'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// modules/Track.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> Track <span class="hljs-keyword">from</span> <span class="hljs-string">'path/to/Track'</span></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> &#123;</span><br><span class="line">  init(app) &#123;</span><br><span class="line">    app.track = <span class="hljs-keyword">new</span> Track(app.options.track)</span><br><span class="line">    app.track.tracking()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// index.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'path/to/App'</span></span><br><span class="line"><span class="hljs-keyword">import</span> Router <span class="hljs-keyword">from</span> <span class="hljs-string">'./modules/Router'</span></span><br><span class="line"><span class="hljs-keyword">import</span> Track <span class="hljs-keyword">from</span> <span class="hljs-string">'./modules/Track'</span></span><br><span class="line"></span><br><span class="line">App.use([Router, Track])</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">new</span> App(&#123;</span><br><span class="line">  router: &#123;</span><br><span class="line">    mode: <span class="hljs-string">'history'</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  track: &#123;</span><br><span class="line">    <span class="hljs-comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  onReady(app) &#123;</span><br><span class="line">    <span class="hljs-comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>可以发现 <code>App</code> 模块在使用上也非常的方便，通过 <code>App.use()</code> 方法来『注入』依赖，在 <code>./modules/some-module.js</code> 中按照一定的『约定』去初始化相关配置，比如此时需要新增一个 <code>Share</code> 模块的话，无需到 <code>App</code> 内部去修改内容</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// modules/Share.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> Share <span class="hljs-keyword">from</span> <span class="hljs-string">'path/to/Share'</span></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> &#123;</span><br><span class="line">  init(app) &#123;</span><br><span class="line">    app.share = <span class="hljs-keyword">new</span> Share()</span><br><span class="line">    app.setShare = <span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> app.share.setShare(data)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// index.js</span></span><br><span class="line">App.use(Share)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">new</span> App(&#123;</span><br><span class="line">  <span class="hljs-comment">// ...</span></span><br><span class="line">  onReady(app) &#123;</span><br><span class="line">    app.setShare(&#123;</span><br><span class="line">      title: <span class="hljs-string">'Hello IOC.'</span>,</span><br><span class="line">      description: <span class="hljs-string">''</span>,</span><br><span class="line">      <span class="hljs-comment">// ...</span></span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>我们只需要直接在 <code>App</code> 外部去 <code>use</code> 这个 <code>Share</code> 模块即可，对模块的注入和配置极为方便，<code>App</code> 模块此时应该称之为『容器』比较合适了，跟业务已经没有任何关系了，它仅仅只是提供了一些方法来辅助管理注入的依赖和控制模块如何执行</p>
+<p>简单总结就是控制反转（<code>Inversion of Control</code>）是一种思想，而依赖注入（<code>Dependency Injection</code>）则是这一思想的一种具体实现方式，这里的 <code>App</code> 则是辅助依赖管理的一个容器</p>
+<p>在了解完上面的内容以后，下面我们就来看看 <code>Angular</code> 当中的依赖注入是什么样子的</p>
+<h2 id="Angular-当中的依赖注入"><a href="#Angular-当中的依赖注入" class="headerlink" title="Angular 当中的依赖注入"></a>Angular 当中的依赖注入</h2><p>同样的，我们也是通过一个示例开始看起，比如下面这个简单的 <code>Person</code> 类，它依赖于 <code>Id</code> 和 <code>Address</code> 两个类</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Id</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">static</span> getId(type: string): Id &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Id()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(city, street) &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>&#123;</span><br><span class="line">  id: Id</span><br><span class="line">  address: Address</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(id: Id, address: Address) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.id = id</span><br><span class="line">    <span class="hljs-keyword">this</span>.address = address</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 在某个类当中调用的时候</span></span><br><span class="line">main() &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> id = Id.getId(<span class="hljs-string">'123'</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> address = <span class="hljs-keyword">new</span> Address(<span class="hljs-string">'北京'</span>, <span class="hljs-string">'北京'</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> person = <span class="hljs-keyword">new</span> Person(id, address)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和我们开头部分介绍的示例十分类似，我们也将依赖提升到了入口处的 <code>main()</code> 当中，但是在当下这种形式中，我们已经知道如果有新的需求变动，我们还是需要去模块的内部来进行修改，下面我们就来看看如何在 <code>Angular</code> 当中来解决这个问题的</p>
+<p>在 <code>Angular</code> 的依赖注入中主要有三个概念</p>
+<ul>
+<li><code>Injector</code>，注入者，利用其提供的 <code>API</code> 去创建依赖的实例</li>
+<li><code>Provider</code>，告诉 <code>Injector</code> 如何去创建一个实例（构造这个对象）</li>
+<li><code>Object</code>，创建好的对象，也就是当前所处的模块或者组件需要的依赖（某种类型的对象，依赖本身也是一种类型）</li>
+</ul>
+<p>在这里我们先不利用 <code>Angular</code> 提供的现成方法，而是借住框架手动的来完善整个依赖注入的流程，最后再来和 <code>Angular</code> 当中提供的原生方法来做一个对比，话不多说，先来改写上面的例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; Component, ReflectiveInjector, Inject &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; environment &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'../environments/environment'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppComponent</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="hljs-comment">// resolveAndCreate() 方法接收一个 provider 数组</span></span><br><span class="line">    <span class="hljs-comment">// ReflectiveInjector 利用 resolveAndCreate() 方法会根据输入的一个 provider 数组来构建一个可以提供依赖性的池子</span></span><br><span class="line">    <span class="hljs-comment">// 池子当中含有多个 provider 对象，该对象有两个属性</span></span><br><span class="line">    <span class="hljs-comment">// 一个为 provide，可以简单的理解为 key/令牌 等，作用是唯一性的一个标识</span></span><br><span class="line">    <span class="hljs-comment">// 另外一个为类型，类型有多种，比如 useClass, useFactory 等</span></span><br><span class="line">    <span class="hljs-comment">// 简单来说，池子的作用就是把在这个类中所有想使用的依赖都存放到里面</span></span><br><span class="line">    <span class="hljs-keyword">const</span> injector = ReflectiveInjector.resolveAndCreate([</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 针对于 &#123; provide: Person, useClass: Person &#125;, 这种 useClass 的方式可以直接简写为 Person</span></span><br><span class="line">      <span class="hljs-comment">// 可以直接使用类来去代替，因为本质上就是提供了这个类的构造，key/令牌 也是这个类的本身</span></span><br><span class="line">      Person,</span><br><span class="line">      &#123; </span><br><span class="line">        provide: Address, <span class="hljs-attr">useFactory</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="hljs-keyword">if</span> (environment.production) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Address(<span class="hljs-string">'北京'</span>, <span class="hljs-string">'北京'</span>)</span><br><span class="line">          &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Address(<span class="hljs-string">'西藏'</span>, <span class="hljs-string">'拉萨'</span>)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123; <span class="hljs-attr">provide</span>: Id, <span class="hljs-attr">useFactory</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> Id.getId(<span class="hljs-string">'123'</span>)</span><br><span class="line">      &#125;&#125;</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 注入之后就可以来进行使用了，利用 injector 的 get() 方法来获取 Person 对象</span></span><br><span class="line">    <span class="hljs-keyword">const</span> person = injector.get(Person)</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(person))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Id</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">static</span> getId(type: string): Id &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Id()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> </span>&#123;</span><br><span class="line">  city: string</span><br><span class="line">  street: string</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(city, street) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.city = city</span><br><span class="line">    <span class="hljs-keyword">this</span>.street = street</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 依赖 Id 和 Address 两个类</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>&#123;</span><br><span class="line">  id: Id</span><br><span class="line">  address: Address</span><br><span class="line">  <span class="hljs-comment">// 需要两个依赖性，一个是 Id，一个是 Address</span></span><br><span class="line">  <span class="hljs-comment">// 这里执行的流程就是会去上面的池子当中进行寻找</span></span><br><span class="line">  <span class="hljs-keyword">constructor</span>(@Inject(Id) id, @Inject(Address) address) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.id = id</span><br><span class="line">    <span class="hljs-keyword">this</span>.address = address</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用 <code>resolveAndCreate()</code> 方法根据输入的一个 <code>provider</code> 数组来构建一个可以提供依赖性的池子，而池子的作用就是把在这个类中所有想使用的依赖都存放到里面，这样一来我们在需要使用的地方就可以直接使用 <code>@Inject()</code> 的方式去池子当中寻找我们所需要的依赖</p>
+<p>上面就是我们手动的来实现 <code>Angular</code> 当中的依赖注入的流程，但是在绝大部分的情况下，我们并不需要显性的去手写这么一个 <code>provider</code> 对象，因为 <code>Angular</code> 已经帮我们都已经封装好了，并且提供给了我们一些便利，而我们就可以直接利用这些便利来完成上面这样复杂的操作</p>
+<h2 id="使用依赖注入-1"><a href="#使用依赖注入-1" class="headerlink" title="使用依赖注入"></a>使用依赖注入</h2><p>下面我们就来看看如何在项目当中使用 <code>Angular</code> 提供的 <code>provider</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 一个公共模块</span></span><br><span class="line"><span class="hljs-comment">// 在 @NgModule 当中注入 BASE_CONFIG 这个静态变量</span></span><br><span class="line">@NgModule(&#123;</span><br><span class="line">  <span class="hljs-comment">// ...</span></span><br><span class="line">  providers: [</span><br><span class="line">    &#123; <span class="hljs-attr">provide</span>: <span class="hljs-string">'BASE_CONFIG'</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-string">'http://localhost:3000'</span>&#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 使用</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; Inject &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">constructor</span>(@Inject('BASE_CONFIG') config) &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(config)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在 <code>Module</code> 或者 <code>Component</code> 当中，只需要在 <code>providers</code> 数组当中提供这个 <code>provide</code> 对象，<code>Angular</code> 便会自动的帮我们注册到 <code>Inject</code> 这个池子当中，所以在我们使用过程当中，只需要在 <code>constructor</code> 当中使用 <code>@Inject()</code> 注入进来即可，但是需要注意的一点就是，我们这样操作的话，在池子当中取的数据都是单例的，如果想要每次取的都是一个新的实例的话，比如之前的实例，只需在此基础上稍作调整，让其返回一个函数即可</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppComponent</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> injector = ReflectiveInjector.resolveAndCreate([</span><br><span class="line">      Person,</span><br><span class="line">      &#123; </span><br><span class="line">        provide: Address, <span class="hljs-attr">useFactory</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="hljs-comment">// 修改这里</span></span><br><span class="line">          <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">if</span> (environment.production) &#123;</span><br><span class="line">              <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Address(<span class="hljs-string">'北京'</span>, <span class="hljs-string">'北京'</span>)</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">              <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Address(<span class="hljs-string">'西藏'</span>, <span class="hljs-string">'拉萨'</span>)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123; <span class="hljs-attr">provide</span>: Id, <span class="hljs-attr">useFactory</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> Id.getId(<span class="hljs-string">'123'</span>)</span><br><span class="line">      &#125;&#125;</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">const</span> person = injector.get(Person)</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(person))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是一种方式，另外一种方式就是利用父子传递的概念，这种情况一般使用较少，可以考虑使用返回一个函数的方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">constructor</span>() &#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">const</span> injector = ReflectiveInjector.resolveAndCreate([</span><br><span class="line">    Person,</span><br><span class="line">    &#123; </span><br><span class="line">      provide: Address, <span class="hljs-attr">useFactory</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (environment.production) &#123;</span><br><span class="line">          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Address(<span class="hljs-string">'北京'</span>, <span class="hljs-string">'北京'</span>)</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Address(<span class="hljs-string">'西藏'</span>, <span class="hljs-string">'拉萨'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">provide</span>: Id, <span class="hljs-attr">useFactory</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> Id.getId(<span class="hljs-string">'123'</span>)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">  ])</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 创建一个子注入者，传入 Person</span></span><br><span class="line">  <span class="hljs-comment">// 这里有一点需要注意，在创建子注入者的时候，我们仅仅只传入了 Person，并没有传入 Id 和 Address</span></span><br><span class="line">  <span class="hljs-comment">// 这里的情况是 当在子池子中找不到的情况下就回去父池子当中进行查找</span></span><br><span class="line">  <span class="hljs-keyword">const</span> childInjector = injector.resolveAndCreateChild([Person])</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">const</span> personFromChild = childInjector.get(Person)</span><br><span class="line">  <span class="hljs-keyword">const</span> person = injector.get(Person)</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-built_in">console</span>.log(person === personFromChild)  <span class="hljs-comment">// false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上就是 <code>Angular</code> 当中的依赖注入简单的使用方式，我们通过一个基本的示例了解了为什么要使用依赖注入，再到引出 <code>Angular</code> 当中的依赖注入，但是 <code>Angular</code> 当中的依赖注入的内容远远不止上文介绍到的这些，所以我们会在下一部分 <a href="https://heptaluan.github.io/2018/12/26/Angular/03/" target="_blank" rel="noopener">Angular 中的依赖注入</a> 来深入的了解 <code>Angular</code> 当中的依赖注入</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Angular/">Angular</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/12/26/Angular/03/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">Angular 中的依赖注入</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2018/12/12/Angular/01/">
+                <span class="level-item">Angular-CLI 与其整体架构</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '2a39809d930e564e5ca1d7c9e6f60509',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#IOC">
+        <span class="has-mr-6">1</span>
+        <span>IOC</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用依赖注入">
+        <span class="has-mr-6">2</span>
+        <span>使用依赖注入</span>
+        </a></li><li>
+        <a class="is-flex" href="#Angular-当中的依赖注入">
+        <span class="has-mr-6">3</span>
+        <span>Angular 当中的依赖注入</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用依赖注入-1">
+        <span class="has-mr-6">4</span>
+        <span>使用依赖注入</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="为什么要使用依赖注入" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

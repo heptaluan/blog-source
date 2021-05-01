@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>什么是 Node.js - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="其实在工作过程中一直有个想法，就是好好地深入的去学习一下 Node.js，无奈各种工作，家庭，生活和一些其他的原因导致此事一直搁浅，之前也有零零散散的学过，但是都算不得上深入，框架的使用也都只是停留在会用的阶段，底层的实现也没有知根知底的去探个究竟 所以打算在这 2019 年剩下的一段时间里，静下心来好好地学一下 Node.js，补充一下相关知识和一些流行框架的内容，应该会是一个系列文章，记录的就">
+<meta name="keywords" content="Node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是 Node.js">
+<meta property="og:url" content="http://yoursite.com/2019/09/01/Node/05/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="其实在工作过程中一直有个想法，就是好好地深入的去学习一下 Node.js，无奈各种工作，家庭，生活和一些其他的原因导致此事一直搁浅，之前也有零零散散的学过，但是都算不得上深入，框架的使用也都只是停留在会用的阶段，底层的实现也没有知根知底的去探个究竟 所以打算在这 2019 年剩下的一段时间里，静下心来好好地学一下 Node.js，补充一下相关知识和一些流行框架的内容，应该会是一个系列文章，记录的就">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/05.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="什么是 Node.js">
+<meta name="twitter:description" content="其实在工作过程中一直有个想法，就是好好地深入的去学习一下 Node.js，无奈各种工作，家庭，生活和一些其他的原因导致此事一直搁浅，之前也有零零散散的学过，但是都算不得上深入，框架的使用也都只是停留在会用的阶段，底层的实现也没有知根知底的去探个究竟 所以打算在这 2019 年剩下的一段时间里，静下心来好好地学一下 Node.js，补充一下相关知识和一些流行框架的内容，应该会是一个系列文章，记录的就">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/05.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="什么是 Node.js" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/05.webp" alt="什么是 Node.js">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2019-09-01</div>
+                <!-- <time class="level-item has-text-grey" datetime="2019-08-31T16:00:00.000Z">2019-09-01</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    17 分钟 读完 (大约 2497 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                什么是 Node.js
+            
+        </h1>
+        <div class="content">
+            <p>其实在工作过程中一直有个想法，就是好好地深入的去学习一下 <code>Node.js</code>，无奈各种工作，家庭，生活和一些其他的原因导致此事一直搁浅，之前也有零零散散的学过，但是都算不得上深入，框架的使用也都只是停留在会用的阶段，底层的实现也没有知根知底的去探个究竟</p>
+<p>所以打算在这 <code>2019</code> 年剩下的一段时间里，静下心来好好地学一下 <code>Node.js</code>，补充一下相关知识和一些流行框架的内容，应该会是一个系列文章，记录的就是在学习 <code>Node.js</code> 过程当中的一些笔记，心得和想法吧，刚好也看到了 <a href="https://i5ting.github.io/How-to-learn-node-correctly/#1" target="_blank" rel="noopener">如何正确的学习 Node.js</a> 这篇文章，就以这个为起点，从头开始吧</p>
+<a id="more"></a>
+
+<h2 id="什么是-Node-js"><a href="#什么是-Node-js" class="headerlink" title="什么是 Node.js"></a>什么是 Node.js</h2><p>按照官方的说法是</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Node.js® is a JavaScript runtime built on Chrome&apos;s V8 JavaScript engine. </span><br><span class="line"></span><br><span class="line">Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. </span><br><span class="line"></span><br><span class="line">Node.js&apos; package ecosystem, npm, is the largest ecosystem of open source libraries in the world.</span><br></pre></td></tr></table></figure>
+
+<p>简单的总结一下，主要有下面这几点</p>
+<ul>
+<li><code>Node.js</code> 不是语言或者框架，也不是 <code>JavaScript</code> 的应用，它只是一个 <code>JavaScript</code> 运行时环境</li>
+<li>它构建在 <code>Chrome&#39;s V8</code> 的 <code>JavaScript</code> 引擎之上（<code>Chrome V8</code> 引擎以 <code>C/C++</code> 为主，相当于使用<code>JavaScript</code> 写法，转成 <code>C/C++</code> 调用）</li>
+<li>特点是事件驱动（<code>event-driven</code>），非阻塞 <code>I/O</code> 模型（<code>non-blocking I/O model</code>）</li>
+</ul>
+<p>用自己的话来说就是</p>
+<p><code>Node.js</code> 不是一门语言也不是框架，它是基于 <code>Google V8</code> 引擎的 <code>JavaScript</code> 运行时环境，同时结合 <code>Libuv</code> 扩展了 <code>JavaScript</code> 功能，使之支持 <code>io</code>、<code>fs</code> 等只有语言才有的特性，使得 <code>JavaScript</code> 能够同时具有 <code>DOM</code> 操作和 <code>I/O</code>、文件读写、操作数据库等能力，一般主要用来开发低延迟的网络应用，也就是那些需要在服务器端环境和前端实时收集和交换数据的应用（如 <code>API</code>、即时聊天、微服务）等</p>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>如下图，简要的介绍了 <code>Node.js</code> 是基于 <code>Chrome V8</code> 引擎构建的，由事件循环（<code>EventLoop</code>）分发 <code>I/O</code> 任务，最终工作线程（<code>Work Thread</code>）将任务丢到线程池（<code>Thread Pool</code>）里去执行，而事件循环只要等待执行结果就可以了</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/10.png" alt></p>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p>主要分为三个部分</p>
+<ul>
+<li><code>Chrome V8</code> 引擎</li>
+<li><code>EventLoop</code> 事件循环</li>
+<li><code>Thread Pool</code> 线程池</li>
+</ul>
+<p>简单的梳理一下</p>
+<ul>
+<li><code>Chrome V8</code> 是 <code>JavaScript</code> 引擎，而 <code>Node.js</code> 又内置 <code>Chrome V8</code> 引擎，所以它使用的 <code>JavaScript</code> 语法</li>
+<li><code>JavaScript</code> 语言的一大特点就是单线程，也就是说，同一个时间只能做一件事，这就意味着，所有任务需要排队，如果前一个任务结束，才会执行后一个任务，如果前一个任务耗时很长，后一个任务就不得不一直等着</li>
+<li>由 <code>EventLoop</code> 将 <code>I/O</code> 任务放到线程池里</li>
+</ul>
+<p>换一个维度来看，如下图</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/11.png" alt></p>
+<p>同样的，我们也来简单的梳理一下</p>
+<ul>
+<li><code>Chrome V8</code> 解释并执行 <code>JavaScript</code> 代码（这就是为什么浏览器能执行 <code>JavaScript</code> 原因）</li>
+<li>由事件循环和线程池组成，负责所有 <code>I/O</code> 任务的分发与执行</li>
+</ul>
+<p>在解决并发问题上，异步是最好的解决方案，可以简单的理解为排队和叫号的机制，排队的时候，等待就可以了，而取号的过程，则是由 <code>EventLoop</code> 来接受处理，而真正执行操作的是具体的线程池里的 <code>I/O</code> 任务，之所以说 <code>Node.js</code> 是单线程，就是因为在接受任务的时候是单线程的，它无需在进程或者线程当中切换上下文，所以非常高效，但它在执行具体任务的时候是多线程的</p>
+<blockquote>
+<p>关于更多的应用场景的介绍可以参考 <a href="https://github.com/i5ting/How-to-learn-node-correctly#nodejs%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF" target="_blank" rel="noopener">Node.js 应用场景</a></p>
+</blockquote>
+<h2 id="异步流程控制"><a href="#异步流程控制" class="headerlink" title="异步流程控制"></a>异步流程控制</h2><p><code>Node.js</code> 的核心就是异步流程控制，如下图是 <code>Node.js</code> 解决异步流程问题的演进</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/12.png" alt></p>
+<ul>
+<li>红色代表 <code>Promise</code>，是使用最多的，无论 <code>async</code> 还是 <code>generator</code> 都可用</li>
+<li>蓝色是 <code>Generator</code>，过度期当中使用的</li>
+<li>绿色是 <code>Async</code> 函数，也是接下来的趋势</li>
+</ul>
+<p>所以推荐使用 <code>Async</code> 函数加 <code>Promise</code> 组合</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/13.png" alt></p>
+<p>简单来说，就是以下三点</p>
+<ul>
+<li><code>callback</code></li>
+<li><code>Promise</code></li>
+<li><code>Async/Await</code></li>
+</ul>
+<p>下面一个一个来看</p>
+<h2 id="Callback-amp-amp-EventEmitter"><a href="#Callback-amp-amp-EventEmitter" class="headerlink" title="Callback &amp;&amp; EventEmitter"></a>Callback &amp;&amp; EventEmitter</h2><p>在这里我们主要看两个点，即 <code>Callback</code> 和 <code>EventEmitter</code>，先来看看 <code>Callback</code>，在 <code>Node.js</code> 当中推崇回调函数使用 <code>Error-first</code> 的写法，也就是错误优先的回调写法，它有两条规则</p>
+<ul>
+<li>回调函数的第一个参数返回的 <code>error</code> 对象，如果 <code>error</code> 发生了，它会作为第一个 <code>err</code> 参数返回，如果没有，一般做法是返回 <code>null</code></li>
+<li>回调函数的第二个参数返回的是任何成功响应的结果数据，如果结果正常，没有 <code>error</code> 发生，<code>err</code> 会被设置为 <code>null</code>，并在第二个参数就出返回成功结果数据</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, res</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// process the error and result</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关于 <code>EventEmitter</code>，在 <code>Node.js</code> 当中使用的是事件驱动模型，当 <code>webserver</code> 接收到请求，就把它关闭然后进行处理，再去服务下一个 <code>web</code> 请求，当这个请求完成，它被放回处理队列，当到达队列开头，这个结果被返回给用户</p>
+<p>这个模型非常高效可扩展性非常强，因为 <code>webserver</code> 一直接受请求而不等待任何读写操作（也就是所谓的事件驱动 <code>IO</code>），在事件驱动模型中，会生成一个主循环来监听事件，当检测到事件时触发回调函数，也就是下图这样</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/14.png" alt></p>
+<p>事件模块是 <code>Node.js</code> 内置的对发布订阅模式（<code>publish/subscribe</code>）的实现，通过 <code>EventEmitter</code> 属性，提供了一个构造函数，该构造函数的实例具有 <code>on</code> 方法，可以用来监听指定事件，并触发回调函数，任意对象都可以发布指定事件，被 <code>EventEmitter</code> 实例的 <code>on</code> 方法监听到，下面是一个简单的示例</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> EventEmitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyEmitter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">EventEmitter</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> myEmitter = <span class="hljs-keyword">new</span> MyEmitter()</span><br><span class="line"></span><br><span class="line">myEmitter.on(<span class="hljs-string">'event'</span>, () =&gt; &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'触发了一个事件'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">myEmitter.emit(<span class="hljs-string">'event'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果同时绑定了多个事件监听器，则事件监听器回调函数是会被先后调用，而事件参数则作为回调函数参数传递，本质上就是发布订阅模式的实现，下面是一个简单的发布订阅模式的手动实现</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Target</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.list = &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 订阅</span></span><br><span class="line">  lister(type, fn) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.list[type]) &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.list[type].push(fn)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">this</span>.list[type] = [fn]</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 发布</span></span><br><span class="line">  trigger(type, ...args) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.list[type].forEach(<span class="hljs-function"><span class="hljs-params">list</span> =&gt;</span> &#123;</span><br><span class="line">      list(...args)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 删除</span></span><br><span class="line">  remove(type, fn) &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> fns = <span class="hljs-keyword">this</span>.list[type]</span><br><span class="line">    <span class="hljs-keyword">if</span> (!fns) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (fn) &#123;</span><br><span class="line">      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; fns.length; i++) &#123;</span><br><span class="line">        <span class="hljs-keyword">let</span> _fn = fns[i]</span><br><span class="line">        <span class="hljs-keyword">if</span> (_fn === fn) &#123;</span><br><span class="line">          fns.splice(i, <span class="hljs-number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 使用</span></span><br><span class="line"><span class="hljs-keyword">const</span> target = <span class="hljs-keyword">new</span> Target()</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> clickHandle = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>&#123; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`click, <span class="hljs-subst">$&#123;e&#125;</span>`</span>) &#125;</span><br><span class="line"><span class="hljs-keyword">const</span> dbClickHandle = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>&#123; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`dbClick, <span class="hljs-subst">$&#123;e&#125;</span>`</span>) &#125;</span><br><span class="line"></span><br><span class="line">target.lister(<span class="hljs-string">'click'</span>, clickHandle)</span><br><span class="line">target.lister(<span class="hljs-string">'dbclick'</span>, dbClickHandle)</span><br><span class="line">target.remove(<span class="hljs-string">'click'</span>, clickHandle)</span><br><span class="line"></span><br><span class="line">target.trigger(<span class="hljs-string">'click'</span>, <span class="hljs-string">'zhangsan'</span>)</span><br><span class="line">target.trigger(<span class="hljs-string">'click'</span>, <span class="hljs-string">'lisi'</span>)</span><br><span class="line">target.trigger(<span class="hljs-string">'dbclick'</span>, <span class="hljs-string">'wangwu'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h2><p><code>Promise</code> 意味着一个还没有完成的操作，但在未来会完成的，<code>Promise</code> 最主要的交互方法是通过将函数传入它的 <code>then</code> 方法从而获取得 <code>Promise</code> 最终的值，要点有三个</p>
+<ul>
+<li>递归，每个异步操作返回的都是 <code>Promise</code> 对象</li>
+<li>状态机，三种状态转换，只在 <code>Promise</code> 对象内部可以控制，外部不能改变状态</li>
+<li>全局异常处理</li>
+</ul>
+<p>定义如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-comment">/* everything turned out fine */</span>) &#123;</span><br><span class="line">    resolve(<span class="hljs-string">'Stuff worked!'</span>)</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    reject(<span class="hljs-built_in">Error</span>(<span class="hljs-string">'It broke'</span>))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>每个 <code>Promise</code> 定义都是一样的，在构造函数里传入一个匿名函数，参数是 <code>resolve</code> 和 <code>reject</code>，分别代表成功和失败时候的处理，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">promise.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">text</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(text)</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-string">`Promise`</span>.reject(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Error'</span>))</span><br><span class="line">&#125;).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(err)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>它的主要交互方式是通过 <code>then</code> 函数，如果 <code>Promise</code> 成功执行 <code>resolve</code> 了，那么它就会将 <code>resolve</code> 的值传给最近的 <code>then</code> 函数，作为它的 <code>then</code> 函数的参数，如果出错 <code>reject</code>，那就交给 <code>catch</code> 来捕获异常，更多内容可以参考下面几个链接</p>
+<ul>
+<li><a href="https://cnodejs.org/topic/560dbc826a1ed28204a1e7de" target="_blank" rel="noopener">Node.js 最新技术栈之 Promise 篇</a></li>
+<li><a href="https://cnodejs.org/topic/569c8226adf526da2aeb23fd" target="_blank" rel="noopener">理解 Promise 的工作原理</a></li>
+<li><a href="http://liubin.github.io/promises-book/" target="_blank" rel="noopener">Promise 迷你书</a></li>
+</ul>
+<h2 id="终极解决方案-Async-Await"><a href="#终极解决方案-Async-Await" class="headerlink" title="终极解决方案 Async/Await"></a>终极解决方案 Async/Await</h2><p><code>API</code> 的介绍就不详细展开了，我们下面就看两个实际的用法，第一个是一段 <code>Koa 2</code> 应用里的一段代码</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">exports.list = <span class="hljs-keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> students = <span class="hljs-keyword">await</span> Student.getAllAsync()</span><br><span class="line">    <span class="hljs-keyword">await</span> ctx.render(<span class="hljs-string">'students/index'</span>, &#123;</span><br><span class="line">      students: students</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="hljs-keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> ctx.api_error(err)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它做了三件事</p>
+<ul>
+<li>通过 <code>await Student.getAllAsync()</code> 来获取所有的 <code>students</code> 信息</li>
+<li>通过 <code>await ctx.render</code> 渲染页面</li>
+<li>由于是同步代码，使用 <code>try/catch</code> 做的异常处理</li>
+</ul>
+<p>第二个是一个读取文件的操作，采用 <code>await + promise</code> 的写法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> <span class="hljs-built_in">Promise</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'bluebird'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">Promise</span>.promisifyAll(<span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>))</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> contents = <span class="hljs-keyword">await</span> fs.readFileAsync(<span class="hljs-string">'myfile.js'</span>, <span class="hljs-string">'utf8'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(contents)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Node-js/">Node.js</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/09/12/Node/06/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">Node.js 中的 EventEmitter 模块</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/08/27/Angular/09/">
+                <span class="level-item">Web Components 与 Angular Component</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '1051cfb7d97cecbf13b393219c00698b',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#什么是-Node-js">
+        <span class="has-mr-6">1</span>
+        <span>什么是 Node.js</span>
+        </a></li><li>
+        <a class="is-flex" href="#基本原理">
+        <span class="has-mr-6">2</span>
+        <span>基本原理</span>
+        </a></li><li>
+        <a class="is-flex" href="#核心概念">
+        <span class="has-mr-6">3</span>
+        <span>核心概念</span>
+        </a></li><li>
+        <a class="is-flex" href="#异步流程控制">
+        <span class="has-mr-6">4</span>
+        <span>异步流程控制</span>
+        </a></li><li>
+        <a class="is-flex" href="#Callback-amp-amp-EventEmitter">
+        <span class="has-mr-6">5</span>
+        <span>Callback &amp;&amp; EventEmitter</span>
+        </a></li><li>
+        <a class="is-flex" href="#Promise">
+        <span class="has-mr-6">6</span>
+        <span>Promise</span>
+        </a></li><li>
+        <a class="is-flex" href="#终极解决方案-Async-Await">
+        <span class="has-mr-6">7</span>
+        <span>终极解决方案 Async/Await</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="什么是 Node.js" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

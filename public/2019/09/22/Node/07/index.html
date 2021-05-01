@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Node.js 中的 Buffer 模块 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="JavaScript 语言自身只有字符串数据类型，没有二进制数据类型，但在处理像 TCP 流或文件流时，必须使用到二进制数据，因此在 Node.js 中，定义了一个 Buffer 类，该类用来创建一个专门存放二进制数据的缓存区，但是在深入展开之前，我们先来了解一下 JavaScript 当中的 ArrayBuffer，来看看它与 Node.js 当中的 Buffer 到底有什么区别？">
+<meta name="keywords" content="Node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js 中的 Buffer 模块">
+<meta property="og:url" content="http://yoursite.com/2019/09/22/Node/07/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="JavaScript 语言自身只有字符串数据类型，没有二进制数据类型，但在处理像 TCP 流或文件流时，必须使用到二进制数据，因此在 Node.js 中，定义了一个 Buffer 类，该类用来创建一个专门存放二进制数据的缓存区，但是在深入展开之前，我们先来了解一下 JavaScript 当中的 ArrayBuffer，来看看它与 Node.js 当中的 Buffer 到底有什么区别？">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/07.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js 中的 Buffer 模块">
+<meta name="twitter:description" content="JavaScript 语言自身只有字符串数据类型，没有二进制数据类型，但在处理像 TCP 流或文件流时，必须使用到二进制数据，因此在 Node.js 中，定义了一个 Buffer 类，该类用来创建一个专门存放二进制数据的缓存区，但是在深入展开之前，我们先来了解一下 JavaScript 当中的 ArrayBuffer，来看看它与 Node.js 当中的 Buffer 到底有什么区别？">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/07.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Node.js 中的 Buffer 模块" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/07.webp" alt="Node.js 中的 Buffer 模块">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2019-09-22</div>
+                <!-- <time class="level-item has-text-grey" datetime="2019-09-21T16:00:00.000Z">2019-09-22</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    43 分钟 读完 (大约 6452 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Node.js 中的 Buffer 模块
+            
+        </h1>
+        <div class="content">
+            <p><code>JavaScript</code> 语言自身只有字符串数据类型，没有二进制数据类型，但在处理像 <code>TCP</code> 流或文件流时，必须使用到二进制数据，因此在 <code>Node.js</code> 中，定义了一个 <code>Buffer</code> 类，该类用来创建一个专门存放二进制数据的缓存区，但是在深入展开之前，我们先来了解一下 <code>JavaScript</code> 当中的 <code>ArrayBuffer</code>，来看看它与 <code>Node.js</code> 当中的 <code>Buffer</code> 到底有什么区别？</p>
+<a id="more"></a>
+
+<blockquote>
+<p>本文部分内容截取自 <a href="https://cnodejs.org/topic/5d3a81619969a529571d759e" target="_blank" rel="noopener">Node.js 中的缓冲区（Buffer）究竟是什么？</a></p>
+</blockquote>
+<h2 id="ArrayBuffer"><a href="#ArrayBuffer" class="headerlink" title="ArrayBuffer"></a>ArrayBuffer</h2><p><code>JavaScript</code> 当中的 <code>ArrayBuffer</code> 对象用来表示『通用的、固定长度的』原始二进制数据缓冲区，代表储存二进制数据的一段内存，它不能直接操作，而是要通过 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray" target="_blank" rel="noopener">类型数组对象</a> 或 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/DataView" target="_blank" rel="noopener">DataView</a> 对象来操作，它们会将缓冲区中的数据表示为特定的格式，并通过这些格式来读写缓冲区的内容</p>
+<p>下面的例子创建了一个 <code>8</code> 字节的缓冲区，并使用一个 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Int32Array" target="_blank" rel="noopener">Int32Array</a> 来引用它</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> buffer = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> view = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int32Array</span>(buffer)</span><br></pre></td></tr></table></figure>
+
+<h4 id="TypedArray-视图"><a href="#TypedArray-视图" class="headerlink" title="TypedArray 视图"></a>TypedArray 视图</h4><p><code>ArrayBuffer</code> 对象作为内存区域，可以存放多种类型的数据（其本身只是一个 <code>0</code> 和 <code>1</code> 存放在一行里面的一个集合），同一段内存，不同数据有不同的解读方式，这就叫做视图（<code>view</code>），<code>ArrayBuffer</code> 有两种视图，一种是 <code>TypedArray</code> 视图，另一种是 <code>DataView</code> 视图，前者的数组成员都是同一个数据类型，后者的数组成员可以是不同的数据类型，同一个 <code>ArrayBuffer</code> 对象之上，可以根据不同的数据类型建立多个视图</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 创建一个 8 字节的 ArrayBuffer</span></span><br><span class="line"><span class="hljs-keyword">const</span> b = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建一个指向 b 的 Int32 视图，开始于字节 0，直到缓冲区的末尾</span></span><br><span class="line"><span class="hljs-keyword">const</span> v1 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int32Array</span>(b)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建一个指向 b 的 Uint8 视图，开始于字节 2，直到缓冲区的末尾</span></span><br><span class="line"><span class="hljs-keyword">const</span> v2 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint8Array</span>(b, <span class="hljs-number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建一个指向 b 的 Int16 视图，开始于字节 2，长度为 2</span></span><br><span class="line"><span class="hljs-keyword">const</span> v3 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int16Array</span>(b, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>视图的构造函数可以接受三个参数</p>
+<ul>
+<li>第一个参数（必需），视图对应的底层 <code>ArrayBuffer</code> 对象</li>
+<li>第二个参数（可选），视图开始的字节序号，默认从 <code>0</code> 开始</li>
+<li>第三个参数（可选），视图包含的数据个数，默认直到本段内存区域结束</li>
+</ul>
+<p>但是有一个需要注意的地方，<code>byteOffset</code> 必须与所要建立的数据类型一致，否则会报错</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> buffer = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">8</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> i16 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int16Array</span>(buffer, <span class="hljs-number">1</span>)</span><br><span class="line"><span class="hljs-comment">// Uncaught RangeError: start offset of Int16Array should be a multiple of 2</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，新生成一个 <code>8</code> 个字节的 <code>ArrayBuffer</code> 对象，然后在这个对象的第一个字节，建立带符号的 <code>16</code> 位整数视图，结果报错，这是因为带符号的 <code>16</code> 位整数需要两个字节，所以 <code>byteOffset</code> 参数必须能够被 <code>2</code> 整除，关于 <code>ArrayBuffer</code> 的内容就简单的介绍到这里，如果想了解更多可以参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/DataView" target="_blank" rel="noopener">DataView</a></p>
+<p>在 <code>Node.js</code> 当中的之所以设置 <code>Buffer</code> 这种方式，简单来说就是扮演了一个原生内存的角色，它模拟了像 <code>C</code> 语言才有的那种直接访问内存的方式，你可能想知道为什么我们不让程序直接访问内存，而是添加了这种抽象层，『因为直接访问内存将导致一些安全漏洞』</p>
+<p>在简单的了解了一些 <code>JavaScript</code> 当中 <code>ArrayBuffer</code> 内容之后，我们下面就再来看看 <code>Node.js</code> 当中的 <code>Buffer</code></p>
+<h2 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h2><p><code>Node.js</code> 里面的 <code>Buffer</code>，是一个二进制数据容器，类似于整数数组，但 <code>Buffer</code> 的大小是固定的、且在 <code>V8</code> 堆外分配物理内存，<code>Buffer</code> 的大小在被创建时确定，且无法调整，比如我们使用 <code>fs</code> 模块来读取文件内容的时候，返回的就是一个 <code>Buffer</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fs.readFile(<span class="hljs-string">'filename'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, buf</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// &lt;Buffer 2f 2a 2a 0a 20 2a 20 53 75 ... &gt;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Buffer-基本使用"><a href="#Buffer-基本使用" class="headerlink" title="Buffer 基本使用"></a>Buffer 基本使用</h2><p>在 <code>Node.js</code> 的 <code>v6</code> 之前的版本中，<code>Buffer</code> 实例是通过 <code>Buffer</code> 构造函数创建的，但是这种方式存在两个问题</p>
+<ul>
+<li>参数复杂，内存分配，还是内存分配和内容写入，需要根据参数来确定</li>
+<li>安全隐患，分配到的内存可能还存储着旧数据，这样就存在安全隐患</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 本来只想申请一块内存，但是里面却存在旧数据</span></span><br><span class="line"><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> Buffer(<span class="hljs-number">10</span>)  <span class="hljs-comment">// &lt;Buffer 90 09 70 6b bf 7f 00 00 50 3a&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 但是如果不小心操作，旧数据就会被读取出来</span></span><br><span class="line">buf.toString()  <span class="hljs-comment">// '�\tpk�\u0000\u0000P:'</span></span><br></pre></td></tr></table></figure>
+
+<p>为了解决上述问题，使 <code>Buffer</code> 实例的创建更可靠、更不容易出错，各种 <code>new Buffer()</code> 构造函数已被废弃，并由 <code>Buffer.from()</code>、<code>Buffer.alloc()</code>、和 <code>Buffer.allocUnsafe()</code> 等方法替代，下面我们就来看看这三个方法有什么区别</p>
+<h4 id="Buffer-from"><a href="#Buffer-from" class="headerlink" title="Buffer.from()"></a>Buffer.from()</h4><p>返回一个新的 <code>Buffer</code>，其中包含给定内容的副本</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> b1 = Buffer.from(<span class="hljs-string">'10'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> b2 = Buffer.from(<span class="hljs-string">'10'</span>, <span class="hljs-string">'utf8'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> b3 = Buffer.from([<span class="hljs-number">10</span>])</span><br><span class="line"><span class="hljs-keyword">const</span> b4 = Buffer.from(b3)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(b1, b2, b3, b4)       <span class="hljs-comment">// &lt;Buffer 31 30&gt; &lt;Buffer 31 30&gt; &lt;Buffer 0a&gt; &lt;Buffer 0a&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Buffer-alloc-size"><a href="#Buffer-alloc-size" class="headerlink" title="Buffer.alloc(size)"></a>Buffer.alloc(size)</h4><p>返回一个指定大小的新建的的『已初始化』的 <code>Buffer</code>，此方法比 <code>Buffer.allocUnsafe(size)</code> 慢，但能确保新创建的 <code>Buffer</code> 实例『永远不会包含可能敏感的旧数据』，如果 <code>size</code> 不是数字，则将会抛出 <code>TypeError</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> bAlloc1 = Buffer.alloc(<span class="hljs-number">10</span>)  <span class="hljs-comment">// 创建一个大小为 10 个字节的缓冲区</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(bAlloc1)              <span class="hljs-comment">// &lt;Buffer 00 00 00 00 00 00 00 00 00 00&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Buffer-allocUnsafe-size"><a href="#Buffer-allocUnsafe-size" class="headerlink" title="Buffer.allocUnsafe(size)"></a>Buffer.allocUnsafe(size)</h4><p>创建一个大小为 <code>size</code> 字节的新的『未初始化』的 <code>Buffer</code>，由于 <code>Buffer</code> 是未初始化的，因此分配的内存片段『可能包含敏感的旧数据』，在 <code>Buffer</code> 内容可读情况下，则可能会泄露它的旧数据，这个是不安全的，使用时要谨慎</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> bAllocUnsafe1 = Buffer.allocUnsafe(<span class="hljs-number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(bAllocUnsafe1)        <span class="hljs-comment">// &lt;Buffer 80 75 45 00 00 00 00 00 00 20&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Buffer-与字符编码"><a href="#Buffer-与字符编码" class="headerlink" title="Buffer 与字符编码"></a>Buffer 与字符编码</h2><p><code>Buffer</code> 实例一般用于表示编码字符的序列，比如 <code>UTF-8</code>、 <code>UCS2</code>、 <code>Base64</code> 或十六进制编码的数据，通过使用显式的字符编码，就可以在 <code>Buffer</code> 实例与普通的 <code>JavaScript</code> 字符串之间进行相互转换</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> buf = Buffer.from(<span class="hljs-string">'hello world'</span>, <span class="hljs-string">'ascii'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 68656c6c6f20776f726c64</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.toString(<span class="hljs-string">'hex'</span>))</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// aGVsbG8gd29ybGQ=</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.toString(<span class="hljs-string">'base64'</span>))</span><br></pre></td></tr></table></figure>
+
+<p>目前所支持的字符编码如下所示</p>
+<ul>
+<li><code>ascii</code>，仅支持 <code>7</code> 位 <code>ASCII</code> 数据，如果设置去掉高位的话，这种编码是非常快的</li>
+<li><code>utf8</code>，多字节编码的 <code>Unicode</code> 字符，许多网页和其他文档格式都使用 <code>UTF-8</code></li>
+<li><code>utf16le</code>，<code>2</code> 或 <code>4</code> 个字节，小字节序编码的 <code>Unicode</code> 字符，支持代理对（<code>U+10000</code> 至 <code>U+10FFFF</code>）</li>
+<li><code>ucs2</code>，<code>utf16le</code> 的别名</li>
+<li><code>base64</code>，<code>Base64</code> 编码</li>
+<li><code>latin1</code>，一种把 <code>Buffer</code> 编码成一字节编码的字符串的方式</li>
+<li><code>binary</code>，<code>latin1</code> 的别名，</li>
+<li><code>hex</code>，将每个字节编码为两个十六进制字符</li>
+</ul>
+<p>更多关于 <code>ASCII</code>，<code>Unicode</code> 和 <code>UTF-8</code> 相关内容可见 <a href="http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html" target="_blank" rel="noopener">ASCII，Unicode 和 UTF-8</a></p>
+<h2 id="字符串与-Buffer-类型互转"><a href="#字符串与-Buffer-类型互转" class="headerlink" title="字符串与 Buffer 类型互转"></a>字符串与 Buffer 类型互转</h2><p>下面我们来看看字符串与 <code>Buffer</code> 之间的类型互转，以及可能会遇到的乱码问题</p>
+<h4 id="字符串转-Buffer"><a href="#字符串转-Buffer" class="headerlink" title="字符串转 Buffer"></a>字符串转 Buffer</h4><p>如果不传递 <code>encoding</code> 默认按照 <code>UTF-8</code> 格式转换存储</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> buf = Buffer.from(<span class="hljs-string">'Node.js 技术栈'</span>, <span class="hljs-string">'UTF-8'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf)          <span class="hljs-comment">// &lt;Buffer 4e 6f 64 65 2e 6a 73 20 e6 8a 80 e6 9c af e6 a0 88&gt;</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.length)   <span class="hljs-comment">// 17</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Buffer-转换为字符串"><a href="#Buffer-转换为字符串" class="headerlink" title="Buffer 转换为字符串"></a>Buffer 转换为字符串</h4><p><code>Buffer</code> 转换为字符串也很简单，使用 <code>toString([encoding], [start], [end])</code> 方法，默认编码仍为 <code>UTF-8</code>，如果不传递 <code>start</code>、<code>end</code> 可实现全部转换，传了 <code>start</code>、<code>end</code> 可实现部分转换（这里要注意了）</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> buf = Buffer.from(<span class="hljs-string">'Node.js 技术栈'</span>, <span class="hljs-string">'UTF-8'</span>);</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf)          <span class="hljs-comment">// &lt;Buffer 4e 6f 64 65 2e 6a 73 20 e6 8a 80 e6 9c af e6 a0 88&gt;</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.length)   <span class="hljs-comment">// 17</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.toString(<span class="hljs-string">'UTF-8'</span>, <span class="hljs-number">0</span>, <span class="hljs-number">9</span>))  <span class="hljs-comment">// Node.js �</span></span><br></pre></td></tr></table></figure>
+
+<p>运行查看，可以看到以上输出结果为 <code>Node.js �</code> 出现了乱码，为什么？</p>
+<h4 id="为什么转换过程中会出现乱码"><a href="#为什么转换过程中会出现乱码" class="headerlink" title="为什么转换过程中会出现乱码"></a>为什么转换过程中会出现乱码</h4><p>首先在上面示例中使用的默认编码方式 <code>UTF-8</code>，问题就出在这里，一个中文在 <code>UTF-8</code> 下占用三个字节，<code>Node.js</code> 技术栈中的这个技字在 <code>buf</code> 中对应的字节为 <code>8a 80 e6</code>，而我们的设定的范围为 <code>0 ~ 9</code> 因此只输出了 <code>8a</code>，这个时候就会造成字符被截断出现乱码，下面我们稍微调整一下示例的截取范围</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> buf = Buffer.from(<span class="hljs-string">'Node.js 技术栈'</span>, <span class="hljs-string">'UTF-8'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf)          <span class="hljs-comment">// &lt;Buffer 4e 6f 64 65 2e 6a 73 20 e6 8a 80 e6 9c af e6 a0 88&gt;</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.length)   <span class="hljs-comment">// 17</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.toString(<span class="hljs-string">'UTF-8'</span>, <span class="hljs-number">0</span>, <span class="hljs-number">11</span>)) <span class="hljs-comment">// Node.js 技</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到已经正常输出了，所以说平常在使用过程当中如果遇到需要截取中文的情况下应当小心</p>
+<h2 id="Buffer-与-TypedArray"><a href="#Buffer-与-TypedArray" class="headerlink" title="Buffer 与 TypedArray"></a>Buffer 与 TypedArray</h2><p><code>Buffer</code> 实例也是 <code>Uint8Array</code> 实例，但是与 <code>ECMAScript 2015</code> 中的 <code>TypedArray</code> 规范还是有些微妙的不同，例如当 <code>ArrayBuffer#slice()</code> 创建一个切片的副本时，<code>Buffer#slice()</code> 的实现是在现有的 <code>Buffer</code> 上不经过拷贝直接进行创建，这也使得 <code>Buffer#slice()</code> 更高效，遵循以下注意事项，也可以从一个 <code>Buffer</code> 创建一个新的 <code>TypedArray</code> 实例</p>
+<ul>
+<li><code>Buffer</code> 对象的内存是拷贝到 <code>TypedArray</code> 的，而不是共享的</li>
+<li><code>Buffer</code> 对象的内存是被解析为一个明确元素的数组，而不是一个目标类型的字节数组<ul>
+<li>也就是说 <code>new Uint32Array(Buffer.from([1, 2, 3, 4]))</code> 会创建一个包含 <code>[1, 2, 3, 4]</code> 四个元素的 <code>Uint32Array</code></li>
+<li>而不是一个只包含一个元素 <code>[0x1020304]</code> 或 <code>[0x4030201]</code> 的 <code>Uint32Array</code><br>也可以通过 <code>TypeArray</code> 对象的 <code>.buffer</code> 属性创建一个新建的且与 <code>TypedArray</code> 实例共享同一分配内存的 <code>Buffer</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="Buffer-slice-和-Array-slice"><a href="#Buffer-slice-和-Array-slice" class="headerlink" title="Buffer#slice() 和 Array#slice()"></a>Buffer#slice() 和 Array#slice()</h2><h4 id="Array-slice"><a href="#Array-slice" class="headerlink" title="Array#slice()"></a>Array#slice()</h4><p><code>Array</code> 当中的 <code>slice()</code> 方法返回一个从开始到结束（不包括结束）选择的数组的一部分浅拷贝到一个新数组对象，且『原始数组不会被修改』</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> arr = [<span class="hljs-string">'AAA'</span>, <span class="hljs-string">'BBB'</span>, <span class="hljs-string">'CCC'</span>, <span class="hljs-string">'DDD'</span>, <span class="hljs-string">'EEE'</span>]</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(arr.slice(<span class="hljs-number">2</span>))           <span class="hljs-comment">// ['CCC', 'DDD', 'EEE']</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(animals)                <span class="hljs-comment">// ['AAA', 'BBB', 'CCC', 'DDD', 'EEE']</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Buffer-slice"><a href="#Buffer-slice" class="headerlink" title="Buffer#slice()"></a>Buffer#slice()</h4><p><code>Buffer</code> 当中的 <code>slice()</code> 方法返回一个『指向相同原始内存』的新建的 <code>Buffer</code>，但做了偏移且通过 <code>start</code> 和 <code>end</code> 索引进行裁剪，需要注意的是，修改这个新建的 <code>Buffer</code> 切片，也会同时修改原始的 <code>Buffer</code> 的内存，因为这两个对象所分配的内存是重叠的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> buf = Buffer.from(<span class="hljs-string">'hello world'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> buf1 = buf.slice(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>)</span><br><span class="line">buf1[<span class="hljs-number">4</span>] = <span class="hljs-number">97</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf.toString(<span class="hljs-string">'utf8'</span>))   <span class="hljs-comment">// hello world</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf)                    <span class="hljs-comment">// &lt;Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64&gt;</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf1)                   <span class="hljs-comment">// &lt;Buffer 68 65 6c&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过观察 <code>Array#slice()</code> 示例和 <code>Buffer#slice()</code> 示例的输出结果，我们更加直观地了解它们之间的差异，<code>Buffer</code> 对象的 <code>slice()</code> 方法具体实现如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Buffer.prototype.slice = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">slice</span>(<span class="hljs-params">start, end</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> srcLength = <span class="hljs-keyword">this</span>.length</span><br><span class="line">  start = adjustOffset(start, srcLength)</span><br><span class="line">  end = end !== <span class="hljs-literal">undefined</span> ? adjustOffset(end, srcLength) : srcLength</span><br><span class="line">  <span class="hljs-keyword">const</span> newLength = end &gt; start ? end - start : <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-comment">// 与原始的 Buffer 对象共用内存</span></span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FastBuffer(<span class="hljs-keyword">this</span>.buffer, <span class="hljs-keyword">this</span>.byteOffset + start, newLength)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Buffer-内存机制"><a href="#Buffer-内存机制" class="headerlink" title="Buffer 内存机制"></a>Buffer 内存机制</h2><p>由于 <code>Buffer</code> 需要处理的是大量的二进制数据，假如用一点就向系统去申请，则会造成频繁的向系统申请内存调用，所以 <code>Buffer</code> 所占用的内存不再由 <code>V8</code> 分配，而是在 <code>Node.js</code> 的 <code>C++</code> 层面完成申请，在 <code>JavaScript</code> 中进行内存分配，因此这部分内存我们称之为堆外内存</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/19.png" alt></p>
+<p><code>Buffer</code> 模块的内部结构如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exports.Buffer = Buffer</span><br><span class="line">exports.SlowBuffer = SlowBuffer</span><br><span class="line">exports.INSPECT_MAX_BYTES = <span class="hljs-number">50</span></span><br><span class="line">exports.kMaxLength = binding.kMaxLength</span><br></pre></td></tr></table></figure>
+
+<p>并且提供了四个接口</p>
+<ul>
+<li><code>Buffer</code>，二进制数据容器类，<code>Node.js</code> 启动时默认加载</li>
+<li><code>SlowBuffer</code>，同样也是二进制数据容器类，不过直接进行内存申请</li>
+<li><code>INSPECT_MAX_BYTES</code>，限制 <code>bufObject.inspect()</code> 输出的长度</li>
+<li><code>kMaxLength</code>，一次性内存分配的上限，大小为（<code>2^31 - 1</code>）</li>
+</ul>
+<p>其中，由于 <code>Buffer</code> 经常使用，所以 <code>Node.js</code> 在启动的时候，就已经加载了 <code>Buffer</code>，而其他三个仍然需要使用对应的引用来进行使用（<code>require(&#39;buffer&#39;).xxx</code>），这里需要注意一点，就是关于 <code>Buffer</code> 的内存申请、填充、修改等涉及性能问题的操作，均通过 <code>C++</code> 里面的 <code>node_buffer.cc</code> 来实现</p>
+<h4 id="内存分配的策略"><a href="#内存分配的策略" class="headerlink" title="内存分配的策略"></a>内存分配的策略</h4><p><code>Node.js</code> 中 <code>Buffer</code> 内存分配太过常见，从系统性能考虑出发，<code>Buffer</code> 采用了如下的管理策略</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/20.png" alt></p>
+<p><code>Node.js</code> 采用了 <a href="https://baike.baidu.com/item/slab" target="_blank" rel="noopener">slab</a> 机制进行预先申请、事后分配，是一种动态的管理机制，使用 <code>Buffer.alloc(size)</code> 传入一个指定的 <code>size</code> 就会申请一块固定大小的内存区域，<code>slab</code> 具有如下三种状态</p>
+<ul>
+<li><code>full</code>，完全分配状态</li>
+<li><code>partial</code>，部分分配状态</li>
+<li><code>empty</code>，没有被分配状态</li>
+</ul>
+<h4 id="8K-内存池"><a href="#8K-内存池" class="headerlink" title="8K 内存池"></a>8K 内存池</h4><p>在 <code>Node.js</code> 应用程序启动时，为了方便地、高效地使用 <code>Buffer</code>，会创建一个大小为 <code>8K</code> 的内存池，所以是以 <code>8KB</code> 为界限来区分是小对象还是大对象</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Buffer.poolSize = <span class="hljs-number">8</span> * <span class="hljs-number">1024</span>  <span class="hljs-comment">// 8K</span></span><br><span class="line"><span class="hljs-keyword">var</span> poolSize, poolOffset, allocPool</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建内存池</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createPool</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  poolSize = Buffer.poolSize</span><br><span class="line">  allocPool = createUnsafeArrayBuffer(poolSize)</span><br><span class="line">  poolOffset = <span class="hljs-number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">createPool()</span><br></pre></td></tr></table></figure>
+
+<p>在加载时直接调用了 <code>createPool()</code> 相当于直接初始化了一个 <code>8KB</code> 的内存空间，这样在第一次进行内存分配时也会变得更高效，另外在初始化的同时还初始化了一个新的变量 <code>poolOffset = 0</code> 这个变量会记录已经使用了多少字节，在 <code>createPool()</code> 函数中，通过调用 <code>createUnsafeArrayBuffer()</code> 函数来创建 <code>poolSize</code>（<code>8KB</code>）的 <code>ArrayBuffer</code> 对象，<code>createUnsafeArrayBuffer()</code> 函数的实现如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createUnsafeArrayBuffer</span>(<span class="hljs-params">size</span>) </span>&#123;</span><br><span class="line">  zeroFill[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">    <span class="hljs-comment">// 创建指定 size 大小的 ArrayBuffer 对象，其内容被初始化为 0</span></span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(size)</span><br><span class="line">  &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">    zeroFill[<span class="hljs-number">0</span>] = <span class="hljs-number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，新构造的 <code>slab</code> 如下所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/21.png" alt></p>
+<p>现在让我们来尝试分配一个大小为 <code>2048</code> 的 <code>Buffer</code> 对象，代码如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Buffer.alloc(<span class="hljs-number">2</span> * <span class="hljs-number">1024</span>)</span><br></pre></td></tr></table></figure>
+
+<p>现在让我们先看下当前的 <code>slab</code> 内存是怎么样的？如下所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/22.png" alt></p>
+<p>那么这个分配过程是怎样的呢？让我们再看 <code>buffer.js</code> 另外一个核心的方法 <a href="https://github.com/nodejs/node/blob/v10.x/lib/buffer.js#L318" target="_blank" rel="noopener">allocate(size)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">allocate</span>(<span class="hljs-params">size</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (size &lt;= <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FastBuffer()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 当分配的空间小于 Buffer.poolSize 向右移位，这里得出来的结果为 4KB</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (size &lt; (Buffer.poolSize &gt;&gt;&gt; <span class="hljs-number">1</span>)) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (size &gt; (poolSize - poolOffset))</span><br><span class="line">      createPool()</span><br><span class="line">    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> FastBuffer(allocPool, poolOffset, size)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 已使用空间累加</span></span><br><span class="line">    poolOffset += size</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 8 字节内存对齐处理（关于字节对齐见最下方）</span></span><br><span class="line">    alignPool()</span><br><span class="line">    <span class="hljs-keyword">return</span> b</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-comment">// C++ 层面申请</span></span><br><span class="line">    <span class="hljs-keyword">return</span> createUnsafeBuffer(size)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Buffer-内存分配总结"><a href="#Buffer-内存分配总结" class="headerlink" title="Buffer 内存分配总结"></a>Buffer 内存分配总结</h4><ol>
+<li>在初次加载时就会初始化 <code>1</code> 个 <code>8KB</code> 的内存空间</li>
+<li>根据申请的内存大小，<code>Buffer</code> 对象分为小对象和大对象</li>
+<li><code>Buffer</code> 小对象的情况，会继续判断这个 <code>slab</code> 空间是否足够<ul>
+<li>如果空间足够就去使用剩余空间同时更新 <code>slab</code> 分配状态，偏移量会增加 </li>
+<li>如果空间不足，<code>slab</code> 空间不足，就会去创建一个新的 <code>slab</code> 空间用来分配</li>
+</ul>
+</li>
+<li><code>Buffer</code> 大对象情况，则会直接走 <code>createUnsafeBuffer(size)</code> 函数</li>
+<li>不论是小对象的还是大对象，内存分配是在 <code>C++</code> 层面完成，内存管理在 <code>JavaScript</code> 层面，最终还是可以被 <code>V8</code> 的垃圾回收标记所回收</li>
+</ol>
+<h2 id="Buffer-from-剖析"><a href="#Buffer-from-剖析" class="headerlink" title="Buffer.from() 剖析"></a>Buffer.from() 剖析</h2><p>在我们使用 <code>Buffer</code> 的过程中，比如下面这个简单示例</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> buf = Buffer.from(<span class="hljs-string">'hello world'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(buf)</span><br></pre></td></tr></table></figure>
+
+<p>运行以后可以发现，输出变成了</p>
+<figure class="highlight console hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64&gt;</span><br></pre></td></tr></table></figure>
+
+<p>为什么结果会变成一串数字，这就要从源码找起了，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError</span></span><br><span class="line"><span class="hljs-comment"> * if value is a number.</span></span><br><span class="line"><span class="hljs-comment"> * Buffer.from(str[, encoding])</span></span><br><span class="line"><span class="hljs-comment"> * Buffer.from(array)</span></span><br><span class="line"><span class="hljs-comment"> * Buffer.from(buffer)</span></span><br><span class="line"><span class="hljs-comment"> * Buffer.from(arrayBuffer[, byteOffset[, length]])</span></span><br><span class="line"><span class="hljs-comment">『/</span></span><br><span class="line"><span class="hljs-comment">Buffer.from = function from(value, encodingOrOffset, length) &#123;</span></span><br><span class="line"><span class="hljs-comment">  if (typeof value === "string") return fromString(value, encodingOrOffset)</span></span><br><span class="line"><span class="hljs-comment">  // 处理其它数据类型，省略异常处理等其它代码</span></span><br><span class="line"><span class="hljs-comment">  if (isAnyArrayBuffer(value))</span></span><br><span class="line"><span class="hljs-comment">    return fromArrayBuffer(value, encodingOrOffset, length)</span></span><br><span class="line"><span class="hljs-comment">  var b = fromObject(value)</span></span><br><span class="line"><span class="hljs-comment">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看出 <code>Buffer.from()</code> 工厂函数，支持基于多种数据类型（<code>string</code>、<code>Array</code>、<code>Buffer</code> 等）创建 <code>Buffer</code> 对象，对于字符串类型的数据，内部调用 <code>fromString(value, encodingOrOffset)</code> 方法来创建 <code>Buffer</code> 对象</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FastBuffer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Uint8Array</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(arg1, arg2, arg3) &#123;</span><br><span class="line">    <span class="hljs-keyword">super</span>(arg1, arg2, arg3)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fromString</span>(<span class="hljs-params">string, encoding</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> length</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> encoding !== <span class="hljs-string">"string"</span> || encoding.length === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (string.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FastBuffer()</span><br><span class="line">    <span class="hljs-comment">// 若未设置编码，则默认使用 utf8 编码</span></span><br><span class="line">    encoding = <span class="hljs-string">"utf8"</span></span><br><span class="line">    <span class="hljs-comment">// 计算 string 的长度</span></span><br><span class="line">    length = byteLengthUtf8(string)</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-comment">// 基于指定的 encoding 计算 string 的长度</span></span><br><span class="line">    length = byteLength(string, encoding, <span class="hljs-literal">true</span>)</span><br><span class="line">    <span class="hljs-keyword">if</span> (length === <span class="hljs-number">-1</span>)</span><br><span class="line">      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> errors.TypeError(<span class="hljs-string">"ERR_UNKNOWN_ENCODING"</span>, encoding)</span><br><span class="line">    <span class="hljs-keyword">if</span> (string.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FastBuffer()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 当字符串所需字节数大于 4KB，则直接进行内存分配</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (length &gt;= Buffer.poolSize &gt;&gt;&gt; <span class="hljs-number">1</span>)</span><br><span class="line">    <span class="hljs-comment">// 创建 buffer 对象</span></span><br><span class="line">    <span class="hljs-keyword">return</span> createFromString(string, encoding)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 当剩余的空间小于所需的字节长度，则先重新申请 8K 内存</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (length &gt; poolSize - poolOffset)</span><br><span class="line">    <span class="hljs-comment">// 上面提到过的 createPool() 方法</span></span><br><span class="line">    <span class="hljs-comment">// allocPool = createUnsafeArrayBuffer(8K)</span></span><br><span class="line">    <span class="hljs-comment">// poolOffset = 0</span></span><br><span class="line">    createPool()</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 创建 FastBuffer 对象，并写入数据</span></span><br><span class="line">  <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> FastBuffer(allocPool, poolOffset, length)</span><br><span class="line">  <span class="hljs-keyword">const</span> actual = b.write(string, encoding)</span><br><span class="line">  <span class="hljs-keyword">if</span> (actual !== length) &#123;</span><br><span class="line">    <span class="hljs-comment">// byteLength() may overestimate. That's a rare case, though.</span></span><br><span class="line">    b = <span class="hljs-keyword">new</span> FastBuffer(allocPool, poolOffset, actual)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 更新 pool 的偏移，并执行字节对齐（关于字节对齐可见下方，也就是所谓的 alignPool() 方法）</span></span><br><span class="line">  poolOffset += actual</span><br><span class="line">  alignPool()</span><br><span class="line">  <span class="hljs-keyword">return</span> b</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单的梳理如下，可以发现与上面的 <code>Buffer</code> 内存机制是相符的</p>
+<ul>
+<li>当未设置编码的时候，默认使用 <code>utf8</code> 编码</li>
+<li>当字符串所需字节数大于 <code>4KB</code>，则直接进行内存分配</li>
+<li>当字符串所需字节数小于 <code>4KB</code>，但超过预分配的 <code>8K</code> 内存池的剩余空间，则重新申请 <code>8K</code> 的内存池</li>
+<li>调用 <code>new FastBuffer(allocPool, poolOffset, length)</code> 创建 <code>FastBuffer</code> 对象，进行数据存储，数据成功保存后，会进行长度校验、更新 <code>poolOffset</code> 偏移量和字节对齐等操作</li>
+</ul>
+<h2 id="Buffer-应用场景"><a href="#Buffer-应用场景" class="headerlink" title="Buffer 应用场景"></a>Buffer 应用场景</h2><p>下面是一些 <code>Buffer</code> 在实际业务中的应用场景</p>
+<h4 id="I-O-操作"><a href="#I-O-操作" class="headerlink" title="I/O 操作"></a>I/O 操作</h4><p>关于 <code>I/O</code> 可以是文件或网络 <code>I/O</code>，以下为通过流的方式将 <code>input.txt</code> 的信息读取出来之后写入到 <code>output.txt</code> 文件</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> inputStream = fs.createReadStream(<span class="hljs-string">'input.txt'</span>)     <span class="hljs-comment">// 创建可读流</span></span><br><span class="line"><span class="hljs-keyword">const</span> outputStream = fs.createWriteStream(<span class="hljs-string">'output.txt'</span>)  <span class="hljs-comment">// 创建可写流</span></span><br><span class="line"></span><br><span class="line">inputStream.pipe(outputStream) <span class="hljs-comment">// 管道读写</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>Stream</code> 中我们是不需要手动去创建自己的缓冲区，在 <code>Node.js</code> 的流中将会自动创建</p>
+<h4 id="zlib-js"><a href="#zlib-js" class="headerlink" title="zlib.js"></a>zlib.js</h4><p><code>zlib.js</code> 为 <code>Node.js</code> 的核心库之一，其利用了缓冲区（<code>Buffer</code>）的功能来操作二进制数据流，提供了压缩或解压功能，见 <a href="https://github.com/nodejs/node/blob/master/lib/zlib.js" target="_blank" rel="noopener">zlib.js</a></p>
+<h4 id="加解密"><a href="#加解密" class="headerlink" title="加解密"></a>加解密</h4><p>在一些加解密算法中会遇到使用 <code>Buffer</code>，例如 <code>crypto.createCipheriv</code> 的第二个参数 <code>key</code> 为 <code>string</code> 或 <code>Buffer</code> 类型，使用 <code>Buffer.alloc()</code> 初始化一个实例，然后使用 <code>fill</code> 方法进行填充，语法为</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">buf.fill(value[, offset[, end]][, encoding])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>，第一个参数为要填充的内容</li>
+<li><code>offset</code>，偏移量，填充的起始位置</li>
+<li><code>end</code>，结束填充 <code>buf</code> 的偏移量</li>
+<li><code>encoding</code>，编码集</li>
+</ul>
+<p>以下为使用 <code>Cipher</code> 对称加密的示例</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">'crypto'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> [key, iv, algorithm, encoding, cipherEncoding] = [</span><br><span class="line">  <span class="hljs-string">'a123456789'</span>, <span class="hljs-string">''</span>, <span class="hljs-string">'aes-128-ecb'</span>, <span class="hljs-string">'utf8'</span>, <span class="hljs-string">'base64'</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> handleKey = <span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> bytes = Buffer.alloc(<span class="hljs-number">16</span>)  <span class="hljs-comment">// 初始化一个 Buffer 实例，每一项都用 00 填充</span></span><br><span class="line">  <span class="hljs-built_in">console</span>.log(bytes)              <span class="hljs-comment">// &lt;Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00&gt;</span></span><br><span class="line"></span><br><span class="line">  bytes.fill(key, <span class="hljs-number">0</span>, <span class="hljs-number">10</span>)          <span class="hljs-comment">// 填充</span></span><br><span class="line">  <span class="hljs-built_in">console</span>.log(bytes)              <span class="hljs-comment">// &lt;Buffer 61 31 32 33 34 35 36 37 38 39 00 00 00 00 00 00&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> bytes</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> cipher = crypto.createCipheriv(algorithm, handleKey(key), iv)</span><br><span class="line"><span class="hljs-keyword">let</span> crypted = cipher.update(<span class="hljs-string">'Node.js 技术栈'</span>, encoding, cipherEncoding)</span><br><span class="line">crypted += cipher.final(cipherEncoding)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(crypted)              <span class="hljs-comment">// jE0ODwuKN6iaKFKqd3RF4xFZkOpasy8WfIDl8tRC5t0=</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="缓冲（Buffer）与缓存（Cache）的区别"><a href="#缓冲（Buffer）与缓存（Cache）的区别" class="headerlink" title="缓冲（Buffer）与缓存（Cache）的区别"></a>缓冲（Buffer）与缓存（Cache）的区别</h2><h4 id="缓冲（Buffer）"><a href="#缓冲（Buffer）" class="headerlink" title="缓冲（Buffer）"></a>缓冲（Buffer）</h4><p>缓冲（<code>Buffer</code>）是用于处理二进制流数据，将数据缓冲起来，它是临时性的，对于流式数据，会采用缓冲区将数据临时存储起来，等缓冲到一定的大小之后在存入硬盘中，视频播放器就是一个经典的例子，有时你会看到一个缓冲的图标，这意味着此时这一组缓冲区并未填满，当数据到达填满缓冲区并且被处理之后，此时缓冲图标消失，你可以看到一些图像数据</p>
+<h4 id="缓存（Cache）"><a href="#缓存（Cache）" class="headerlink" title="缓存（Cache）"></a>缓存（Cache）</h4><p>缓存（<code>Cache</code>）我们可以看作是一个中间层，它可以是永久性的将热点数据进行缓存，使得访问速度更快，例如我们通过 <code>Memory</code>、<code>Redis</code> 等将数据从硬盘或其它第三方接口中请求过来进行缓存，目的就是将数据存于内存的缓存区中，这样对同一个资源进行访问，速度会更快，也是性能优化一个重要的点</p>
+<blockquote>
+<p>更多区别可以参考 <a href="https://www.zhihu.com/question/26190832" target="_blank" rel="noopener">Cache 和 Buffer 都是缓存，主要区别是什么？</a></p>
+</blockquote>
+<h2 id="字节对齐"><a href="#字节对齐" class="headerlink" title="字节对齐"></a>字节对齐</h2><p>截取自 <a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90" target="_blank" rel="noopener">数据结构对齐 - 维基百科</a>，所谓的字节对齐，就是各种类型的数据按照一定的规则在空间上排列，而不是顺序的一个接一个的排放，这个就是对齐，我们经常听说的对齐在 <code>N</code> 上，它的含义就是数据的存放起始地址 <code>%N== 0</code>，首先还是让我们来看一下，为什么要进行字节对齐吧</p>
+<p>这是因为各个硬件平台对存储空间的处理上有很大的不同，一些平台对某些特定类型的数据只能从某些特定地址开始存取，比如有些架构的 <code>CPU</code>，诸如 <code>SPARC</code> 在访问一个没有进行对齐的变量的时候会发生错误，那么在这种架构上必须编程必须保证字节对齐，而有些平台对于没有进行对齐的数据进行存取时会产生效率的下降</p>
+<p>让我们来以 <code>x86</code> 为例看一下如果在不进行对齐的情况下，会带来什么样子的效率低下问题，看下面的数据结构声明</p>
+<figure class="highlight c hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">A</span> &#123;</span>  </span><br><span class="line">  <span class="hljs-keyword">char</span> c;  <span class="hljs-comment">// 字符占一个字节</span></span><br><span class="line">  <span class="hljs-keyword">int</span> i;   <span class="hljs-comment">// 整型占四个字节 </span></span><br><span class="line">&#125;;  </span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">A</span> <span class="hljs-title">a</span>;</span></span><br></pre></td></tr></table></figure>
+
+<p>假设变量 <code>a</code> 存放在内存中的起始地址为 <code>0x00</code>，那么其成员变量 <code>c</code> 的起始地址为 <code>0x00</code>，成员变量 <code>i</code> 的起始地址为<code>0x01</code>，变量 <code>a</code> 一共占用了 <code>5</code> 个字节，当 <code>CPU</code> 要对成员变量 <code>c</code> 进行访问时，只需要一个读周期即可</p>
+<p>然而如果要对成员变量 <code>i</code> 进行访问，那么情况就变得有点复杂了，首先 <code>CPU</code> 用了一个读周期，从 <code>0x00</code> 处读取了 <code>4</code> 个字节（注意由于是 <code>32</code> 位架构），然后将 <code>0x01 - 0x03</code> 的 <code>3</code> 个字节暂存，接着又花费了一个读周期读取了从 <code>0x04 - 0x07</code> 的 <code>4</code> 字节数据，将 <code>0x04</code> 这个字节与刚刚暂存的 <code>3</code> 个字节进行拼接从而读取到成员变量 <code>i</code> 的值</p>
+<p>为了读取这个成员变量 <code>i</code>，<code>CPU</code> 花费了整整 <code>2</code> 个读周期，试想一下，如果数据成员 <code>i</code> 的起始地址被放在了 <code>0x04</code> 处，那么读取其所花费的周期就变成了 <code>1</code>，显然引入字节对齐可以避免读取效率的下降，但这同时也浪费了 <code>3</code> 个字节的空间（<code>0x01 - 0x03</code>）</p>
+<p>了解完字节对齐的概念和使用字节对齐的原因，最后我们来看一下 <code>Buffer.js</code> 文件中的实现字节对齐的 <code>alignPool()</code> 函数</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 如果不按照平台要求对数据存放进行对齐，会带来存取效率上的损失</span></span><br><span class="line"><span class="hljs-comment"> * 比如 32 位的 Intel 处理器通过总线访问内存数据每个总线周期从偶地址开始访问 32 位内存数据</span></span><br><span class="line"><span class="hljs-comment"> * 内存数据以字节为单位存放，如果一个 32 位的数据没有存放在 4 字节整除的内存地址处</span></span><br><span class="line"><span class="hljs-comment"> * 那么处理器就需要 2 个总线周期对其进行访问，显然访问效率下降很多</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">alignPool</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// Ensure aligned slices</span></span><br><span class="line">  <span class="hljs-comment">// 后四位：0001 | 0010 | 0011 | 0100 | 0101 | 0110 | 0111</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (poolOffset &amp; <span class="hljs-number">0x7</span>) &#123;</span><br><span class="line">    poolOffset |= <span class="hljs-number">0x7</span></span><br><span class="line">    poolOffset++</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://cnodejs.org/topic/5d3a81619969a529571d759e" target="_blank" rel="noopener">Node.js 中的缓冲区（Buffer）究竟是什么？</a></li>
+<li><a href="http://nodejs.cn/api/buffer.html" target="_blank" rel="noopener">buffer</a></li>
+<li><a href="https://github.com/nodejs/node/blob/v10.x/lib/buffer.js" target="_blank" rel="noopener">buffer.js</a></li>
+<li><a href="https://book.douban.com/subject/25768396/" target="_blank" rel="noopener">深入浅出 Node.js</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90" target="_blank" rel="noopener">数据结构对齐 - 维基百科</a></li>
+<li><a href="https://www.zhihu.com/question/26190832" target="_blank" rel="noopener">Cache 和 Buffer 都是缓存，主要区别是什么？</a></li>
+<li><a href="https://www.freecodecamp.org/news/do-you-want-a-better-understanding-of-buffer-in-node-js-check-this-out-2e29de2968e8/" target="_blank" rel="noopener">Do you want a better understanding of Buffer in Node.js</a></li>
+<li><a href="https://hacks.mozilla.org/2017/06/a-cartoon-intro-to-arraybuffers-and-sharedarraybuffers/" target="_blank" rel="noopener">A cartoon intro to ArrayBuffers and SharedArrayBuffers</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/DataView" target="_blank" rel="noopener">DataView</a></li>
+<li><a href="http://es6.ruanyifeng.com/#docs/arraybuffer" target="_blank" rel="noopener">ArrayBuffer</a></li>
+<li><a href="https://juejin.im/post/5afd57e851882542ac7d76af" target="_blank" rel="noopener">Node.js Buffer 解读</a></li>
+<li><a href="https://juejin.im/post/5b29b1ae6fb9a00e706865f9" target="_blank" rel="noopener">Node 中的 Buffer</a></li>
+<li><a href="https://www.zhihu.com/question/26190832" target="_blank" rel="noopener">Cache 和 Buffer 都是缓存，主要区别是什么？</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Node-js/">Node.js</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/09/22/JavaScript/46/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">IntersectionObserver</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/09/12/CSS/11/">
+                <span class="level-item">CSS 常见布局方式</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: 'ea2a817a2eae83a4c464a52a90fd70f2',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#ArrayBuffer">
+        <span class="has-mr-6">1</span>
+        <span>ArrayBuffer</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#TypedArray-视图">
+        <span class="has-mr-6">1.1</span>
+        <span>TypedArray 视图</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Buffer">
+        <span class="has-mr-6">2</span>
+        <span>Buffer</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-基本使用">
+        <span class="has-mr-6">3</span>
+        <span>Buffer 基本使用</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Buffer-from">
+        <span class="has-mr-6">3.1</span>
+        <span>Buffer.from()</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-alloc-size">
+        <span class="has-mr-6">3.2</span>
+        <span>Buffer.alloc(size)</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-allocUnsafe-size">
+        <span class="has-mr-6">3.3</span>
+        <span>Buffer.allocUnsafe(size)</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Buffer-与字符编码">
+        <span class="has-mr-6">4</span>
+        <span>Buffer 与字符编码</span>
+        </a></li><li>
+        <a class="is-flex" href="#字符串与-Buffer-类型互转">
+        <span class="has-mr-6">5</span>
+        <span>字符串与 Buffer 类型互转</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#字符串转-Buffer">
+        <span class="has-mr-6">5.1</span>
+        <span>字符串转 Buffer</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-转换为字符串">
+        <span class="has-mr-6">5.2</span>
+        <span>Buffer 转换为字符串</span>
+        </a></li><li>
+        <a class="is-flex" href="#为什么转换过程中会出现乱码">
+        <span class="has-mr-6">5.3</span>
+        <span>为什么转换过程中会出现乱码</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Buffer-与-TypedArray">
+        <span class="has-mr-6">6</span>
+        <span>Buffer 与 TypedArray</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-slice-和-Array-slice">
+        <span class="has-mr-6">7</span>
+        <span>Buffer#slice() 和 Array#slice()</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Array-slice">
+        <span class="has-mr-6">7.1</span>
+        <span>Array#slice()</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-slice">
+        <span class="has-mr-6">7.2</span>
+        <span>Buffer#slice()</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Buffer-内存机制">
+        <span class="has-mr-6">8</span>
+        <span>Buffer 内存机制</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#内存分配的策略">
+        <span class="has-mr-6">8.1</span>
+        <span>内存分配的策略</span>
+        </a></li><li>
+        <a class="is-flex" href="#8K-内存池">
+        <span class="has-mr-6">8.2</span>
+        <span>8K 内存池</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-内存分配总结">
+        <span class="has-mr-6">8.3</span>
+        <span>Buffer 内存分配总结</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Buffer-from-剖析">
+        <span class="has-mr-6">9</span>
+        <span>Buffer.from() 剖析</span>
+        </a></li><li>
+        <a class="is-flex" href="#Buffer-应用场景">
+        <span class="has-mr-6">10</span>
+        <span>Buffer 应用场景</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#I-O-操作">
+        <span class="has-mr-6">10.1</span>
+        <span>I/O 操作</span>
+        </a></li><li>
+        <a class="is-flex" href="#zlib-js">
+        <span class="has-mr-6">10.2</span>
+        <span>zlib.js</span>
+        </a></li><li>
+        <a class="is-flex" href="#加解密">
+        <span class="has-mr-6">10.3</span>
+        <span>加解密</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#缓冲（Buffer）与缓存（Cache）的区别">
+        <span class="has-mr-6">11</span>
+        <span>缓冲（Buffer）与缓存（Cache）的区别</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#缓冲（Buffer）">
+        <span class="has-mr-6">11.1</span>
+        <span>缓冲（Buffer）</span>
+        </a></li><li>
+        <a class="is-flex" href="#缓存（Cache）">
+        <span class="has-mr-6">11.2</span>
+        <span>缓存（Cache）</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#字节对齐">
+        <span class="has-mr-6">12</span>
+        <span>字节对齐</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">13</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Node.js 中的 Buffer 模块" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

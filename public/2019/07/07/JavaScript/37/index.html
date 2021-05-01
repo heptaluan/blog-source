@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>浏览器的渲染机制 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="在展开渲染机制相关内容之前，我们先来简单的了解一下常见的浏览器内核有哪些，浏览器的内核是指支持浏览器运行的最核心的程序，分为两个部分的，一是渲染引擎，另一个是 JavaScript 引擎（比如我们经常可以听到的 V8 引擎），渲染引擎在不同的浏览器中也不是都相同的，目前市面上常见的浏览器内核主要有以下这些    浏览器/RunTime 内核（渲染引擎） JavaScript 引擎    Chrom">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器的渲染机制">
+<meta property="og:url" content="http://yoursite.com/2019/07/07/JavaScript/37/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="在展开渲染机制相关内容之前，我们先来简单的了解一下常见的浏览器内核有哪些，浏览器的内核是指支持浏览器运行的最核心的程序，分为两个部分的，一是渲染引擎，另一个是 JavaScript 引擎（比如我们经常可以听到的 V8 引擎），渲染引擎在不同的浏览器中也不是都相同的，目前市面上常见的浏览器内核主要有以下这些    浏览器/RunTime 内核（渲染引擎） JavaScript 引擎    Chrom">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/37.webp">
+<meta property="og:updated_time" content="2021-03-31T14:18:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浏览器的渲染机制">
+<meta name="twitter:description" content="在展开渲染机制相关内容之前，我们先来简单的了解一下常见的浏览器内核有哪些，浏览器的内核是指支持浏览器运行的最核心的程序，分为两个部分的，一是渲染引擎，另一个是 JavaScript 引擎（比如我们经常可以听到的 V8 引擎），渲染引擎在不同的浏览器中也不是都相同的，目前市面上常见的浏览器内核主要有以下这些    浏览器/RunTime 内核（渲染引擎） JavaScript 引擎    Chrom">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/37.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="浏览器的渲染机制" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/37.webp" alt="浏览器的渲染机制">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2019-07-07</div>
+                <!-- <time class="level-item has-text-grey" datetime="2019-07-06T16:00:00.000Z">2019-07-07</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 11457 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                浏览器的渲染机制
+            
+        </h1>
+        <div class="content">
+            <p>在展开渲染机制相关内容之前，我们先来简单的了解一下常见的浏览器内核有哪些，浏览器的内核是指支持浏览器运行的最核心的程序，分为两个部分的，一是渲染引擎，另一个是 <code>JavaScript</code> 引擎（比如我们经常可以听到的 <code>V8</code> 引擎），渲染引擎在不同的浏览器中也不是都相同的，目前市面上常见的浏览器内核主要有以下这些</p>
+<table>
+<thead>
+<tr>
+<th>浏览器/RunTime</th>
+<th>内核（渲染引擎）</th>
+<th>JavaScript 引擎</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Chrome</code></td>
+<td><code>Blink（28~）Webkit（Chrome 27）</code></td>
+<td><code>V8</code></td>
+</tr>
+<tr>
+<td><code>FireFox</code></td>
+<td><code>Gecko</code></td>
+<td><code>SpiderMonkey</code></td>
+</tr>
+<tr>
+<td><code>Safari</code></td>
+<td><code>Webkit</code></td>
+<td><code>JavaScriptCore</code></td>
+</tr>
+<tr>
+<td><code>Edge</code></td>
+<td><code>EdgeHTML</code></td>
+<td><code>Chakra(for JavaScript)</code></td>
+</tr>
+<tr>
+<td><code>IE</code></td>
+<td><code>Trident</code></td>
+<td><code>Chakra(for JScript)</code></td>
+</tr>
+<tr>
+<td><code>PhantomJS</code></td>
+<td><code>Webkit</code></td>
+<td><code>JavaScriptCore</code></td>
+</tr>
+<tr>
+<td><code>Node.js</code></td>
+<td>-</td>
+<td><code>V8</code></td>
+</tr>
+</tbody></table>
+<p>这里面大家最耳熟能详的可能就是 <code>Webkit</code> 内核了，其中的 <code>Blink</code> 其实就是 <code>Webkit</code> 的一个分支，也就是说它也是基于 <code>Webkit</code> 的，所以本章也就以 <code>Webkit</code> 为例，来看看浏览器的渲染机制到底是一个什么样的过程，不过在此之前，我们先来简单的了解一下浏览器的主要组成部分和它包含的一些主要进程，这有助于我们下面更好的理解浏览器当中的渲染机制</p>
+<a id="more"></a>
+
+
+<h2 id="浏览器的主要组成部分"><a href="#浏览器的主要组成部分" class="headerlink" title="浏览器的主要组成部分"></a>浏览器的主要组成部分</h2><p>主要分为以下几部分</p>
+<ul>
+<li>用户界面，包括地址栏、前进/后退 按钮、书签菜单等，除了浏览器主窗口显示的您请求的页面外，其他显示的各个部分都属于用户界面</li>
+<li>浏览器引擎，在用户界面和呈现引擎之间传送指令</li>
+<li>呈现引擎，负责显示请求的内容，如果请求的内容是 <code>HTML</code>，它就负责解析 <code>HTML</code> 和 <code>CSS</code> 内容，并将解析后的内容显示在屏幕上</li>
+<li>网络，用于网络调用，比如 <code>HTTP</code> 请求，其接口与平台无关，并为所有平台提供底层实现</li>
+<li>用户界面后端，用于绘制基本的窗口小部件，比如组合框和窗口，其公开了与平台无关的通用接口，而在底层使用操作系统的用户界面方法</li>
+<li><code>JavaScript</code> 解释器，用于解析和执行 <code>JavaScript</code> 代码</li>
+<li>数据存储，这是持久层，浏览器需要在硬盘上保存各种数据，例如 <code>Cookie</code>，新的 <code>HTML</code> 规范（<code>HTML5</code>）定义了『网络数据库』，这是一个完整（但是轻便）的浏览器内数据库</li>
+</ul>
+<p>如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-01.png" alt></p>
+<h2 id="浏览器的主要进程"><a href="#浏览器的主要进程" class="headerlink" title="浏览器的主要进程"></a>浏览器的主要进程</h2><p>我们在之前的章节当中已经简单介绍了进程和线程的一些相关内容（可见 <a href="https://heptaluan.github.io/2018/08/12/JavaScript/30/" target="_blank" rel="noopener">JavaScript 中的事件轮询机制</a>），这里我们简单的复习一下</p>
+<ul>
+<li>进程是 <code>CPU</code> 资源分配的最小单位（是能拥有资源和独立运行的最小单位）</li>
+<li>线程是 <code>CPU</code> 调度的最小单位（线程是建立在进程的基础上的一次程序运行单位，一个进程中可以有多个线程）</li>
+<li>不同进程之间也可以通信，不过代价较大</li>
+<li>单线程与多线程，都是指在一个进程内的单和多</li>
+</ul>
+<p>对于计算机来说，每一个应用程序都是一个进程，而每一个应用程序都会分别有很多的功能模块，这些功能模块实际上是通过子进程来实现的，对于这种子进程的扩展方式，我们可以称这个应用程序是多进程的</p>
+<p>而对于浏览器来说，浏览器就是多进程的，比如我们在 <code>Chrome</code> 浏览器中打开了多个 <code>TAB</code>，然后打开控制管理器是可以看到一个 <code>Chrome</code> 浏览器启动了好多个进程，那么浏览器又是具体包含了哪些进程呢？可以参考下面这个图片</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-15.png" alt></p>
+<p>可以归纳为以下这些</p>
+<ul>
+<li>主进程（<code>Browser Process</code>）<ul>
+<li>协调控制其他子进程（创建、销毁）</li>
+<li>浏览器界面显示，用户交互，前进、后退、收藏</li>
+<li>将渲染进程得到的内存中的 <code>Bitmap</code>，绘制到用户界面上</li>
+<li>处理不可见操作，网络请求，文件访问等</li>
+</ul>
+</li>
+<li>第三方插件进程（<code>Plugin Process</code>）<ul>
+<li>每种类型的插件对应一个进程，仅当使用该插件时才创建</li>
+</ul>
+</li>
+<li><code>GPU</code> 进程（<code>GPU Process</code>）<ul>
+<li>最多只有一个，用于 <code>3D</code> 绘制等</li>
+</ul>
+</li>
+<li>渲染进程（<code>Renderer Process</code>）<ul>
+<li>也称为浏览器渲染进程或浏览器内核，内部是多线程的</li>
+<li>主要负责页面渲染，脚本执行，事件处理等</li>
+<li>每个 <code>TAB</code> 页一个渲染进程</li>
+</ul>
+</li>
+</ul>
+<p>其实上面的有些进程我们不需要太过理解，在这里我们只需要重点关心渲染进程，也就是我们常说的浏览器内核</p>
+<h2 id="渲染进程（浏览器内核）"><a href="#渲染进程（浏览器内核）" class="headerlink" title="渲染进程（浏览器内核）"></a>渲染进程（浏览器内核）</h2><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-16.png" alt></p>
+<p>进程和线程是一对多的关系，也就是说一个进程包含了多条线程，而对于渲染进程来说，它当然也是多线程的了，接下来我们来看一下渲染进程包含哪些线程，主要有以下这些</p>
+<ul>
+<li><code>GUI</code> 渲染线程 <ul>
+<li>负责渲染浏览器界面，解析 <code>HTML</code>，<code>CSS</code>，构建 <code>DOM</code> 树和 <code>RenderObject</code> 树，布局和绘制等</li>
+<li>当界面需要重绘（<code>Repaint</code>）或由于某种操作引发回流（<code>reflow</code>）时，该线程就会执行</li>
+<li>注意，<code>GUI</code> 渲染线程与 <code>JavaScript</code> 引擎线程是互斥的，当 <code>JavaScript</code> 引擎执行时 <code>GUI</code> 线程会被挂起（相当于被冻结了），<code>GUI</code> 更新会被保存在一个队列中等到 <code>JavaScript</code> 引擎空闲时立即被执行</li>
+</ul>
+</li>
+<li><code>JavaScript</code> 引擎线程 <ul>
+<li>该线程也称为 <code>JavaScript</code> 内核，负责处理 <code>JavaScript</code> 脚本程序（例如 <code>V8</code> 引擎）</li>
+<li><code>JavaScript</code> 引擎线程负责解析 <code>JavaScript</code> 脚本，运行代码</li>
+<li><code>JavaScript</code> 引擎一直等待着任务队列中任务的到来，然后加以处理，一个 <code>Tab</code> 页（<code>renderer</code> 进程）中无论什么时候都只有一个 <code>JavaScript</code> 线程在运行 <code>JavaScript</code> 程序</li>
+<li>注意，<code>GUI</code> 渲染线程与 <code>JavaScript</code> 引擎线程是互斥的，所以如果 <code>JavaScript</code> 执行的时间过长，这样就会造成页面的渲染不连贯，导致页面渲染加载阻塞</li>
+</ul>
+</li>
+<li>事件触发线程 <ul>
+<li>归属于浏览器而不是 <code>JavaScript</code> 引擎，用来控制事件循环（可以理解，<code>JavaScript</code> 引擎自己都忙不过来，需要浏览器另开线程协助）</li>
+<li>当 <code>JavaScript</code> 引擎执行代码块如 <code>setTimeOut</code> 时（也可来自浏览器内核的其他线程，如鼠标点击、<code>Ajax</code> 异步请求等），会将对应任务添加到事件线程中</li>
+<li>当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待 <code>JavaScript</code> 引擎的处理</li>
+<li>注意，由于 <code>JavaScript</code> 的单线程关系，所以这些待处理队列中的事件都得排队等待 <code>JavaScript</code> 引擎处理（当 <code>JavaScript</code> 引擎空闲时才会去执行）</li>
+</ul>
+</li>
+<li>定时触发器线程 <ul>
+<li>传说中的 <code>setInterval</code> 与 <code>setTimeout</code> 所在线程</li>
+<li>浏览器定时计数器并不是由 <code>JavaScript</code> 引擎计数的，（因为 <code>JavaScript</code> 引擎是单线程的， 如果处于阻塞线程状态就会影响记计时的准确）</li>
+<li>因此通过单独线程来计时并触发定时（计时完毕后，添加到事件队列中，等待 <code>JavaScript</code> 引擎空闲后执行）</li>
+<li>注意，<code>W3C</code> 在 <code>HTML</code> 标准中规定，规定要求 <code>setTimeout</code> 中低于 <code>4ms</code> 的时间间隔算为 <code>4ms</code></li>
+</ul>
+</li>
+<li>异步 <code>HTTP</code> 请求线程 <ul>
+<li>在 <code>XMLHttpRequest</code> 在连接后是通过浏览器新开一个线程请求</li>
+<li>将检测到状态变更时，如果设置有回调函数，异步线程就产生状态变更事件，将这个回调再放入事件队列中再由 <code>JavaScript</code> 引擎执行</li>
+</ul>
+</li>
+</ul>
+<p>在了解完浏览器的一些相关内容后，下面我们就来正式的看看浏览器的渲染过程到底是什么样子的</p>
+<h2 id="渲染过程"><a href="#渲染过程" class="headerlink" title="渲染过程"></a>渲染过程</h2><p>本小节内容主要参考的是 <a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/?hl=en" target="_blank" rel="noopener">Critical Rendering Path</a> 当中的内容，这里有所调整，主要是方便自己理解，如果想要了解更为详细的内容可以参考原文</p>
+<p>大家都听说过 <code>&lt;script&gt;</code> 标签会阻塞 <code>HTML</code> 页面解析，而 <code>&lt;link&gt;</code> 标签则不会，结果也确实是这样的，<code>&lt;link&gt;</code> 等样式资源的下载、解析确实不会阻塞页面的解析，但它们会阻塞页面的渲染，我们来看看两者的区别</p>
+<ul>
+<li>页面解析，阻塞 <code>HTML</code> 页面解析，<code>HTML</code> 页面会被继续下载，但阻塞点后面的标签不会被解析，<code>&lt;img&gt;</code>，<code>&lt;link&gt;</code> 等不会发请求获取外部资源</li>
+<li>页面渲染，阻塞 <code>HTML</code> 页面渲染，<code>HTML</code> 页面会被继续下载，阻塞点后面的标签会继续被解析，<code>&lt;img&gt;</code>，<code>&lt;link&gt;</code> 等会继续发送请求获取外部资源，但不会合成 <code>Rendering Tree</code> 或不会触发页面渲染，也不会执行 <code>JavaScript</code> 代码</li>
+</ul>
+<p>至于为什么会这样，我们就需要在浏览器的渲染机制当中来寻找答案了，简单来说有以下几个步骤</p>
+<h4 id="1、解析-HTML-标签，构建-DOM-树"><a href="#1、解析-HTML-标签，构建-DOM-树" class="headerlink" title="1、解析 HTML 标签，构建 DOM 树"></a>1、解析 HTML 标签，构建 DOM 树</h4><p>这个阶段对应着 <code>Create/Update DOM And request CSS/Images/JavaScript</code> 的过程，也就是说浏览器请求到 <code>HTML</code> 代码后，在生成 <code>DOM</code> 的最开始阶段（应该是 <code>Bytes → characters</code> 后），并行发起 <code>CSS</code>、<code>Images</code>、<code>JavaScript</code> 的请求，无论他们是否在 <code>HEAD</code> 里</p>
+<p>不过需要注意的是，发起 <code>JavaScript</code> 文件的下载 <code>request</code>，并不需要 <code>DOM</code> 处理到那个 <code>script</code> 节点</p>
+<h4 id="2-解析-CSS-标签，构建-CSSOM-树"><a href="#2-解析-CSS-标签，构建-CSSOM-树" class="headerlink" title="2. 解析 CSS 标签，构建 CSSOM 树"></a>2. 解析 CSS 标签，构建 CSSOM 树</h4><p>这个阶段对应着 <code>Create/Update Render CSSOM</code> 的过程，即 <code>CSS</code> 文件下载完成，开始构建 <code>CSSOM</code>，其中的 <code>CSSOM</code> 即 <code>CSS Object Model</code>，是浏览器将 <code>CSS</code> 代码解析成树形的数据结构，这个我们会在下方来进行介绍</p>
+<p>其中 <code>DOM</code> 和 <code>CSSOM</code> 都是以下图当中所示的流程，也就是依次经过 <code>Bytes</code>（字节数据），<code>Characters</code>（字符串），<code>Tokens</code>，<code>Nodes</code> 最后到 <code>Object Model</code> 这样的方式生成最终的数据，也就是如下几个步骤</p>
+<ul>
+<li>转码，浏览器将接收到的二进制数据按照指定编码格式转化为 <code>HTML</code> 字符串</li>
+<li>生成 <code>Tokens</code>，之后开始 <code>parser</code>，浏览器会将 <code>HTML</code> 字符串解析成 <code>Tokens</code></li>
+<li>构建 <code>Nodes</code>，对 <code>Node</code> 添加特定的属性，通过指针确定 <code>Node</code> 的父、子、兄弟关系和所属 <code>treeScope</code></li>
+<li>生成 <code>DOM Tree</code>，通过 <code>Node</code> 包含的指针确定的关系构建出 <code>DOM Tree</code></li>
+</ul>
+<p>在这里我们需要注意的是，<code>DOM</code> 树的构建过程是一个深度遍历过程，当前节点的所有子节点都构建好后才会去构建当前节点的下一个兄弟节点</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-02.png" alt></p>
+<h4 id="3-把-DOM-和-CSSOM-组合成渲染树"><a href="#3-把-DOM-和-CSSOM-组合成渲染树" class="headerlink" title="3. 把 DOM 和 CSSOM 组合成渲染树"></a>3. 把 DOM 和 CSSOM 组合成渲染树</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-03.png" alt></p>
+<p>这个阶段对应着 <code>Create/Update Render Tree</code> 的过程，所有 <code>CSS</code> 文件下载完成，<code>CSSOM</code> 构建结束后，和 <code>DOM</code> 一起生成 <code>Render Tree</code></p>
+<h4 id="4-在渲染树的基础上进行布局，计算每个节点的几何结构"><a href="#4-在渲染树的基础上进行布局，计算每个节点的几何结构" class="headerlink" title="4. 在渲染树的基础上进行布局，计算每个节点的几何结构"></a>4. 在渲染树的基础上进行布局，计算每个节点的几何结构</h4><p>这个阶段对应着 <code>Layout</code> 的过程，有了 <code>Render Tree</code>，浏览器已经能知道网页中有哪些节点、各个节点的 <code>CSS</code> 定义以及他们的从属关系，这一步操作之所以称为 <code>Layout</code>，顾名思义就是计算出每个节点在屏幕中的位置</p>
+<h4 id="5-把每个节点绘制到屏幕上"><a href="#5-把每个节点绘制到屏幕上" class="headerlink" title="5. 把每个节点绘制到屏幕上"></a>5. 把每个节点绘制到屏幕上</h4><p>这个阶段对应着 <code>Painting</code> 的过程，<code>Layout</code> 后，浏览器已经知道了哪些节点要显示（<code>which nodes are visible</code>）、每个节点的 <code>CSS</code> 属性是什么（<code>their computed styles</code>）、每个节点在屏幕中的位置是哪里（<code>geometry</code>），就进入了最后一步 <code>Painting</code>，按照算出来的规则，通过显卡，把内容画到屏幕上</p>
+<p><code>Render Tree</code> 和 <code>DOM</code> 一样，以多叉树的形式保存了每个节点的 <code>CSS</code> 属性、节点本身属性、以及节点的孩子节点</p>
+<blockquote>
+<p>这里有一个比较特殊的情况，就是 <code>display: none</code> 的节点不会被加入 <code>Render Tree</code>，而 <code>visibility: hidden</code> 则会，所以如果某个节点最开始是不显示的，设为 <code>display: none</code> 是更优的</p>
+</blockquote>
+<p>以上五个步骤前三个步骤之所有使用 <code>Create/Update</code> 是因为 <code>DOM</code>、<code>CSSOM</code>、<code>Render Tree</code> 都可能在第一次 <code>Painting</code> 后又被更新多次，比如 <code>JavaScript</code> 修改了 <code>DOM</code> 或者 <code>CSS</code> 属性，<code>Layout</code> 和 <code>Painting</code> 也会被重复执行，除了 <code>DOM</code>、<code>CSSOM</code> 更新的原因外，图片下载完成后也需要调用 <code>Layout</code> 和 <code>Painting</code> 来更新网页</p>
+<h2 id="渲染过程拆解"><a href="#渲染过程拆解" class="headerlink" title="渲染过程拆解"></a>渲染过程拆解</h2><p>我们在上面小节当中提到的渲染过程的五个步骤看起来可能比较抽象，下面我们就来将它们拆解成我们经常遇到的一些操作，然后简单的归纳一下各个步骤</p>
+<p>通常来说我们在编写 <code>Web</code> 页面时，我们需要理解我们所写的页面代码是如何被转换成屏幕上显示的像素的，这个转换过程我们可以归纳为这样的一个流水线，包含五个关键步骤</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-04.png" alt></p>
+<ul>
+<li><code>JavaScript</code><ul>
+<li>一般来说，我们会使用 <code>JavaScript</code> 来实现一些视觉变化的效果，比如用 <code>jQuery</code> 的 <code>animate</code> 函数做一个动画、对一个数据集进行排序、或者往页面里添加一些 <code>DOM</code> 元素等，当然除了<code>JavaScript</code> 还有其他一些常用方法也可以实现视觉变化效果，比如 <code>CSS Animations</code>，<code>Transitions</code> 和 <code>Web Animation API</code></li>
+</ul>
+</li>
+<li><code>Style calculations</code>（计算样式）<ul>
+<li>这个过程是根据 <code>CSS</code> 选择器，比如 <code>.headline</code> 或 <code>.nav &gt; .nav_item</code>，对每个 <code>DOM</code> 元素匹配对应的 <code>CSS</code> 样式，这一步结束之后，就确定了每个 <code>DOM</code> 元素上该应用什么 <code>CSS</code> 样式规则</li>
+</ul>
+</li>
+<li><code>Layout</code>（布局）<ul>
+<li>上一步确定了每个 <code>DOM</code> 元素的样式规则，这一步就是具体计算每个 <code>DOM</code> 元素最终在屏幕上显示的大小和位置，<code>Web</code> 页面中元素的布局是相对的，因此一个元素的布局发生变化，会联动地引发其他元素的布局发生变化，比如 <code>&lt;body&gt;</code> 元素的宽度的变化会影响其子元素的宽度，其子元素宽度的变化也会继续对其孙子元素产生影响，因此对于浏览器来说，布局过程是经常发生的</li>
+</ul>
+</li>
+<li><code>Paint</code>（绘制）<ul>
+<li>本质上就是填充像素的过程，包括绘制文字、颜色、图像、边框和阴影等，也就是一个 <code>DOM</code> 元素所有的可视效果，一般来说，这个绘制过程是在多个图层上完成的</li>
+</ul>
+</li>
+<li><code>Compositing</code>（组合）<ul>
+<li>由上一步可知，对页面中 <code>DOM</code> 元素的绘制是在多个层上进行的，在每个层上完成绘制过程之后，浏览器会将所有层按照合理的顺序合并成一个图层，然后显示在屏幕上，对于有位置重叠的元素的页面，这个过程尤其重要，因为一旦图层的合并顺序出错，将会导致元素显示异常</li>
+</ul>
+</li>
+</ul>
+<p>上述过程的每一步中都有产生掉帧的问题，因此一定要弄清楚我们的代码将会运行在哪一步，有时我们可能会听到栅格化（<code>rasterize</code>）与绘制一起使用，这是因为绘制这个动作实际是包含两步</p>
+<ol>
+<li>产生系列的格子</li>
+<li>往格子中填充像素</li>
+</ol>
+<p>这个过程后来被称之为栅格化（<code>rasterization</code>），所以我们在 <code>DevTools</code> 中看到的绘制记录，应该要知道其中已经包含了栅格化这一过程，但是我们不需要了解所有帧画面渲染流程上的所有流程，实际上，当我们修改视图的时候，有三种方式会重新生成一个帧画面，无论是修改 <code>JavaScript</code>，<code>CSS</code> 还是 <code>Web Animations</code>，这里我们重点关注这三种方式</p>
+<h4 id="JavaScript-CSS-gt-Style-gt-layout-gt-Paint-gt-Composite"><a href="#JavaScript-CSS-gt-Style-gt-layout-gt-Paint-gt-Composite" class="headerlink" title="JavaScript/CSS &gt; Style &gt; layout &gt; Paint &gt; Composite"></a>JavaScript/CSS &gt; Style &gt; layout &gt; Paint &gt; Composite</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-05.png" alt></p>
+<p>如果我们修改布局属性（元素的几何形状），比如宽度，高度以及位置，那么浏览器会检查哪些元素需要重新布局，然后对页面激发一个 <a href="https://stackoverflow.com/questions/27637184/what-is-dom-reflow/27637245#27637245" target="_blank" rel="noopener">reflow</a> 过程完成重新布局，被 <code>reflow</code> 的元素，接下来也会激发绘制过程，最后激发渲染层合并过程，生成最后的画面</p>
+<h4 id="JavaScript-CSS-gt-Style-gt-Paint-gt-Composite"><a href="#JavaScript-CSS-gt-Style-gt-Paint-gt-Composite" class="headerlink" title="JavaScript/CSS &gt; Style &gt; Paint &gt; Composite"></a>JavaScript/CSS &gt; Style &gt; Paint &gt; Composite</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-06.png" alt></p>
+<p>如果我们只是修改了绘制属性，比如说背景图片，字体颜色，阴影等，这些属性不属于页面布局，因此浏览器会在完成样式计算之后，跳过布局过程，只做绘制和渲染层合并过程</p>
+<h4 id="JavaScript-CSS-gt-Style-gt-Composite"><a href="#JavaScript-CSS-gt-Style-gt-Composite" class="headerlink" title="JavaScript/CSS &gt; Style &gt; Composite"></a>JavaScript/CSS &gt; Style &gt; Composite</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-07.png" alt></p>
+<p>如果我们修改的属性既不属于布局，也不属于绘制，那么浏览器会在完成样式计算之后，跳过布局和绘制的过程，直接做渲染层合并，第三种方式在性能上是最理想的，对于动画和滚动这种负荷很重的渲染，我们要争取使用第三种渲染流程</p>
+<blockquote>
+<p>如果想知道哪些 <code>CSS</code> 属性会触发这三种方式，可以参考 <a href="https://csstriggers.com/" target="_blank" rel="noopener">CSS Triggers</a>，而对于高性能动画方面则可以参考 <a href="https://developers.google.com/web/fundamentals/performance/rendering/stick-to-compositor-only-properties-and-manage-layer-count" target="_blank" rel="noopener">使用渲染层合并属性</a></p>
+</blockquote>
+<h2 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h2><p>我们下面来看几个在上面过程当中延伸出来的问题</p>
+<h4 id="1-CSSOM"><a href="#1-CSSOM" class="headerlink" title="1. CSSOM"></a>1. CSSOM</h4><p><code>CSSOM</code> 是 <code>CSS Object Model</code> 的缩写，大体上来说，<code>CSSOM</code> 是一个建立在 <code>Web</code> 页面上的 <code>CSS</code> 样式的映射，它和 <code>DOM</code> 类似，但是只针对 <code>CSS</code> 而不是 <code>HTML</code>，浏览器将 <code>DOM</code> 和 <code>CSSOM</code> 结合来渲染 <code>Web</code> 页面</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-08.png" alt></p>
+<h6 id="CSSOM-是做什么的"><a href="#CSSOM-是做什么的" class="headerlink" title="CSSOM 是做什么的"></a>CSSOM 是做什么的</h6><p><code>CSSOM</code> 将样式表中的规则映射到页面对应的元素上，虽然 <code>CSSOM</code> 采取了复杂的措施来做这件事，但是 <code>CSSOM</code> 最终的功能还是将样式映射到它们应该对应的元素上去，更确切地说，<code>CSSOM</code> 识别 <code>tokens</code> 并把这些 <code>Tokens</code> 转换成一个树结构上的对应的结点，所有结点以及它们所关联的页面中的样式就是所谓的 <code>CSS Object Model</code>，从上面的渲染机制可以看出，<code>CSSOM</code> 对于 <code>Web</code> 页面的展示起着重要作用</p>
+<h6 id="使用-CSSOM"><a href="#使用-CSSOM" class="headerlink" title="使用 CSSOM"></a>使用 CSSOM</h6><p>其实我们不必为了优化 <code>Web</code> 页面而去了解 <code>CSSOM</code> 是怎样工作的，这里有几个关于 <code>CSSOM</code> 的关键点是我们需要知道的，利用这些关键点可以优化页面的加载速度</p>
+<ul>
+<li><code>CSSOM</code> 阻止任何东西渲染</li>
+<li><code>CSSOM</code> 在加载一个新页面时必须重新构建</li>
+<li>页面中 <code>CSS</code> 的加载和页面中 <code>JavaScript</code> 的加载是有关系的</li>
+</ul>
+<p>下面我们就分别来看看以上三种情况</p>
+<ol>
+<li><code>CSSOM</code> 阻止任何东西渲染</li>
+</ol>
+<p>所有的 <code>CSS</code> 都是阻塞渲染的（意味着在 <code>CSS</code> 没处理好之前所有东西都不会展示），具体的原因是如果浏览器在 <code>CSS</code> 检查之前展示了页面，那么每个页面都是没有样式的，等一会之后又突然有了样式，整个页面的体验就会很糟糕</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-09.png" alt></p>
+<p>由于 <code>CSSOM</code> 被用作创建 <code>Render Tree</code>，那么如果不能高效的利用 <code>CSS</code> 会有一些严重的后果，而主要的后果就是我们的页面在加载时白屏</p>
+<ol start="2">
+<li><code>CSSOM</code> 在加载一个新页面时必须重新构建</li>
+</ol>
+<p>这意味着即使我们的 <code>CSS</code> 文件被缓存了，也并不意味着这个已经构建好了的 <code>CSSOM</code> 可以应用到每一个页面，当用户跳到我们的另一个页面时（即使浏览器缓存了所有需要的 <code>CSS</code>），<code>CSSOM</code> 也必须重新构建一遍，也就是说，如果我们的 <code>CSS</code> 文件写得很蹩脚，或者体积很大，这也会对我们页面加载产生负面的影响</p>
+<ol start="3">
+<li>页面中 <code>CSS</code> 的加载和页面中 <code>JavaScript</code> 的加载是有关系的</li>
+</ol>
+<p><code>JavaScript</code> 的加载可能会阻塞 <code>CSSOM</code> 的构建，简单来说，<code>CSSOM</code> 是展示任何东西的必需品，在 <code>CSSOM</code> 构建之前，所有东西都不会展示</p>
+<ul>
+<li>如果我们阻塞了 <code>CSSOM</code> 的构建，<code>CSSOM</code> 的构建就会消耗更长的时间，这就意味着页面的渲染也需要更长的时间</li>
+<li>如果我们的 <code>JavaScript</code> 阻塞了 <code>CSSOM</code> 的构建，我们的用户就会面对更长时间的白屏</li>
+</ul>
+<h4 id="2-为什么-JavaScript-是单线程的"><a href="#2-为什么-JavaScript-是单线程的" class="headerlink" title="2. 为什么 JavaScript 是单线程的"></a>2. 为什么 JavaScript 是单线程的</h4><p>首先是历史原因，在创建 <code>JavaScript</code> 这门语言时，多进程多线程的架构并不流行，硬件支持并不好，其次是因为多线程的复杂性，多线程操作需要加锁，编码的复杂性会增高</p>
+<p>如果 <code>JavaScript</code> 是多线程的方式来操作这些 <code>UI DOM</code>，则可能出现 <code>UI</code> 操作的冲突，在多线程的交互下，处于 <code>UI</code> 中的 <code>DOM</code> 节点就可能成为一个临界资源，假设存在两个线程同时操作一个 <code>DOM</code>，一个负责修改一个负责删除，那么这个时候就需要浏览器来裁决如何生效哪个线程的执行结果</p>
+<p>当然我们可以通过锁来解决上面的问题，但为了避免因为引入了锁而带来更大的复杂性，<code>JavaScript</code> 在最初就选择了单线程执行</p>
+<h4 id="3-为什么-GUI-渲染线程为什么与-JavaScript-引擎线程互斥"><a href="#3-为什么-GUI-渲染线程为什么与-JavaScript-引擎线程互斥" class="headerlink" title="3. 为什么 GUI 渲染线程为什么与 JavaScript 引擎线程互斥"></a>3. 为什么 GUI 渲染线程为什么与 JavaScript 引擎线程互斥</h4><p>由于 <code>JavaScript</code> 是可操纵 <code>DOM</code> 的，如果在修改这些元素属性同时渲染界面（即 <code>JavaScript</code> 线程和 <code>UI</code> 线程同时运行），那么渲染线程前后获得的元素数据就可能不一致了，因此为了防止渲染出现不可预期的结果，浏览器『设置 <code>GUI</code> 渲染线程与 <code>JavaScript</code> 引擎为互斥的关系』</p>
+<p>当 <code>JavaScript</code> 引擎执行时 <code>GUI</code> 线程会被挂起，<code>GUI</code> 更新会被保存在一个队列中等到引擎线程空闲时立即被执行，浏览器在执行 <code>JavaScript</code> 程序的时候，<code>GUI</code> 渲染线程会被保存在一个队列中，直到 <code>JavaScript</code> 程序执行完成，才会接着执行</p>
+<p>因此如果 <code>JavaScript</code> 执行的时间过长，这样就会造成页面的渲染不连贯，导致页面渲染加载阻塞的感觉</p>
+<h4 id="4-CSS-加载会造成阻塞吗"><a href="#4-CSS-加载会造成阻塞吗" class="headerlink" title="4. CSS 加载会造成阻塞吗"></a>4. CSS 加载会造成阻塞吗</h4><p>在上面的浏览器渲染流程当中我们可以看出，<code>DOM</code> 和 <code>CSSOM</code> 通常是并行构建的，所以 <code>CSS</code> 加载不会阻塞 <code>DOM</code> 的解析，然而由于 <code>Render Tree</code> 是依赖于 <code>DOM Tree</code> 和 <code>CSSOM Tree</code> 的，所以它必须等待到 <code>CSSOM Tree</code> 构建完成，也就是 <code>CSS</code> 资源加载完成（或者 <code>CSS</code> 资源加载失败）后，才能开始渲染，因此 <code>CSS</code> 加载会阻塞 <code>DOM</code> 的渲染</p>
+<p>由于 <code>JavaScript</code> 是可以操纵 <code>DOM</code> 和 <code>CSS</code> 样式的，如果在修改这些元素属性同时渲染界面（即 <code>JavaScript</code> 线程和 <code>UI</code> 线程同时运行），那么渲染线程前后获得的元素数据就可能不一致了，因此为了防止渲染出现不可预期的结果，浏览器设置 <code>GUI</code> 渲染线程与 <code>JavaScript</code> 引擎为互斥的关系</p>
+<p>这样一来，样式表会在后面的 <code>JavaScript</code> 执行前先加载执行完毕，所以 <code>CSS</code> 会阻塞后面 <code>JavaScript</code> 的执行</p>
+<h4 id="5-DOMContentLoaded-与-onload-的区别"><a href="#5-DOMContentLoaded-与-onload-的区别" class="headerlink" title="5. DOMContentLoaded 与 onload 的区别"></a>5. DOMContentLoaded 与 onload 的区别</h4><p>当 <code>DOMContentLoaded</code> 事件触发时，仅当 <code>DOM</code> 解析完成后，不包括样式表和图片，我们在上面提到过，<code>CSS</code> 加载会阻塞 <code>DOM</code> 的渲染和后面 <code>JavaScript</code> 的执行，也就是说 <code>JavaScript</code> 会阻塞 <code>DOM</code> 解析</p>
+<p>所以我们可以得到结论，当文档中没有脚本时，浏览器解析完文档便能触发 <code>DOMContentLoaded</code> 事件，如果文档中包含脚本，则脚本会阻塞文档的解析，而脚本需要等 <code>CSSOM</code> 构建完成才能执行，在任何情况下，<code>DOMContentLoaded</code> 的触发不需要等待图片等其他资源加载完成</p>
+<p>而当 <code>onload</code> 事件触发时，页面上所有的 <code>DOM</code>，样式表，脚本，图片等资源已经加载完毕，所以流程应该是由 <code>DOMContentLoaded</code> 到 <code>onload</code></p>
+<h4 id="6-如何优化-CRP"><a href="#6-如何优化-CRP" class="headerlink" title="6. 如何优化 CRP"></a>6. 如何优化 CRP</h4><p><code>CRP</code>，即关键渲染路径（<code>Critical Rendering Path</code>），它是浏览器将 <code>HTML/CSS/JavaScript</code> 转换为在屏幕上呈现的像素内容所经历的一系列步骤，也就是我们上面说的浏览器渲染流程，为了尽快完成首次渲染，我们需要最大限度减小以下三种可变因素</p>
+<ul>
+<li>关键资源的数量，可能阻止网页首次渲染的资源</li>
+<li>关键路径长度，获取所有关键资源所需的往返次数或总时间</li>
+<li>关键字节，实现网页首次渲染所需的总字节数，等同于所有关键资源传送文件大小的总和</li>
+</ul>
+<h6 id="优化-DOM"><a href="#优化-DOM" class="headerlink" title="优化 DOM"></a>优化 DOM</h6><ul>
+<li>删除不必要的代码和注释包括空格，尽量做到最小化文件</li>
+<li>可以利用 <code>GZIP</code> 压缩文件</li>
+<li>结合 <code>HTTP</code> 缓存文件</li>
+</ul>
+<h6 id="优化-CSSOM"><a href="#优化-CSSOM" class="headerlink" title="优化 CSSOM"></a>优化 CSSOM</h6><p>缩小、压缩以及缓存同样重要，对于 <code>CSSOM</code> 我们前面重点提过了它会阻止页面呈现，因此我们可以从这方面考虑去优化，步骤如下</p>
+<ul>
+<li>减少关键 <code>CSS</code> 元素数量</li>
+<li>当我们声明样式表时，请密切关注媒体查询的类型，它们极大地影响了 <code>CRP</code> 的性能</li>
+</ul>
+<h6 id="优化-JavaScript"><a href="#优化-JavaScript" class="headerlink" title="优化 JavaScript"></a>优化 JavaScript</h6><p>当浏览器遇到 <code>&lt;script&gt;</code> 标记时，会阻止解析器继续操作，直到 <code>CSSOM</code> 构建完毕，<code>JavaScript</code> 才会运行并继续完成 <code>DOM</code> 构建过程，所以我们可以考虑以下方式</p>
+<ul>
+<li><code>Async</code>，当我们在 <code>&lt;script&gt;</code> 标记中添加 <code>Async</code> 属性以后，浏览器遇到这个标记时会继续解析 <code>DOM</code>，同时脚本也不会被 <code>CSSOM</code> 阻止，即不会阻止 <code>CRP</code></li>
+<li><code>Defer</code>，与 <code>Async</code> 的区别在于，脚本需要等到文档解析后（<code>DOMContentLoaded</code> 事件前）执行，而 <code>Async</code> 允许脚本在文档解析时位于后台运行（两者下载的过程不会阻塞 <code>DOM</code>，但执行会）</li>
+<li>当我们的脚本不会修改 <code>DOM</code> 或 <code>CSSOM</code> 时推荐使用 <code>Async</code></li>
+<li>预加载（<code>preload &amp;&amp; prefetch</code>）</li>
+<li>DNS 预解析（<code>dns-prefetch</code>）</li>
+</ul>
+<h6 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h6><ul>
+<li>分析并用 关键资源数 关键字节数 关键路径长度 来描述我们的 <code>CRP</code></li>
+<li>最小化关键资源数，消除它们（内联）、推迟它们的下载（<code>Defer</code>）或者使它们异步解析（<code>Async</code>）等等</li>
+<li>优化关键字节数（缩小、压缩）来减少下载时间</li>
+<li>优化加载剩余关键资源的顺序，让关键资源（<code>CSS</code>）尽早下载以减少 <code>CRP</code> 长度</li>
+</ul>
+<p>更多相关内容可以参考 <a href="https://github.com/fi3ework/blog/issues/16" target="_blank" rel="noopener">前端性能优化之关键路径渲染优化</a></p>
+<h4 id="7-Async-和-Defer-的区别"><a href="#7-Async-和-Defer-的区别" class="headerlink" title="7. Async 和 Defer 的区别"></a>7. Async 和 Defer 的区别</h4><p>我们先来对比下 <code>Async</code> 和 <code>Defer</code> 属性的区别，如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-10.png" alt></p>
+<p>其中蓝色线代表 <code>JavaScript</code> 加载，红色线代表 <code>JavaScript</code> 执行，绿色线代表 <code>HTML</code> 解析，所以我们也对应的分别来看看三种情况</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="hljs-string">"example.js"</span>&gt;<span class="hljs-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>没有 <code>Async</code> 和 <code>Defer</code>，浏览器会立即加载并执行指定的脚本，也就是说不等待后续载入的文档元素，读到就加载并执行</li>
+</ol>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script <span class="hljs-keyword">async</span> src=<span class="hljs-string">"example.js"</span>&gt;<span class="hljs-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>Async</code> 属性表示异步执行引入的 <code>JavaScript</code>，与 <code>Defer</code> 的区别在于，如果已经加载好，就会开始执行，即无论此刻是 <code>HTML</code> 解析阶段还是 <code>DOMContentLoaded</code> 触发之后，不过需要注意的是，这种方式加载的 <code>JavaScript</code> 依然会阻塞 <code>load</code> 事件，换句话说，<code>async-script</code> 可能在 <code>DOMContentLoaded</code> 触发之前或之后执行，但一定在 <code>load</code> 触发之前执行</li>
+</ol>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script defer src=<span class="hljs-string">"example.js"</span>&gt;<span class="hljs-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><code>Defer</code> 属性表示延迟执行引入的 <code>JavaScript</code>，即这段 <code>JavaScript</code> 加载时 <code>HTML</code> 并未停止解析，这两个过程是并行的，整个 <code>document</code> 解析完毕且 <code>defer-script</code> 也加载完成之后（这两件事情的顺序无关），会执行所有由 <code>defer-script</code> 加载的 <code>JavaScript</code> 代码，然后触发 <code>DOMContentLoaded</code> 事件</li>
+</ol>
+<p>因此，我们可以得出结论</p>
+<ul>
+<li><code>Defer</code> 和 <code>Async</code> 在网络读取（下载）这部分是一样的，都是异步的（相较于 <code>HTML</code> 解析）</li>
+<li>在加载多个 <code>JavaScript</code> 脚本的时候，<code>Async</code> 是无顺序的加载，而 <code>Defer</code> 是有顺序的加载</li>
+<li>差别在于脚本下载完之后何时执行，显然 <code>Defer</code> 是最接近我们对于应用脚本加载和执行的要求的</li>
+<li><code>Async</code> 是乱序执行，它的加载和执行是紧紧挨着的，所以不管声明的顺序如何，只要它加载完了就会立刻执行</li>
+<li>通常来说，<code>Async</code> 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），不过它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说却是非常合适的</li>
+</ul>
+<h4 id="8-如何解析-CSS-选择器"><a href="#8-如何解析-CSS-选择器" class="headerlink" title="8. 如何解析 CSS 选择器"></a>8. 如何解析 CSS 选择器</h4><p>浏览器会『从右往左』解析 <code>CSS</code> 选择器，我们知道 <code>DOM Tree</code> 与 <code>Style Rules</code> 合成为 <code>Render Tree</code>，实际上是需要将 <code>Style Rules</code> 附着到 <code>DOM Tree</code> 上，因此需要根据选择器提供的信息对 <code>DOM Tree</code> 进行遍历，才能将样式附着到对应的 <code>DOM</code> 元素上，我们以下面这段 <code>CSS</code> 为例</p>
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-class">.mod-nav</span> <span class="hljs-selector-tag">h3</span> <span class="hljs-selector-tag">span</span> &#123;<span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的 <code>DOM Tree</code> 如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-14.png" alt></p>
+<p>若从左向右的匹配，过程是</p>
+<ul>
+<li>从 <code>.mod-nav</code> 开始，遍历子节点 <code>header</code> 和子节点 <code>div</code></li>
+<li>然后各自向子节点遍历，在右侧 <code>div</code> 的分支中，最后遍历到叶子节点 <code>a</code>，发现不符合规则</li>
+<li>所以需要回溯到 <code>ul</code> 节点，再遍历下一个 <code>li-a</code>，一颗 <code>DOM</code> 树的节点动不动上千，所以可以发现这种效率很低</li>
+</ul>
+<p>如果从右至左的匹配</p>
+<ul>
+<li>先找到所有的最右节点 <code>span</code>，对于每一个 <code>span</code>，向上寻找节点 <code>h3</code></li>
+<li>由 <code>h3</code> 再向上寻找 <code>.mod-nav</code> 的节点</li>
+<li>最后找到根元素 <code>html</code> 则结束这个分支的遍历</li>
+</ul>
+<p>两者对比下来，可以明显的发现后者匹配性能更好，是因为从右向左的匹配在第一步就筛选掉了大量的不符合条件的最右节点（叶子节点），而从左向右的匹配规则的性能都浪费在了失败的查找上面</p>
+<h4 id="9-回流与重绘"><a href="#9-回流与重绘" class="headerlink" title="9. 回流与重绘"></a>9. 回流与重绘</h4><p>渲染的流程基本上是这样（如下图黄色的四个步骤）</p>
+<ol>
+<li>计算 <code>CSS</code> 样式</li>
+<li>构建 <code>Render Tree</code></li>
+<li><code>Layout</code> 定位坐标和大小</li>
+<li>正式开画</li>
+</ol>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-11.png" alt></p>
+<p>这里需要注意上图流程中有很多连接线，这表示了 <code>JavaScript</code> 动态修改了 <code>DOM</code> 属性或是 <code>CSS</code> 属性会导致重新 <code>Layout</code>，但有些改变不会重新 <code>Layout</code>，就是上图中那些指到天上的箭头，比如修改后的 <code>CSS rule</code> 没有被匹配到元素，这里重要要说两个概念，一个是 <code>Reflow</code>，另一个是 <code>Repaint</code></p>
+<ul>
+<li>重绘，当我们对 <code>DOM</code> 的修改导致了样式的变化、却并未影响其几何属性（比如修改了颜色或背景色）时，浏览器不需重新计算元素的几何属性、直接为该元素绘制新的样式（跳过了上图所示的回流环节）</li>
+<li>回流，当我们对 <code>DOM</code> 的修改引发了 <code>DOM</code> 几何尺寸的变化（比如修改元素的宽、高或隐藏元素等）时，浏览器需要重新计算元素的几何属性（其他元素的几何属性和位置也会因此受到影响），然后再将计算的结果绘制出来，这个过程就是回流（也叫重排）</li>
+</ul>
+<p>我们知道，当网页生成的时候，至少会渲染一次，在用户访问的过程中，还会不断重新渲染，重新渲染会重复 回流 + 重绘 或者只有重绘，回流必定会发生重绘，重绘不一定会引发回流，重绘和回流会在我们设置节点样式时频繁出现，同时也会很大程度上影响性能，回流所需的成本比重绘高的多，改变父节点里的子节点很可能会导致父节点的一系列回流</p>
+<h6 id="常见引起回流属性和方法"><a href="#常见引起回流属性和方法" class="headerlink" title="常见引起回流属性和方法"></a>常见引起回流属性和方法</h6><p>任何会改变元素几何信息（元素的位置和尺寸大小）的操作，都会触发回流，比如下面这些方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">clientWidth、clientHeight、clientTop、clientLeftoffsetWidth</span><br><span class="line"></span><br><span class="line">offsetHeight、offsetTop、offsetLeftscrollWidth</span><br><span class="line"></span><br><span class="line">scrollHeight、scrollTop、scrollLeftscrollIntoView()、scrollIntoViewIfNeeded()</span><br><span class="line"></span><br><span class="line">getComputedStyle()、getBoundingClientRect()、scrollTo()</span><br></pre></td></tr></table></figure>
+
+<p>具体表现为</p>
+<ul>
+<li>添加或者删除可见的 <code>DOM</code> 元素</li>
+<li>元素尺寸改变（边距、填充、边框、宽度和高度）</li>
+<li>内容变化，比如用户在 <code>input</code> 框中输入文字</li>
+<li>浏览器窗口尺寸改变（<code>resize</code> 事件发生时）</li>
+<li>计算 <code>offsetWidth</code> 和 <code>offsetHeight</code> 属性</li>
+<li>设置 <code>style</code> 属性的值</li>
+</ul>
+<h6 id="常见引起重绘属性和方法"><a href="#常见引起重绘属性和方法" class="headerlink" title="常见引起重绘属性和方法"></a>常见引起重绘属性和方法</h6><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-12.png" alt></p>
+<h6 id="如何减少回流、重绘"><a href="#如何减少回流、重绘" class="headerlink" title="如何减少回流、重绘"></a>如何减少回流、重绘</h6><ul>
+<li>使用 <code>transform</code> 替代 <code>top</code></li>
+<li>使用 <code>visibility</code> 替换 <code>display: none</code>，因为前者只会引起重绘，后者会引发回流（改变了布局）</li>
+<li>不要把节点的属性值放在一个循环里当成循环里的变量，就下面这样</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1000</span>; i++) &#123;</span><br><span class="line">  <span class="hljs-comment">// 获取 offsetTop 会导致回流，因为需要去获取正确的值</span></span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.test'</span>).style.offsetTop)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>不要使用 <code>table</code> 布局，可能很小的一个小改动会造成整个 <code>table</code> 的重新布局</li>
+<li>动画实现的速度的选择，动画速度越快，回流次数越多，也可以选择使用 <code>requestAnimationFrame</code></li>
+<li><code>CSS</code> 选择符从右往左匹配查找，避免节点层级过多</li>
+<li>将频繁重绘或者回流的节点设置为图层，图层能够阻止该节点的渲染行为影响别的节点，比如对于 <code>video</code> 标签来说，浏览器会自动将该节点变为图层</li>
+<li>集中改变样式，即通过改变 <code>class</code> 的方式来集中改变样式</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 判断是否是黑色系样式</span></span><br><span class="line"><span class="hljs-keyword">const</span> theme = isDark ? <span class="hljs-string">'dark'</span> : <span class="hljs-string">'light'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 根据判断来设置不同的class</span></span><br><span class="line">ele.setAttribute(<span class="hljs-string">'className'</span>, theme)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>DocumentFragment</code>，我们可以通过 <code>createDocumentFragment</code> 创建一个游离于 <code>DOM</code> 树之外的节点，然后在此节点上批量操作，最后插入 <code>DOM</code> 树中，因此只触发一次重排</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> fragment = <span class="hljs-built_in">document</span>.createDocumentFragment()</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> node = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'p'</span>)</span><br><span class="line">  node.innerHTML = i</span><br><span class="line">  fragment.appendChild(node)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">document</span>.body.appendChild(fragment)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>提升为合成层（关于合成层我们会在下面进行介绍），将元素提升为合成层有以下优点<ul>
+<li>合成层的位图，会交由 <code>GPU</code> 合成，比 <code>CPU</code> 处理要快</li>
+<li>当需要 <code>repaint</code> 时，只需要 <code>repaint</code> 本身，不会影响到其他的层</li>
+<li>对于 <code>transform</code> 和 <code>opacity</code> 效果，不会触发 <code>layout</code> 和 <code>paint</code></li>
+<li>通常来说，提升合成层的最好方式是使用 <code>CSS</code> 的 <code>will-change</code> 属性</li>
+<li>更多关于合成层的相关内容可以参考 <a href="https://fed.taobao.org/blog/taofed/do71ct/performance-composite/" target="_blank" rel="noopener">无线性能优化：Composite</a></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-id">#target</span> &#123;</span><br><span class="line">  <span class="hljs-attribute">will-change</span>: transform;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="10-性能优化策略"><a href="#10-性能优化策略" class="headerlink" title="10. 性能优化策略"></a>10. 性能优化策略</h4><p>基于上面介绍的浏览器渲染原理，<code>DOM</code> 和 <code>CSSOM</code> 结构构建顺序，初始化可以对页面渲染做些优化，提升页面性能</p>
+<ul>
+<li><code>JavaScript</code> 优化，<code>&lt;script&gt;</code> 标签加上 <code>Defer</code> 属性和 <code>Async</code> 属性用于在不阻塞页面文档解析的前提下，控制脚本的下载和执行<ul>
+<li><code>Defer</code> 属性，用于开启新的线程下载脚本文件，并使脚本在文档解析完成后执行</li>
+<li><code>Async</code> 属性，<code>HTML5</code> 新增属性，用于异步下载脚本文件，下载完毕立即解释执行代码</li>
+</ul>
+</li>
+<li><code>CSS</code> 优化，<code>&lt;link&gt;</code> 标签的 <code>rel</code> 属性中的属性值设置为 <code>preload</code> 能够让我们在 <code>HTML</code> 页面中可以指明哪些资源是在页面加载完成后即刻需要的，最优的配置加载顺序，提高渲染性能</li>
+</ul>
+<h4 id="11-浏览器解析-JavaScript-的过程"><a href="#11-浏览器解析-JavaScript-的过程" class="headerlink" title="11. 浏览器解析 JavaScript 的过程"></a>11. 浏览器解析 JavaScript 的过程</h4><p>早期，浏览器内部对 <code>JavaScript</code> 的处理过程大致如下</p>
+<ul>
+<li>读取代码，进行词法分析（<code>Lexical Analysis</code>），将代码分解成词元（<code>token</code>）</li>
+<li>对词元进行语法分析（<code>Parsing</code>），将代码整理成语法树（<code>Syntax Tree</code>）</li>
+<li>使用翻译器（<code>Translator</code>），将代码转为字节码（<code>Bytecode</code>）</li>
+<li>使用字节码解释器（<code>Bytecode Interpreter</code>），将字节码转为机器码</li>
+</ul>
+<p>逐行解释将字节码转为机器码，是很低效的，为了提高运行速度，现代浏览器改为采用即时编译（<code>Just In Time compiler</code>，<code>JIT</code>），即字节码只在运行时编译，用到哪一行就编译哪一行，并且把编译结果缓存（<code>Inline Cache</code>），通常来说，一个程序被经常用到的，只是其中一小部分代码，有了缓存的编译结果，整个程序的运行速度就会显著提升</p>
+<p>关于这部分更为详细的内容可以参考我们之前整理过的 <a href="https://heptaluan.github.io/2020/08/02/JavaScript/54/" target="_blank" rel="noopener">V8 引擎机制</a> 这篇文章了解更多</p>
+<h4 id="12-什么是渲染层合并（Composite）"><a href="#12-什么是渲染层合并（Composite）" class="headerlink" title="12. 什么是渲染层合并（Composite）"></a>12. 什么是渲染层合并（Composite）</h4><p>渲染层合并，对于页面中 <code>DOM</code> 元素的绘制（<code>Paint</code>）是在多个层上进行的，在每个层上完成绘制过程之后，浏览器会将绘制的位图发送给 <code>GPU</code> 绘制到屏幕上，将所有层按照合理的顺序合并成一个图层，然后在屏幕上呈现，对于有位置重叠的元素的页面，这个过程尤其重要，因为一旦图层的合并顺序出错，将会导致元素显示异常</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-17.png" alt></p>
+<p>如上图</p>
+<ul>
+<li><code>RenderLayers</code> 渲染层，这是负责对应 <code>DOM</code> 子树</li>
+<li><code>GraphicsLayers</code> 图形层，这是负责对应 <code>RenderLayers</code> 子树</li>
+<li><code>RenderObjects</code> 保持了树结构，一个 <code>RenderObjects</code> 知道如何绘制一个 <code>Node</code> 的内容，通过向一个绘图上下文（<code>GraphicsContext</code>）发出必要的绘制调用来绘制 <code>Nodes</code></li>
+</ul>
+<p>每个 <code>GraphicsLayer</code> 都有一个 <code>GraphicsContext</code>，<code>GraphicsContext</code> 会负责输出该层的位图，位图是存储在共享内存中，作为纹理上传到 <code>GPU</code> 中，最后由 <code>GPU</code> 将多个位图进行合成，然后画到屏幕上，此时我们的页面也就展现到了屏幕上</p>
+<p><code>GraphicsContext</code> 绘图上下文的责任就是向屏幕进行像素绘制（这个过程是先把像素级的数据写入位图中，然后再显示到显示器），在 <code>Chrome</code> 里，绘图上下文是包裹了的 <code>Skia</code>（<code>Chrome</code> 自己的 <code>2D</code> 图形绘制库）</p>
+<p>某些特殊的渲染层会被认为是合成层（<code>Compositing Layers</code>），合成层拥有单独的 <code>GraphicsLayer</code>，而其他不是合成层的渲染层，则和其第一个拥有 <code>GraphicsLayer</code> 父层公用一个</p>
+<h6 id="合成层的优点"><a href="#合成层的优点" class="headerlink" title="合成层的优点"></a>合成层的优点</h6><p>一旦 <code>renderLayer</code> 提升为了合成层就会有自己的绘图上下文，并且会开启硬件加速，有利于性能提升</p>
+<ul>
+<li>合成层的位图，会交由 <code>GPU</code> 合成，比 <code>CPU</code> 处理要快，也就是说，提升到合成层后合成层的位图会交 <code>GPU</code> 处理，但请注意，仅仅只是合成的处理（把绘图上下文的位图输出进行组合）需要用到 <code>GPU</code>，生成合成层的位图处理（绘图上下文的工作）是需要 <code>CPU</code></li>
+<li>当需要 <code>repaint</code> 时，只需要 <code>repaint</code> 本身，不会影响到其他的层，当需要 <code>repaint</code> 的时候可以只 <code>repaint</code> 本身，不影响其他层，但是 <code>paint</code> 之前还有 <code>style</code>，<code>layout</code> 那就意味着即使合成层只是 <code>repaint</code> 了自己，但 <code>style</code> 和 <code>layout</code> 本身就很占用时间</li>
+<li>对于 <code>transform</code> 和 <code>opacity</code> 效果，不会触发 <code>layout</code> 和 <code>paint</code>，仅仅是 <code>transform</code> 和 <code>opacity</code> 不会引发 <code>layout</code> 和 <code>paint</code>，其他的属性不确定</li>
+</ul>
+<p>一般一个元素开启硬件加速后会变成合成层，可以独立于普通文档流中，改动后可以避免整个页面重绘，提升性能</p>
+<p>注意不能滥用 <code>GPU</code> 加速，一定要分析其实际性能表现，因为 <code>GPU</code> 加速创建渲染层是有代价的，每创建一个新的渲染层，就意味着新的内存分配和更复杂的层的管理，并且在移动端 <code>GPU</code> 和 <code>CPU</code> 的带宽有限制，创建的渲染层过多时，合成也会消耗跟多的时间，随之而来的就是耗电更多，内存占用更多，过多的渲染层来带的开销而对页面渲染性能产生的影响，甚至远远超过了它在性能改善上带来的好处</p>
+<p>更多详细内容可以参考下面几个链接</p>
+<ul>
+<li><a href="https://www.html5rocks.com/zh/tutorials/speed/layers/" target="_blank" rel="noopener">Accelerated Rendering in Chrome</a></li>
+<li><a href="https://www.smashingmagazine.com/2016/12/gpu-animation-doing-it-right/" target="_blank" rel="noopener">CSS GPU Animation: Doing It Right</a></li>
+<li><a href="https://fed.taobao.org/blog/taofed/do71ct/performance-composite/?spm=taofed.blogs.blog-list.10.67bd5ac8fHy0LS" target="_blank" rel="noopener">无线性能优化：Composite</a></li>
+</ul>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>浏览器渲染工作的主流程分为下面五个步骤（如下图所示）<ol>
+<li>解析 <code>HTML</code> 文件，构建 <code>DOM</code> 树，同时浏览器主进程负责下载 <code>CSS</code> 文件</li>
+<li><code>CSS</code> 文件下载完成，解析 <code>CSS</code> 文件成树形的数据结构，然后结合 <code>DOM</code> 树合并成 <code>RenderObject</code> 树</li>
+<li>布局 <code>RenderObject</code> 树（<code>Layout/reflow</code>），负责 <code>RenderObject</code> 树中的元素的尺寸，位置等计算</li>
+<li>绘制 <code>RenderObject</code> 树（<code>paint</code>），绘制页面的像素信息</li>
+<li>浏览器主进程将默认的图层和复合图层交给 <code>GPU</code> 进程，<code>GPU</code> 进程再将各个图层合成（<code>composite</code>），最后显示出页面</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-13.png" alt></p>
+<ul>
+<li><code>CSSOM</code> 会阻塞渲染，只有当 <code>CSSOM</code> 构建完毕后才会进入下一个阶段构建渲染树</li>
+<li>通常情况下 <code>DOM</code> 和 <code>CSSOM</code> 是并行构建的，但是当浏览器遇到一个不带 <code>defer</code> 或 <code>async</code> 属性的 <code>&lt;script&gt;</code> 标签时，<code>DOM</code> 构建将暂停，如果此时又恰巧浏览器尚未完成 <code>CSSOM</code> 的下载和构建，由于 <code>JavaScript</code> 可以修改 <code>CSSOM</code>，所以需要等 <code>CSSOM</code> 构建完毕后再执行 <code>JavaScript</code>，最后才重新 <code>DOM</code> 构建</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://juejin.im/entry/58f867045c497d0058e2ff3a" target="_blank" rel="noopener">解秘 FOUC</a></li>
+<li><a href="https://varvy.com/performance/cssom.html" target="_blank" rel="noopener">CSSOM 介绍</a></li>
+<li><a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/?hl=en" target="_blank" rel="noopener">Critical Rendering Path</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/JavaScript/">JavaScript</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/07/13/JavaScript/44/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">迭代器与生成器</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/07/05/Node/04/">
+                <span class="level-item">Node.js 中的事件轮询机制</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '53c08eccd115775c94482ca8c4d6e1e3',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#浏览器的主要组成部分">
+        <span class="has-mr-6">1</span>
+        <span>浏览器的主要组成部分</span>
+        </a></li><li>
+        <a class="is-flex" href="#浏览器的主要进程">
+        <span class="has-mr-6">2</span>
+        <span>浏览器的主要进程</span>
+        </a></li><li>
+        <a class="is-flex" href="#渲染进程（浏览器内核）">
+        <span class="has-mr-6">3</span>
+        <span>渲染进程（浏览器内核）</span>
+        </a></li><li>
+        <a class="is-flex" href="#渲染过程">
+        <span class="has-mr-6">4</span>
+        <span>渲染过程</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#1、解析-HTML-标签，构建-DOM-树">
+        <span class="has-mr-6">4.1</span>
+        <span>1、解析 HTML 标签，构建 DOM 树</span>
+        </a></li><li>
+        <a class="is-flex" href="#2-解析-CSS-标签，构建-CSSOM-树">
+        <span class="has-mr-6">4.2</span>
+        <span>2. 解析 CSS 标签，构建 CSSOM 树</span>
+        </a></li><li>
+        <a class="is-flex" href="#3-把-DOM-和-CSSOM-组合成渲染树">
+        <span class="has-mr-6">4.3</span>
+        <span>3. 把 DOM 和 CSSOM 组合成渲染树</span>
+        </a></li><li>
+        <a class="is-flex" href="#4-在渲染树的基础上进行布局，计算每个节点的几何结构">
+        <span class="has-mr-6">4.4</span>
+        <span>4. 在渲染树的基础上进行布局，计算每个节点的几何结构</span>
+        </a></li><li>
+        <a class="is-flex" href="#5-把每个节点绘制到屏幕上">
+        <span class="has-mr-6">4.5</span>
+        <span>5. 把每个节点绘制到屏幕上</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#渲染过程拆解">
+        <span class="has-mr-6">5</span>
+        <span>渲染过程拆解</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#JavaScript-CSS-gt-Style-gt-layout-gt-Paint-gt-Composite">
+        <span class="has-mr-6">5.1</span>
+        <span>JavaScript/CSS &gt; Style &gt; layout &gt; Paint &gt; Composite</span>
+        </a></li><li>
+        <a class="is-flex" href="#JavaScript-CSS-gt-Style-gt-Paint-gt-Composite">
+        <span class="has-mr-6">5.2</span>
+        <span>JavaScript/CSS &gt; Style &gt; Paint &gt; Composite</span>
+        </a></li><li>
+        <a class="is-flex" href="#JavaScript-CSS-gt-Style-gt-Composite">
+        <span class="has-mr-6">5.3</span>
+        <span>JavaScript/CSS &gt; Style &gt; Composite</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#补充说明">
+        <span class="has-mr-6">6</span>
+        <span>补充说明</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#1-CSSOM">
+        <span class="has-mr-6">6.1</span>
+        <span>1. CSSOM</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#CSSOM-是做什么的">
+        <span class="has-mr-6">6.1.1</span>
+        <span>CSSOM 是做什么的</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用-CSSOM">
+        <span class="has-mr-6">6.1.2</span>
+        <span>使用 CSSOM</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#2-为什么-JavaScript-是单线程的">
+        <span class="has-mr-6">6.2</span>
+        <span>2. 为什么 JavaScript 是单线程的</span>
+        </a></li><li>
+        <a class="is-flex" href="#3-为什么-GUI-渲染线程为什么与-JavaScript-引擎线程互斥">
+        <span class="has-mr-6">6.3</span>
+        <span>3. 为什么 GUI 渲染线程为什么与 JavaScript 引擎线程互斥</span>
+        </a></li><li>
+        <a class="is-flex" href="#4-CSS-加载会造成阻塞吗">
+        <span class="has-mr-6">6.4</span>
+        <span>4. CSS 加载会造成阻塞吗</span>
+        </a></li><li>
+        <a class="is-flex" href="#5-DOMContentLoaded-与-onload-的区别">
+        <span class="has-mr-6">6.5</span>
+        <span>5. DOMContentLoaded 与 onload 的区别</span>
+        </a></li><li>
+        <a class="is-flex" href="#6-如何优化-CRP">
+        <span class="has-mr-6">6.6</span>
+        <span>6. 如何优化 CRP</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#优化-DOM">
+        <span class="has-mr-6">6.6.1</span>
+        <span>优化 DOM</span>
+        </a></li><li>
+        <a class="is-flex" href="#优化-CSSOM">
+        <span class="has-mr-6">6.6.2</span>
+        <span>优化 CSSOM</span>
+        </a></li><li>
+        <a class="is-flex" href="#优化-JavaScript">
+        <span class="has-mr-6">6.6.3</span>
+        <span>优化 JavaScript</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结">
+        <span class="has-mr-6">6.6.4</span>
+        <span>总结</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#7-Async-和-Defer-的区别">
+        <span class="has-mr-6">6.7</span>
+        <span>7. Async 和 Defer 的区别</span>
+        </a></li><li>
+        <a class="is-flex" href="#8-如何解析-CSS-选择器">
+        <span class="has-mr-6">6.8</span>
+        <span>8. 如何解析 CSS 选择器</span>
+        </a></li><li>
+        <a class="is-flex" href="#9-回流与重绘">
+        <span class="has-mr-6">6.9</span>
+        <span>9. 回流与重绘</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#常见引起回流属性和方法">
+        <span class="has-mr-6">6.9.1</span>
+        <span>常见引起回流属性和方法</span>
+        </a></li><li>
+        <a class="is-flex" href="#常见引起重绘属性和方法">
+        <span class="has-mr-6">6.9.2</span>
+        <span>常见引起重绘属性和方法</span>
+        </a></li><li>
+        <a class="is-flex" href="#如何减少回流、重绘">
+        <span class="has-mr-6">6.9.3</span>
+        <span>如何减少回流、重绘</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#10-性能优化策略">
+        <span class="has-mr-6">6.10</span>
+        <span>10. 性能优化策略</span>
+        </a></li><li>
+        <a class="is-flex" href="#11-浏览器解析-JavaScript-的过程">
+        <span class="has-mr-6">6.11</span>
+        <span>11. 浏览器解析 JavaScript 的过程</span>
+        </a></li><li>
+        <a class="is-flex" href="#12-什么是渲染层合并（Composite）">
+        <span class="has-mr-6">6.12</span>
+        <span>12. 什么是渲染层合并（Composite）</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#合成层的优点">
+        <span class="has-mr-6">6.12.1</span>
+        <span>合成层的优点</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#总结-1">
+        <span class="has-mr-6">7</span>
+        <span>总结</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">8</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="浏览器的渲染机制" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

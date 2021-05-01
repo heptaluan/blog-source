@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Async 和 Await - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="最后更新于 2019-12-14  因为最近在复习相关内容，所以打算从头开始重新的梳理一下 async 和 await 的相关内容，主要包括它们是什么，有什么作用以及最后我们会来手动的实现一个简易版本的 async，那么我们就先从什么是 async 开始看起吧">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Async 和 Await">
+<meta property="og:url" content="http://yoursite.com/2020/01/16/JavaScript/50/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="最后更新于 2019-12-14  因为最近在复习相关内容，所以打算从头开始重新的梳理一下 async 和 await 的相关内容，主要包括它们是什么，有什么作用以及最后我们会来手动的实现一个简易版本的 async，那么我们就先从什么是 async 开始看起吧">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/50.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Async 和 Await">
+<meta name="twitter:description" content="最后更新于 2019-12-14  因为最近在复习相关内容，所以打算从头开始重新的梳理一下 async 和 await 的相关内容，主要包括它们是什么，有什么作用以及最后我们会来手动的实现一个简易版本的 async，那么我们就先从什么是 async 开始看起吧">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/50.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Async 和 Await" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/50.webp" alt="Async 和 Await">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2020-01-16</div>
+                <!-- <time class="level-item has-text-grey" datetime="2020-01-15T16:00:00.000Z">2020-01-16</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    30 分钟 读完 (大约 4432 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Async 和 Await
+            
+        </h1>
+        <div class="content">
+            <blockquote>
+<p>最后更新于 <code>2019-12-14</code></p>
+</blockquote>
+<p>因为最近在复习相关内容，所以打算从头开始重新的梳理一下 <code>async</code> 和 <code>await</code> 的相关内容，主要包括它们是什么，有什么作用以及最后我们会来手动的实现一个简易版本的 <code>async</code>，那么我们就先从什么是 <code>async</code> 开始看起吧</p>
+<a id="more"></a>
+
+
+<h2 id="Async"><a href="#Async" class="headerlink" title="Async"></a>Async</h2><p>从字面意思上很好理解，<code>async</code> 是异步的意思，<code>await</code> 有等待的意思，而两者的用法上也是如此，<code>async</code> 用于申明一个 <code>function</code> 是异步的，而 <code>await</code> 用于等待一个异步方法执行完成，我们先来看看它是如何使用的，比如下面这个读取文件的例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> readFile = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">fileName</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) </span>&#123;</span><br><span class="line">    fs.readFile(fileName, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, data</span>) </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (error) <span class="hljs-keyword">return</span> reject(error)</span><br><span class="line">      resolve(data)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// generator 函数写法</span></span><br><span class="line"><span class="hljs-keyword">const</span> gen = <span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> f1 = <span class="hljs-keyword">yield</span> readFile(<span class="hljs-string">'./1.txt'</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> f2 = <span class="hljs-keyword">yield</span> readFile(<span class="hljs-string">'./2.txt'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(f1.toString())</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(f2.toString())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// async 函数写法</span></span><br><span class="line"><span class="hljs-keyword">const</span> asyncReadFile = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> f1 = <span class="hljs-keyword">await</span> readFile(<span class="hljs-string">'./1.txt'</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> f2 = <span class="hljs-keyword">await</span> readFile(<span class="hljs-string">'./2.txt'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(f1.toString())</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(f2.toString())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们特意声明了一个 <code>generator</code> 函数用来进行对比，对比可以发现 <code>async</code> 其实就是一个函数的修饰符，在异步处理上就是 <code>generator</code> 函数的语法糖，相比较于 <code>generator</code> 当中的 <code>*</code> 和 <code>yield</code>，它的语义更为清楚一些，<code>async</code> 表示函数里有异步操作，<code>await</code> 表示紧跟在后面的表达式需要等待结果</p>
+<p>下面我们就先来看看 <code>async</code> 的具体用法，<code>async</code> 的语法很简单，就是在函数开头加一个关键字</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以来试着直接调用一下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f()  <span class="hljs-comment">// Promise &#123; &lt;resolved&gt;: 1 &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现，输出的是一个 <code>Promise</code> 对象，那么我们就可以推断出，如果在 <code>async</code> 函数中 <code>return</code> 一个直接量，<code>async</code> 会把这个直接量通过 <code>resolve()</code> 封装成 <code>Promise</code> 对象返回，那么针对上面的这个例子，如果在最外层不能用 <code>await</code> 获取其返回值的情况下，我们便可以使用针对 <code>Promise</code> 标准的处理方式来进行处理，即使用 <code>then()</code> 方法，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">f().then(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(res)  <span class="hljs-comment">// 1</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>通过输出的结果我们可以知道，其实 <code>async</code> 函数内部 <code>return</code> 语句返回的值，会成为 <code>then</code> 方法回调函数的参数，但是我们思考一下，如果 <code>async</code> 函数没有返回值，那又会如何处理呢？其实很简单，它会直接返回 <code>resolve(undefined)</code>，因为如果在没有 <code>await</code> 的情况下去执行 <code>async</code> 函数，它会立即执行返回一个 <code>Promise</code> 对象，并且绝不会阻塞后面的语句，这和普通返回 <code>Promise</code> 对象的函数并无二致，在简单了解完 <code>async</code> 以后，下面我们在来看看 <code>await</code> 这个关键字</p>
+<h2 id="Await"><a href="#Await" class="headerlink" title="Await"></a>Await</h2><p>关键词 <code>await</code> 是等待的意思，那么它在等待什么呢？根据 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/await" target="_blank" rel="noopener">MDN</a> 可知，<code>await</code> 操作符用于等待一个 <code>Promise</code> 对象或者任何要等待的值，它会返回 <code>Promise</code> 对象的处理结果，如果等待的不是 <code>Promise</code> 对象，<code>await</code> 会把该值转换为已正常处理的 <code>Promise</code>，然后等待其处理结果，基本语法如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[return_value] = <span class="hljs-keyword">await</span> expression</span><br></pre></td></tr></table></figure>
+
+<p>这里有一个需要注意的地方，那就是 <code>await</code> 所要等待的并不一定要是 <code>Promise</code> 对象，后面实际是可以接普通函数调用或者直接量的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 普通函数</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSomething</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-string">'hello'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// async 函数</span></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testAsync</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-string">'world'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> v1 = <span class="hljs-keyword">await</span> getSomething()</span><br><span class="line">  <span class="hljs-keyword">const</span> v2 = <span class="hljs-keyword">await</span> testAsync()</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(v1, v2)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()  <span class="hljs-comment">// hello world</span></span><br></pre></td></tr></table></figure>
+
+<p>那么这里就会存在一个问题，即为什么 <code>await</code> 关键词只能在 <code>async</code> 函数中使用呢？这是因为 <code>async</code> 函数返回的是一个 <code>Promise</code> 对象，必须等到内部所有 <code>await</code> 命令后面的 <code>Promise</code> 对象执行完，才会发生状态改变，而 <code>await</code> 操作符等的就是这样一个返回的结果，如果是同步的情况，那就直接返回了，但是在异步的情况下，<code>await</code> 会阻塞整一个流程，直到结果返回之后，才会继续下面的代码，如果希望多个请求可以并发执行，可以使用 <code>Promise.all</code> 或者 <code>Promise.allSettled</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">dbFuc</span>(<span class="hljs-params">db</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> docs = [&#123;&#125;, &#123;&#125;, &#123;&#125;]</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 这里会报错，因为 await 的上一级函数不是 async 函数</span></span><br><span class="line">  docs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">doc</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">await</span> db.post(doc)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 针对于这种情况可以采用 for 循环或者使用数组的 reduce 方法，第一种，使用 for 循环</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> doc <span class="hljs-keyword">of</span> docs) &#123;</span><br><span class="line">    <span class="hljs-keyword">await</span> db.post(doc)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 第二种，使用数组的 reduce 方法</span></span><br><span class="line">  <span class="hljs-keyword">await</span> docs.reduce(<span class="hljs-keyword">async</span> (_, doc) =&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">await</span> _</span><br><span class="line">    <span class="hljs-keyword">await</span> db.post(doc)</span><br><span class="line">  &#125;, <span class="hljs-literal">undefined</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>在了解了 <code>async</code> 和 <code>await</code> 的基本概念以后，我们来通过一个示例加深一下理解，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setTime</span>(<span class="hljs-params">time</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123; <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>) &#125;, time)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">log</span>(<span class="hljs-params">val, time</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> setTime(time)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(val)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">log(<span class="hljs-number">2</span>, <span class="hljs-number">3000</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 2 ==&gt; 立即输出</span></span><br><span class="line"><span class="hljs-comment">// 1 ==&gt; 三秒后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>通过观察可以发现，为何我们明明写了 <code>await setTimeout</code>，但是 <code>log</code> 函数却并没有等到 <code>setTimeout</code> 执行完毕后再打印？带着这个疑问我们先来看下面这几个例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 示例一</span></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>), <span class="hljs-number">3000</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 2 ==&gt; 立即输出</span></span><br><span class="line"><span class="hljs-comment">// 1 ==&gt; 三秒后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>是不是和开头的示例类似，不急，我们接着往下看</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 示例二</span></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>), <span class="hljs-number">3000</span>))</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 1 ==&gt; 三秒后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>这一次我们使用一个 <code>new Promise()</code> 将 <code>setTimeout</code> 包裹了起来，但是并没有设置成功或者失败的回调，可以发现 <code>console.log(2)</code> 这一句并没有执行，再来简单的调整一下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 示例三</span></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> resolve(<span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>)), <span class="hljs-number">3000</span>))</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 1 ==&gt; 三秒后输出</span></span><br><span class="line"><span class="hljs-comment">// 2 ==&gt; 三秒后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>这一次我们将 <code>setTimeout</code> 的结果放入到 <code>resolve</code> 回调当中，发现是可以达到我们预期的输出，首先 <code>await</code> 后面如果跟的是一个 <code>Promise</code>对象，所以它会去等该 <code>promise resolve</code> 后才会继续下面的执行，所以会在三秒后输出 <code>1</code> 和 <code>2</code>，以为这样就完了？我们接着往下看</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 示例四</span></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.resolve(setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>), <span class="hljs-number">3000</span>))</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 2 ==&gt; 立即输出</span></span><br><span class="line"><span class="hljs-comment">// 1 ==&gt; 三秒后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>我们这次没有使用 <code>new Promise()</code> 将 <code>setTimeout</code> 包裹，而是直接使用 <code>Promise.resolve()</code>，发现结果又和开头部分的几个示例一样了，这是因为 <code>await</code> 后面是一个已经 <code>resolve</code> 的 <code>Promise</code>，所以会直接进入到下一步</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 示例五</span></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.all([setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>), <span class="hljs-number">3000</span>)])</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 2 ==&gt; 立即输出</span></span><br><span class="line"><span class="hljs-comment">// 1 ==&gt; 三秒后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>我们这一次换成了 <code>Promise.all</code>，可以发现当 <code>all</code> 的数组元素不是 <code>Promise</code> 的时候会调用 <code>Promise.resolve</code> 方法进行包装，所以产生的结果与示例四是一样的，通过上面连续的几个示例我们可以发现，<code>await</code> 后面跟着的函数是会被立即调用的（非 <code>Promise</code>）</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>), <span class="hljs-number">1000</span>)</span><br><span class="line">  <span class="hljs-keyword">await</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>), <span class="hljs-number">3000</span>)</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 3 ==&gt; 立即输出</span></span><br><span class="line"><span class="hljs-comment">// 1 ==&gt; 一秒后输出</span></span><br><span class="line"><span class="hljs-comment">// 2 ==&gt; 三秒后输出</span></span><br></pre></td></tr></table></figure>
+
+<p>但是这并不代表它们执行全是同步的，请看下列代码的输出</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>)</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">4</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 1</span></span><br><span class="line"><span class="hljs-comment">// 2</span></span><br><span class="line"><span class="hljs-comment">// 3</span></span><br><span class="line"><span class="hljs-comment">// 4</span></span><br></pre></td></tr></table></figure>
+
+<p>为什么会造成这样的结果呢，我们来将其稍微调整一下，就成为了下面的这个样子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>)</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>))</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-number">4</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo()</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这样写的话看起来就好理解了，先输出 <code>1</code>，然后发现了 <code>await</code>，又发现等待的不是 <code>Promise</code> 对象，所以就会调用 <code>Promise.resolve</code> 方法进行包装，然后就输出了 <code>2</code>，但是却会有个异步的过程，这样 <code>3</code> 就会被输出，最后在输出 <code>4</code></p>
+<h2 id="Async-和-Await-的优势"><a href="#Async-和-Await-的优势" class="headerlink" title="Async 和 Await 的优势"></a>Async 和 Await 的优势</h2><p>严谨的说，<code>async</code> 是一种语法，<code>Promise</code> 是一个内置对象，两者并不具备可比性，更何况 <code>async</code> 函数实际上返回的也是一个 <code>Promise</code> 对象，所以下面我们就来看看几种异步处理方法之间的比较，其实在 <code>ES6</code> 之前，异步编程的方法，大概有下面这几种</p>
+<ul>
+<li>回调函数</li>
+<li>事件监听</li>
+<li>发布/订阅</li>
+</ul>
+<p>不过今天我们不会介绍这些，我们今天主要来看 <code>Promise</code>、<code>generator</code> 函数与 <code>async</code> 函数的比较，如果想了解其他部分可以自行查阅相关知识点，我们还是以一个示例进行比较，我们假定某个 <code>DOM</code> 元素上面，部署了一系列的动画，前一个动画结束，才能开始后一个，如果当中有一个动画出错，就不再往下执行，返回上一个成功执行的动画的返回值，先来看看 <code>Promise</code> 的写法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chainAnimationsPromise</span>(<span class="hljs-params">elem, animations</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> ret = <span class="hljs-literal">null</span>                  <span class="hljs-comment">// 变量 ret 用来保存上一个动画的返回值</span></span><br><span class="line">  <span class="hljs-keyword">let</span> p = <span class="hljs-built_in">Promise</span>.resolve()       <span class="hljs-comment">// 新建一个空的 promise</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> anim <span class="hljs-keyword">of</span> animations) &#123;  <span class="hljs-comment">// 使用 then 方法，添加所有动画</span></span><br><span class="line">    p = p.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">val</span>) </span>&#123;</span><br><span class="line">      ret = val</span><br><span class="line">      <span class="hljs-keyword">return</span> anim(elem)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> p.catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;   <span class="hljs-comment">// 返回一个部署了错误捕捉机制的 promise</span></span><br><span class="line">    <span class="hljs-comment">/* 忽略错误，继续执行 */</span></span><br><span class="line">  &#125;).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> ret</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一眼看上去，代码完全都是 <code>Promise</code> 的相关 <code>API</code>（<code>then</code>、<code>catch</code> 等等），操作本身的语义反而不容易看出来，下面我们再来看看 <code>generator</code> 函数的写法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chainAnimationsGenerator</span>(<span class="hljs-params">elem, animations</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> ret = <span class="hljs-literal">null</span></span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> anim <span class="hljs-keyword">of</span> animations) &#123;</span><br><span class="line">        ret = <span class="hljs-keyword">yield</span> anim(elem)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> (e) &#123;</span><br><span class="line">      <span class="hljs-comment">/* 忽略错误，继续执行 */</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> ret</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现 <code>generator</code> 函数的写法语义比 <code>Promise</code> 写法更清晰，用户定义的操作全部都出现在 <code>spawn</code> 函数的内部，但是问题在于必须有一个任务运行器来自动执行 <code>generator</code> 函数，上面代码的 <code>spawn</code> 函数就是自动执行器，它返回一个 <code>Promise</code> 对象，而且必须保证 <code>yield</code> 语句后面的表达式，必须返回一个 <code>Promise</code>，最后我们再来看看 <code>async</code> 函数的写法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chainAnimationsAsync</span>(<span class="hljs-params">elem, animations</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> ret = <span class="hljs-literal">null</span></span><br><span class="line">  <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> anim <span class="hljs-keyword">of</span> animations) &#123;</span><br><span class="line">      ret = <span class="hljs-keyword">await</span> anim(elem)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="hljs-keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="hljs-comment">/* 忽略错误，继续执行 */</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> ret</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现 <code>async</code> 函数的实现最简洁，最符合语义，几乎没有语义不相关的代码，但是也不要为了使用 <code>async</code> 而去使用 <code>async</code>，所有的异步处理方法存在即合理，没有那个最好，只有最合适，在处理不同的实际情况时，我们选择最适合的处理方法即可</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p><code>Promise</code> 并不是只有一种 <code>resolve</code>，还有一种 <code>reject</code> 的情况，而 <code>await</code> 只会等待一个结果，那么发生错误了该怎么处理呢？一般有两种方式来进行处理，第一种就是用 <code>try-catch</code> 来做错误捕捉，如果 <code>await</code> 命令后面跟的是 <code>Promise</code> 对象，并且运行结果可能是 <code>rejected</code> 的话，最好把 <code>await</code> 命令放在 <code>try-catch</code> 代码块中</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.reject(<span class="hljs-string">'1'</span>)</span><br><span class="line">  &#125; <span class="hljs-keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(err)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test()  <span class="hljs-comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>第二种就是用 <code>Promise</code> 的 <code>catch</code> 来做错误捕捉</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.reject(<span class="hljs-string">'1'</span>).catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(err)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line">test()  <span class="hljs-comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="简单实现"><a href="#简单实现" class="headerlink" title="简单实现"></a>简单实现</h2><p>我们下面来看一下如何手动的来实现一个 <code>async</code>，其实简单来说，<code>async</code> 函数的实现原理，就是将 <code>generator</code> 函数和自动执行器，包装在一个函数里，比如下面这样</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span>(<span class="hljs-params">args</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 等同于 ==&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span>(<span class="hljs-params">args</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-comment">// ...</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实所有的 <code>async</code> 函数都可以写成上面的第二种形式，其中的 <code>spawn</code> 函数就是自动执行器，不过还是老规矩，我们先从一个示例开始看起，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> getData = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> resolve(<span class="hljs-string">'data'</span>), <span class="hljs-number">1000</span>))</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> getData()</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'data: '</span>, data)</span><br><span class="line">  <span class="hljs-keyword">const</span> data2 = <span class="hljs-keyword">await</span> getData()</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'data2: '</span>, data2)</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-string">'success'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 1 秒后打印 data，再过一秒打印 data2，最后打印 success</span></span><br><span class="line">test().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</span><br></pre></td></tr></table></figure>
+
+<p>我们将其改为 <code>generator</code> 的方式是下面这样的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">testG</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">yield</span> getData()</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'data: '</span>, data)</span><br><span class="line">  <span class="hljs-keyword">const</span> data2 = <span class="hljs-keyword">yield</span> getData()</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'data2: '</span>, data2)</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-string">'success'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是我们都知道，<code>generator</code> 函数是不会自动执行的，需要我们每一次手动的去调用它的 <code>next</code> 方法，才会停留在下一个 <code>yield</code> 的位置，所以利用这个特性，我们只要编写一个自动执行的函数，就可以让这个 <code>generator</code> 函数完全实现 <code>async</code> 函数的功能，也就是下面这样的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> getData = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> resolve(<span class="hljs-string">'data'</span>), <span class="hljs-number">1000</span>))</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> test = spawn(</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">testG</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">yield</span> getData()</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'data: '</span>, data)</span><br><span class="line">    <span class="hljs-keyword">const</span> data2 = <span class="hljs-keyword">yield</span> getData()</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'data2: '</span>, data2)</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-string">'success'</span></span><br><span class="line">  &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">test().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</span><br></pre></td></tr></table></figure>
+
+<p>是不是有点思路了，<code>spawn</code> 方法接受一个 <code>generator</code> 函数，返回一个 <code>Promise</code>，下面我们就来看看 <code>spawn</code> 函数的具体实现</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">spawn</span>(<span class="hljs-params">genF</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) </span>&#123;      <span class="hljs-comment">// 返回的是一个 promise</span></span><br><span class="line">    <span class="hljs-keyword">const</span> gen = genF()                                 <span class="hljs-comment">// 直接调用来生成迭代器</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">step</span>(<span class="hljs-params">nextF</span>) </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">let</span> next</span><br><span class="line">      <span class="hljs-keyword">try</span> &#123;                                            <span class="hljs-comment">// 包裹在 try-catch 中，如果报错了就把 promise 给 reject 掉，外部就可以通过 .catch 获取到错误</span></span><br><span class="line">        next = nextF()                                 <span class="hljs-comment">// next 的结果是一个 &#123; value, done &#125; 的结构</span></span><br><span class="line">      &#125; <span class="hljs-keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> reject(e)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">if</span> (next.done) &#123;                                 <span class="hljs-comment">// 如果已经完成，就直接 resolve 这个 promise</span></span><br><span class="line">        <span class="hljs-keyword">return</span> resolve(next.value)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-built_in">Promise</span>.resolve(next.value).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v</span>) </span>&#123;  <span class="hljs-comment">// 除了最后结束的时候外，每次调用 .next()，其实是返回的都是 &#123; value: Promise, done: false &#125; 的结构</span></span><br><span class="line">        step(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123; <span class="hljs-keyword">return</span> gen.next(v) &#125;)       <span class="hljs-comment">// 只要 done 不是 true 的时候，就会递归的往下解开 promise</span></span><br><span class="line">      &#125;, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;</span><br><span class="line">        step(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123; <span class="hljs-keyword">return</span> gen.throw(e) &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    step(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123; <span class="hljs-keyword">return</span> gen.next(<span class="hljs-literal">undefined</span>) &#125;)   <span class="hljs-comment">// 开启</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实也就是我们经常听闻的 <code>Node.js</code> 中的 <a href="https://heptaluan.github.io/2019/01/02/Node/02/" target="_blank" rel="noopener">co 模块</a> 的实现方式，它的目的也是为了 <code>generator</code> 函数的自动执行</p>
+<h2 id="顶层-Await"><a href="#顶层-Await" class="headerlink" title="顶层 Await"></a>顶层 Await</h2><p>我们在上面曾介绍到说 <code>await</code> 关键词只能在 <code>async</code> 函数中使用，否则都会报错，但是现在有一个 <a href="https://github.com/tc39/proposal-top-level-await" target="_blank" rel="noopener">语法提案</a>（目前提案处于 <code>Status: Stage 3</code>），允许在模块的顶层独立使用 <code>await</code> 命令，这个提案的目的，是借用 <code>await</code> 解决模块异步加载的问题，比如下面这种情况</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// awaiting.js，模块的输出值 output 取决于异步操作</span></span><br><span class="line"><span class="hljs-keyword">let</span> output</span><br><span class="line">(<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> dynamic = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(someMission)</span><br><span class="line">  <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> fetch(url)</span><br><span class="line">  output = someProcess(dynamic.default, data)</span><br><span class="line">&#125;)()</span><br><span class="line"><span class="hljs-keyword">export</span> &#123; output &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// usage.js，加载 awaiting.js 的模块</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; output &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'./awaiting.js'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outputPlusValue</span>(<span class="hljs-params">value</span>) </span>&#123; <span class="hljs-keyword">return</span> output + value &#125;</span><br><span class="line"><span class="hljs-built_in">console</span>.log(outputPlusValue(<span class="hljs-number">100</span>))</span><br><span class="line">setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(outputPlusValue(<span class="hljs-number">100</span>), <span class="hljs-number">1000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果运行了可以发现，<code>outputPlusValue()</code> 的执行结果，完全取决于执行的时间，如果 <code>awaiting.js</code> 里面的异步操作没执行完，加载进来的 <code>output</code> 的值就是 <code>undefined</code>，目前的解决方法是让原始模块输出一个 <code>Promise</code> 对象，从这个 <code>Promise</code> 对象判断异步操作有没有结束</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// usage.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> promise, &#123; output &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'./awaiting.js'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outputPlusValue</span>(<span class="hljs-params">value</span>) </span>&#123; <span class="hljs-keyword">return</span> output + value &#125;</span><br><span class="line">promise.then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(outputPlusValue(<span class="hljs-number">100</span>))</span><br><span class="line">  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(outputPlusValue(<span class="hljs-number">100</span>)), <span class="hljs-number">1000</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，将 <code>awaiting.js</code> 对象的输出，放在 <code>promise.then()</code> 里面，这样就能保证异步操作完成以后，才去读取 <code>output</code>，但是这种写法比较麻烦，等于要求模块的使用者遵守一个额外的使用协议，按照特殊的方法使用这个模块，一旦你忘了要用 <code>Promise</code> 加载，只使用正常的加载方法，依赖这个模块的代码就可能出错，而且如果上面的 <code>usage.js</code> 又有对外的输出，等于这个依赖链的所有模块都要使用 <code>Promise</code> 加载</p>
+<p>但是如果有了顶层 <code>await</code> 以后就简单了许多，顶层的 <code>await</code> 命令，它会保证只有异步操作完成，模块才会输出值</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// awaiting.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> dynamic = <span class="hljs-keyword">import</span>(someMission)</span><br><span class="line"><span class="hljs-keyword">const</span> data = fetch(url)</span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> output = someProcess((<span class="hljs-keyword">await</span> dynamic).default, <span class="hljs-keyword">await</span> data)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// usage.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; output &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'./awaiting.js'</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outputPlusValue</span>(<span class="hljs-params">value</span>) </span>&#123; <span class="hljs-keyword">return</span> output + value &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(outputPlusValue(<span class="hljs-number">100</span>))</span><br><span class="line">setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(outputPlusValue(<span class="hljs-number">100</span>)), <span class="hljs-number">1000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，两个异步操作在输出的时候，都加上了 <code>await</code> 命令，只有等到异步操作完成，这个模块才会输出值，下面再来看几个顶层 <code>await</code> 的一些使用场景</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// import() 方法加载</span></span><br><span class="line"><span class="hljs-keyword">const</span> strings = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">`/i18n/<span class="hljs-subst">$&#123;navigator.language&#125;</span>`</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 数据库操作</span></span><br><span class="line"><span class="hljs-keyword">const</span> connection = <span class="hljs-keyword">await</span> dbConnector()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 依赖回滚</span></span><br><span class="line"><span class="hljs-keyword">let</span> jQuery</span><br><span class="line"><span class="hljs-keyword">try</span> &#123;</span><br><span class="line">  jQuery = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://cdn-a.com/jQuery'</span>)</span><br><span class="line">&#125; <span class="hljs-keyword">catch</span> &#123;</span><br><span class="line">  jQuery = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://cdn-b.com/jQuery'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外如果加载多个包含顶层 <code>await</code> 命令的模块，加载命令是同步执行的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// x.js</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'X1'</span>)</span><br><span class="line"><span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">r</span> =&gt;</span> setTimeout(r, <span class="hljs-number">1000</span>))</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'X2'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// y.js</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Y'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// z.js</span></span><br><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'./x.js'</span></span><br><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'./y.js'</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Z'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面代码有三个模块，最后的 <code>z.js</code> 加载 <code>x.js</code> 和 <code>y.js</code>，打印结果是 <code>X1</code>、<code>Y</code>、<code>X2</code>、<code>Z</code>，这说明 <code>z.js</code> 并没有等待 <code>x.js</code> 加载完成再去加载 <code>y.js</code>，顶层 <code>await</code> 命令有点像交出代码的执行权给其他的模块加载，等异步操作完成后，再拿回执行权，继续向下执行</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://es6.ruanyifeng.com/#docs/async" target="_blank" rel="noopener">async 函数</a></li>
+<li><a href="https://segmentfault.com/a/1190000007535316" target="_blank" rel="noopener">理解 JavaScript 的 async/await</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/AsyncFunction" target="_blank" rel="noopener">AsyncFunction</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/await" target="_blank" rel="noopener">await</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/JavaScript/">JavaScript</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/01/17/JavaScript/51/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">Object 上的原生 API</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/01/12/Essay/07/">
+                <span class="level-item">线性表（单链表）</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '14aea9ecbc8e331fb591fc2fda935dd3',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#Async">
+        <span class="has-mr-6">1</span>
+        <span>Async</span>
+        </a></li><li>
+        <a class="is-flex" href="#Await">
+        <span class="has-mr-6">2</span>
+        <span>Await</span>
+        </a></li><li>
+        <a class="is-flex" href="#实战">
+        <span class="has-mr-6">3</span>
+        <span>实战</span>
+        </a></li><li>
+        <a class="is-flex" href="#Async-和-Await-的优势">
+        <span class="has-mr-6">4</span>
+        <span>Async 和 Await 的优势</span>
+        </a></li><li>
+        <a class="is-flex" href="#错误处理">
+        <span class="has-mr-6">5</span>
+        <span>错误处理</span>
+        </a></li><li>
+        <a class="is-flex" href="#简单实现">
+        <span class="has-mr-6">6</span>
+        <span>简单实现</span>
+        </a></li><li>
+        <a class="is-flex" href="#顶层-Await">
+        <span class="has-mr-6">7</span>
+        <span>顶层 Await</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">8</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Async 和 Await" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

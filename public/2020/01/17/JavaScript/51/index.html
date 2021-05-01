@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Object 上的原生 API - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="在平常开发过程当中，虽然 Object 上的一些原生方法经常会看到，比如在一些扩展的第三方插件中可能会遇到，但是遇到了类似于 Object.fromEntries() 和 Object.entries() 这种长的比较像的但是使用频率较低的 API，往往又是傻傻分不清楚，更别说它们具体是做什么用的，所以今天就打算将其汇总一下，将 Object 上涉及到的平常可能会遇到的 API 整体的学习记录一下">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Object 上的原生 API">
+<meta property="og:url" content="http://yoursite.com/2020/01/17/JavaScript/51/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="在平常开发过程当中，虽然 Object 上的一些原生方法经常会看到，比如在一些扩展的第三方插件中可能会遇到，但是遇到了类似于 Object.fromEntries() 和 Object.entries() 这种长的比较像的但是使用频率较低的 API，往往又是傻傻分不清楚，更别说它们具体是做什么用的，所以今天就打算将其汇总一下，将 Object 上涉及到的平常可能会遇到的 API 整体的学习记录一下">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/51.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Object 上的原生 API">
+<meta name="twitter:description" content="在平常开发过程当中，虽然 Object 上的一些原生方法经常会看到，比如在一些扩展的第三方插件中可能会遇到，但是遇到了类似于 Object.fromEntries() 和 Object.entries() 这种长的比较像的但是使用频率较低的 API，往往又是傻傻分不清楚，更别说它们具体是做什么用的，所以今天就打算将其汇总一下，将 Object 上涉及到的平常可能会遇到的 API 整体的学习记录一下">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/51.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Object 上的原生 API" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/51.webp" alt="Object 上的原生 API">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2020-01-17</div>
+                <!-- <time class="level-item has-text-grey" datetime="2020-01-16T16:00:00.000Z">2020-01-17</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    31 分钟 读完 (大约 4613 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Object 上的原生 API
+            
+        </h1>
+        <div class="content">
+            <p>在平常开发过程当中，虽然 <code>Object</code> 上的一些原生方法经常会看到，比如在一些扩展的第三方插件中可能会遇到，但是遇到了类似于 <code>Object.fromEntries()</code> 和 <code>Object.entries()</code> 这种长的比较像的但是使用频率较低的 <code>API</code>，往往又是傻傻分不清楚，更别说它们具体是做什么用的，所以今天就打算将其汇总一下，将 <code>Object</code> 上涉及到的平常可能会遇到的 <code>API</code> 整体的学习记录一下，免得下次再次遇到又是一头雾水</p>
+<a id="more"></a>
+
+<p>其实简单来说，<code>Object</code> 上的原生 <code>API</code> 主要分为两部分，一部分是 <code>Object</code> 上面的方法，而另一部分则是 <code>Object.prototype</code> 上面的方法，下面我们就一个一个来看</p>
+<h2 id="Object-上的方法"><a href="#Object-上的方法" class="headerlink" title="Object 上的方法"></a>Object 上的方法</h2><p><code>Object</code> 上面涉及到的方法其实不算很多，大致都可以按类别划分，所以我们将会分类来进行介绍，下表是一些本文当中没有涉及到的方法，其中有一些在之前的文章当中我们也都已经介绍过了，感兴趣的话可以自行参考，所以这里就不详细展开了</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Object.assign()</code></td>
+<td>用于将所有可枚举属性的值从一个或多个源对象复制到目标对象，一般克隆场景使用较多，详细可见 <a href="https://heptaluan.github.io/2018/01/14/JavaScript/24/#%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%B5%85%E6%8B%B7%E8%B4%9D" target="_blank" rel="noopener">对象的浅拷贝</a></td>
+</tr>
+<tr>
+<td><code>Object.create()</code></td>
+<td>创建一个新对象，使用现有的对象来提供新创建的对象的 <code>__proto__</code>，详细可见 <a href="https://heptaluan.github.io/2017/03/03/JavaScript/07/" target="_blank" rel="noopener">Object.create()</a></td>
+</tr>
+<tr>
+<td><code>Object.is(value1, value2)</code></td>
+<td>判断两个值是否是 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Equality_comparisons_and_sameness" target="_blank" rel="noopener">相同的值</a>（同 <code>===</code>），但是这个可以比对 <code>NaN</code></td>
+</tr>
+<tr>
+<td><code>Object.getOwnPropertyNames()</code></td>
+<td>返回一个由指定对象的所有自身属性的属性名（包括不可枚举属性但不包括 <code>Symbol</code> 值作为名称的属性）组成的数组，详细可见 <a href="https://heptaluan.github.io/2019/06/28/JavaScript/35/#Object-getOwnPropertyNames-obj" target="_blank" rel="noopener">Object.getOwnPropertyNames()</a></td>
+</tr>
+<tr>
+<td><code>Object.getOwnPropertySymbols()</code></td>
+<td>返回一个给定对象自身的所有 <code>Symbol</code> 属性的数组</td>
+</tr>
+<tr>
+<td><code>Object.values()</code></td>
+<td>返回一个给定对象自身的所有可枚举属性值的数组</td>
+</tr>
+<tr>
+<td><code>Object.keys()</code></td>
+<td>返回一个由一个给定对象的自身可枚举属性组成的数组，这两个详细可见 <a href="https://heptaluan.github.io/2019/06/28/JavaScript/35/#Object-keys-obj" target="_blank" rel="noopener">Object.keys()</a></td>
+</tr>
+</tbody></table>
+<h2 id="Object-defineProperty-和-Object-defineProperties"><a href="#Object-defineProperty-和-Object-defineProperties" class="headerlink" title="Object.defineProperty() 和 Object.defineProperties()"></a>Object.defineProperty() 和 Object.defineProperties()</h2><p>涉及到的两个方法如下</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Object.defineProperty()</code></td>
+<td>直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回这个对象，详细可见 <a href="https://heptaluan.github.io/2017/05/02/JavaScript/12/" target="_blank" rel="noopener">Object.defineProperty()</a></td>
+</tr>
+<tr>
+<td><code>Object.defineProperties()</code></td>
+<td>这个同上面那个类似，但是可以同时定义和修改多个属性</td>
+</tr>
+</tbody></table>
+<p><code>Object.defineProperty()</code> 这个属性在之前我们已经介绍过了，该方法允许精确添加或修改对象的属性，比如 <code>enumerable</code>，<code>configurable</code> 和 <code>writable</code> 等，也可以用其来实现数据双向绑定，可谓是用处多多，不过我们今天主要来看这个跟它长的十分相像的 <code>Object.defineProperties()</code></p>
+<p>其实它俩是一个东西，不过当定义或修改对象的多个属性时，使用 <code>Object.defineProperty()</code> 就会比较麻烦了，在这种情况下我们可以考虑使用 <code>Object.defineProperties()</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> man = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.defineProperties(man, &#123;</span><br><span class="line">  name: &#123;</span><br><span class="line">    value: <span class="hljs-string">'zhangsan'</span>,</span><br><span class="line">    writable: <span class="hljs-literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  age: &#123;</span><br><span class="line">    value: <span class="hljs-number">20</span>,</span><br><span class="line">    writable: <span class="hljs-literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(man.name)  <span class="hljs-comment">// zhangsan</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(man.age)   <span class="hljs-comment">// 20</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Object-entries-和-Object-fromEntries"><a href="#Object-entries-和-Object-fromEntries" class="headerlink" title="Object.entries() 和 Object.fromEntries()"></a>Object.entries() 和 Object.fromEntries()</h2><p>涉及到的两个方法如下</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Object.entries()</code></td>
+<td>返回一个给定对象自身可枚举属性的键值对数组，详细可见 <a href="https://heptaluan.github.io/2019/06/28/JavaScript/35/#for%E2%80%A6of" target="_blank" rel="noopener">Object.entries(obj)</a></td>
+</tr>
+<tr>
+<td><code>Object.fromEntries()</code></td>
+<td>可以把把键值对列表转换为一个对象</td>
+</tr>
+</tbody></table>
+<p><code>Object.entries()</code> 在迭代器相关章节我们曾经使用过这个方法，它接收一个可以返回其可枚举属性的键值对的对象，返回给定对象自身可枚举属性的键值对数组，<code>Object</code> 之所以不能被 <code>for-of</code> 遍历，主要是因为它没有部署 <code>Iterator</code> 接口，在这种情况下我们可以使用 <code>Object.entries()</code> 将其包裹一下，利用其返回的键值对数组再来进行遍历（会存在一定问题，以实际使用场景来决定是否这样使用），看下面这两个例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> obj = &#123;</span><br><span class="line">  <span class="hljs-number">100</span>: <span class="hljs-string">'a'</span>,</span><br><span class="line">  <span class="hljs-number">2</span>: <span class="hljs-string">'b'</span>,</span><br><span class="line">  <span class="hljs-number">7</span>: <span class="hljs-string">'c'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">Object</span>.entries(obj))            <span class="hljs-comment">// [ ['2', 'b'], ['7', 'c'], ['100', 'a'] ]</span></span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意，上面例子的返回结果的排序是改变过的，至于为什么可以参考 <a href="https://heptaluan.github.io/2019/03/16/JavaScript/32/" target="_blank" rel="noopener">为什么 Object.keys 的返回值会自动排序</a>，另外一个例子就是将 <code>Object</code> 转换为 <code>Map</code>，<code>new Map()</code> 函数接受一个可迭代的 <code>entries</code>，借助 <code>Object.entries</code> 方法可以很容易的将 <code>Object</code> 转换为 <code>Map</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123; <span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>, <span class="hljs-attr">baz</span>: <span class="hljs-number">42</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>(<span class="hljs-built_in">Object</span>.entries(obj)))   <span class="hljs-comment">// Map(2) &#123; 'foo' =&gt; 'bar', 'baz' =&gt; 42 &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>下面我们再来看看 <code>Object.fromEntries()</code> 这个方法，其实简单来说，就是 <code>Object.entries</code> 的反转</p>
+<blockquote>
+<p>但是需要注意的是，这个 <code>API</code> 现在的兼容性还不是很好，可以考虑使用 <a href="https://github.com/facebook/create-react-app/issues/6929" target="_blank" rel="noopener">polyfill</a></p>
+</blockquote>
+<p>该方法接收一个键值对的列表参数（可迭代对象，类似 <code>Array</code>，<code>Map</code> 或者其它实现了可迭代协议的对象）并返回一个由该迭代对象条目提供对应属性的新对象，生成的是一个具有两个元素的类数组的对象，第一个元素是将用作属性键的值，第二个元素是与该属性键关联的值，来看几个例子，比如将 <code>Map</code> 转化为 <code>Object</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>([[<span class="hljs-string">'foo'</span>, <span class="hljs-string">'bar'</span>], [<span class="hljs-string">'baz'</span>, <span class="hljs-number">42</span>]])</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">Object</span>.fromEntries(map))        <span class="hljs-comment">// &#123; foo: 'bar', baz: 42 &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以将 <code>Array</code> 转化为 <code>Object</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> arr = [[<span class="hljs-string">'0'</span>, <span class="hljs-string">'a'</span>], [<span class="hljs-string">'1'</span>, <span class="hljs-string">'b'</span>], [<span class="hljs-string">'2'</span>, <span class="hljs-string">'c'</span>]]</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">Object</span>.fromEntries(arr))        <span class="hljs-comment">// &#123; 0: 'a', 1: 'b', 2: 'c' &#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="getOwnPropertyDescriptor-和-getOwnPropertyDescriptors"><a href="#getOwnPropertyDescriptor-和-getOwnPropertyDescriptors" class="headerlink" title="getOwnPropertyDescriptor() 和 getOwnPropertyDescriptors()"></a>getOwnPropertyDescriptor() 和 getOwnPropertyDescriptors()</h2><p>涉及到的几个方法如下</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Object.getOwnPropertyDescriptor()</code></td>
+<td>返回指定对象上一个自有属性对应的属性描述符（直接赋予的，不需要从原型链上进行查找的属性）</td>
+</tr>
+<tr>
+<td><code>Object.getOwnPropertyDescriptors()</code></td>
+<td>获取一个对象的所有自身属性的描述符</td>
+</tr>
+<tr>
+<td><del><code>Object.setPrototypeOf()</code></del></td>
+<td>这个方法不建议使用，它的作用是设置一个指定的对象的原型到另一个对象，更推荐使用 <code>Object.create()</code></td>
+</tr>
+<tr>
+<td><code>Object.getPrototypeOf()</code></td>
+<td>返回指定对象的原型（内部 <code>[[Prototype]]</code> 属性的值）</td>
+</tr>
+</tbody></table>
+<p>这两个方法的作用也是一样的，都是返回指定对象『自有属性』对应的属性描述符，不过一个是返回指定的，一个是返回全部的</p>
+<blockquote>
+<p>需要注意，这里指的是自有属性，意思是直接赋予该对象的属性，而不需要从原型链上进行查找的属性</p>
+</blockquote>
+<p>两者的语法如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">Object</span>.getOwnPropertyDescriptor(obj, prop)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.getOwnPropertyDescriptors(obj)</span><br></pre></td></tr></table></figure>
+
+<p>下面我们通过一个例子来了解它们如何使用</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.defineProperty(obj, <span class="hljs-string">'age'</span>, &#123;</span><br><span class="line">  value: <span class="hljs-number">20</span>,</span><br><span class="line">  writable: <span class="hljs-literal">false</span>,</span><br><span class="line">  enumerable: <span class="hljs-literal">false</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="hljs-string">'age'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// &#123;</span></span><br><span class="line"><span class="hljs-comment">//   configurable: false</span></span><br><span class="line"><span class="hljs-comment">//   enumerable: false</span></span><br><span class="line"><span class="hljs-comment">//   value: 20</span></span><br><span class="line"><span class="hljs-comment">//   writable: false</span></span><br><span class="line"><span class="hljs-comment">// &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.getOwnPropertyDescriptors(obj)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// age: &#123;</span></span><br><span class="line"><span class="hljs-comment">//   configurable: false</span></span><br><span class="line"><span class="hljs-comment">//   enumerable: false</span></span><br><span class="line"><span class="hljs-comment">//   value: 20</span></span><br><span class="line"><span class="hljs-comment">//   writable: false</span></span><br><span class="line"><span class="hljs-comment">// &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>关于 <code>Object.getOwnPropertyDescriptor(obj, prop)</code> 方法有一个需要注意的地方</p>
+<ul>
+<li>在 <code>ES5</code> 中，如果该方法的第一个参数不是对象（而是基本类型），那么就会产生出现 <code>TypeError</code></li>
+<li>而在 <code>ES6</code> 中，第一个的参数不是对象的话就会被强制转换为对象</li>
+</ul>
+<p>但是 <code>Object.getOwnPropertyDescriptors(obj)</code> 这个方法的作用不仅仅只是用于查看对象的属性描述符，比如还可以用来『浅拷贝』对象</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  a: <span class="hljs-number">1</span>,</span><br><span class="line">  b: &#123;</span><br><span class="line">    name: <span class="hljs-string">'zhangsan'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> newObj = <span class="hljs-built_in">Object</span>.create(</span><br><span class="line">  <span class="hljs-built_in">Object</span>.getPrototypeOf(obj), </span><br><span class="line">  <span class="hljs-built_in">Object</span>.getOwnPropertyDescriptors(obj) </span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(newObj)  <span class="hljs-comment">// &#123; a: 1, b: &#123; name: 'zhangsan' &#125; &#125;</span></span><br><span class="line"></span><br><span class="line">newObj.a = <span class="hljs-number">2</span></span><br><span class="line">newObj.b.name = <span class="hljs-string">'lisi'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj)     <span class="hljs-comment">// &#123; a: 1, b: &#123; name: 'lisi' &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>另外还可以用来创建子类，创建子类的典型方法是定义子类，将其原型设置为超类的实例，然后在该实例上定义属性，其实就是我们常说的继承，也就是原来经常使用的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">father.call(<span class="hljs-keyword">this</span>)</span><br><span class="line">child.prototype = <span class="hljs-keyword">new</span> father()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 但是推荐使用下面这种方式</span></span><br><span class="line">child.prototype = <span class="hljs-built_in">Object</span>.create(father.prototype)</span><br><span class="line">child.prototype.constructor = child</span><br></pre></td></tr></table></figure>
+
+<p>但是现在我们可以通过 <code>Object.getOwnPropertyDescriptors()</code> 更为优雅的来实现</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Foo</span>(<span class="hljs-params"></span>) </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">Foo.prototype = &#123;</span><br><span class="line">  <span class="hljs-comment">// 在这里定义方法和属性</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Bar</span>(<span class="hljs-params"></span>) </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">Bar.prototype = <span class="hljs-built_in">Object</span>.create(Foo.prototype, <span class="hljs-built_in">Object</span>.getOwnPropertyDescriptors(&#123;</span><br><span class="line">  <span class="hljs-comment">// 在这里定义方法和属性</span></span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<p>在上面浅拷贝的例子当中涉及到一个方法 <code>Object.getPrototypeOf(obj)</code>，它的作用是返回指定对象的原型（内部 <code>[[Prototype]]</code> 属性的值），比如下面这个例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> reg = <span class="hljs-regexp">/^\s/</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.getPrototypeOf(reg) === <span class="hljs-built_in">RegExp</span>.prototype  <span class="hljs-comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> obj = &#123; &#125;</span><br><span class="line"><span class="hljs-built_in">Object</span>.getPrototypeOf(obj) === <span class="hljs-built_in">Object</span>.prototype  <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>但是这里特别需要注意了，<code>Object.getPrototypeOf(Object)</code> 返回的并不是 <code>Object.prototype</code>，看下面这个特殊的例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">Object</span>.prototype === <span class="hljs-built_in">Function</span>.prototype.__proto__ <span class="hljs-comment">// true</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.prototype === <span class="hljs-built_in">Function</span>.prototype           <span class="hljs-comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.getPrototypeOf(<span class="hljs-built_in">Object</span>)    <span class="hljs-comment">// ƒ () &#123; [native code] &#125;</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.getPrototypeOf(<span class="hljs-built_in">Function</span>)  <span class="hljs-comment">// ƒ () &#123; [native code] &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.getPrototypeOf(<span class="hljs-built_in">Object</span>) === <span class="hljs-built_in">Function</span>.prototype  <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>JavaScript</code> 中的 <code>Object</code> 其实是构造函数，即是创建对象的包装器，所以我们一般用法是</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>()</span><br></pre></td></tr></table></figure>
+
+<p>而 <code>Object.getPrototypeOf(Object)</code> 的意思是把 <code>Object</code> 这一构造函数看作对象，返回的当然是函数对象的原型，也就是 <code>Function.prototype</code>，所以结果是 <code>true</code>，所以正确的方法应该是，<code>Object.prototype</code> 是构造出来的对象的原型</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>()</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.getPrototypeOf(obj) === <span class="hljs-built_in">Object</span>.prototype  <span class="hljs-comment">// true</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.getPrototypeOf(&#123;&#125;)  === <span class="hljs-built_in">Object</span>.prototype  <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>同样的，<code>Object.getPrototypeOf(obj)</code> 方法在 <code>ES5</code> 中的参数如果不是对象，也会出现 <code>TypeError</code>，而 <code>ES6</code> 中会被强制转换为对象</p>
+<h2 id="Object-preventExtensions-，Object-seal-和-Object-freeze"><a href="#Object-preventExtensions-，Object-seal-和-Object-freeze" class="headerlink" title="Object.preventExtensions()，Object.seal() 和 Object.freeze()"></a>Object.preventExtensions()，Object.seal() 和 Object.freeze()</h2><p>涉及到的几个方法如下</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Object.preventExtensions()</code></td>
+<td>让一个对象变的不可扩展，也就是永远不能再添加新的属性</td>
+</tr>
+<tr>
+<td><code>Object.isExtensible()</code></td>
+<td>判断一个对象是否是可扩展的（是否可以在它上面添加新的属性）</td>
+</tr>
+<tr>
+<td><code>Object.seal()</code></td>
+<td>封闭一个对象，阻止添加新属性并将所有现有属性标记为不可配置</td>
+</tr>
+<tr>
+<td><code>Object.isSealed()</code></td>
+<td>判断一个对象是否被密封</td>
+</tr>
+<tr>
+<td><code>Object.freeze()</code></td>
+<td>冻结一个对象，一个被冻结的对象再也不能被修改</td>
+</tr>
+<tr>
+<td><code>Object.isFrozen()</code></td>
+<td>判断一个对象是否被冻结</td>
+</tr>
+</tbody></table>
+<p>最后这六个我们放到一起来进行介绍，因为它们主要涉及到的都是对象的扩展、密封和冻结，通过字面意思也可以发现，它们针对于对象限制的严格程度是一层更胜一层</p>
+<h4 id="Object-preventExtensions"><a href="#Object-preventExtensions" class="headerlink" title="Object.preventExtensions()"></a>Object.preventExtensions()</h4><p>先来看看 <code>Object.preventExtensions()</code>，它的作用是阻止对象扩展，让一个对象变的不可扩展，也就是永远不能再添加新的属性，但是也有几个需要注意的地方</p>
+<ul>
+<li>一般来说，不可扩展对象的属性可能仍然可被删除，只是不可扩展</li>
+<li><code>Object.preventExtensions()</code> 仅阻止添加属性，但属性仍然可以添加到对象原型</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 示例一</span></span><br><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  name: <span class="hljs-string">'zhangsan'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.preventExtensions(obj)</span><br><span class="line">obj.age = <span class="hljs-number">20</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.age)   <span class="hljs-comment">// undefined</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 示例二</span></span><br><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  name: <span class="hljs-string">'zhangsan'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.preventExtensions(obj)</span><br><span class="line"><span class="hljs-keyword">delete</span> obj.name</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.name)  <span class="hljs-comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>如果是严格模式，则会报错</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">'use strict'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  name: <span class="hljs-string">'zhangsan'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.preventExtensions(obj)</span><br><span class="line"></span><br><span class="line">obj.age = <span class="hljs-number">20</span>  <span class="hljs-comment">// TypeError</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>JavaScript</code> 当中新增了一个 <code>Object.isExtensible()</code> 方法用来判断一个对象是否是可扩展的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 新对象默认是可扩展的</span></span><br><span class="line"><span class="hljs-keyword">var</span> obj = &#123;&#125;</span><br><span class="line"><span class="hljs-built_in">Object</span>.isExtensible(obj)      <span class="hljs-comment">// ==&gt; true</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 让其不可扩展</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.preventExtensions(obj)</span><br><span class="line"><span class="hljs-built_in">Object</span>.isExtensible(obj)      <span class="hljs-comment">// ==&gt; false</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 密封对象是不可扩展的</span></span><br><span class="line"><span class="hljs-keyword">var</span> sealed = <span class="hljs-built_in">Object</span>.seal(&#123;&#125;)</span><br><span class="line"><span class="hljs-built_in">Object</span>.isExtensible(sealed)   <span class="hljs-comment">// ==&gt; false</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 冻结对象也是不可扩展</span></span><br><span class="line"><span class="hljs-keyword">var</span> frozen = <span class="hljs-built_in">Object</span>.freeze(&#123;&#125;)</span><br><span class="line"><span class="hljs-built_in">Object</span>.isExtensible(frozen)   <span class="hljs-comment">// ==&gt; false</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Object-seal"><a href="#Object-seal" class="headerlink" title="Object.seal()"></a>Object.seal()</h4><p>下面我们再来看看密封，密封则会在不可扩展的基础之上更进一步，<code>Object.seal()</code> 方法会封闭一个对象，阻止添加新属性并将所有现有属性标记为不可配置，简单来说就是不能添加新的属性，不能删除已有属性，以及不能修改已有属性的可枚举性、可配置性、可写性，但可以修改已有属性的值的对象</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">'zhangsan'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 密封</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.seal(obj)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 不能添加新属性</span></span><br><span class="line">obj.age = <span class="hljs-number">20</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.age)  <span class="hljs-comment">// undefined</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 注意，现在删除属性也是无效的</span></span><br><span class="line"><span class="hljs-keyword">delete</span> obj.name</span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.name)  <span class="hljs-comment">// zhangsan</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 但是可以修改已有属性</span></span><br><span class="line">obj.name = <span class="hljs-string">'lisi'</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.name)  <span class="hljs-comment">// lisi</span></span><br></pre></td></tr></table></figure>
+
+<p>如果修改已有属性的可枚举性、可配置性、可写性，会提示报错</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  name: <span class="hljs-string">'zhangsan'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.seal(obj)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.defineProperty(obj, name, &#123;</span><br><span class="line">  configurable: <span class="hljs-literal">true</span>,</span><br><span class="line">  writable: <span class="hljs-literal">true</span>,</span><br><span class="line">  enumerable: <span class="hljs-literal">true</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// TypeError</span></span><br></pre></td></tr></table></figure>
+
+<p>同样的，也提供了 <code>Object.isSealed()</code> 方法用来判断一个对象是否被密封</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.seal(obj)</span><br><span class="line"><span class="hljs-built_in">Object</span>.isSealed(obj)  <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>如果一个对象不可扩展，并且它的属性也变的不可配置，则这个对象也就成了密封对象</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  name: <span class="hljs-string">'zhangsan'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.preventExtensions(obj)</span><br><span class="line"><span class="hljs-built_in">Object</span>.defineProperty(obj, <span class="hljs-string">'name'</span>, &#123;</span><br><span class="line">  configurable: <span class="hljs-literal">false</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.isSealed(obj)  <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Object-freeze"><a href="#Object-freeze" class="headerlink" title="Object.freeze()"></a>Object.freeze()</h4><p>最后我们再来看看 <code>Object.freeze()</code> 这个方法，这个方法比 <code>Object.seal</code> 更绝，冻结对象是指那些不能添加新的属性，不能修改已有属性的值，不能删除已有属性，以及不能修改已有属性的可枚举性、可配置性、可写性的对象，也就是说，这个对象永远是不可变的，比如在一般情况下任何修改尝试都会静默失败</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  a: <span class="hljs-number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.freeze(obj)</span><br><span class="line"></span><br><span class="line">obj.a = <span class="hljs-number">2</span>           <span class="hljs-comment">// 不报错，但是会静默失败</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.a)  <span class="hljs-comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>但是在严格模式下则会报错</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">'use strict'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> obj = &#123;</span><br><span class="line">  a: <span class="hljs-number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.freeze(obj)</span><br><span class="line"></span><br><span class="line">obj.a = <span class="hljs-number">2</span>  <span class="hljs-comment">// TypeError</span></span><br></pre></td></tr></table></figure>
+
+<p>比如之前的示例当中，密封一个对象还是可以修改的，但是 <code>Object.freeze()</code> 这个方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> obj = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">'zhangsan'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 密封</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.seal(obj)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 但是可以修改已有属性</span></span><br><span class="line">obj.name = <span class="hljs-string">'lisi'</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.name)  <span class="hljs-comment">// lisi</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 冻结</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.freeze(obj)</span><br><span class="line">obj.name = <span class="hljs-string">'wangwu'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj)       <span class="hljs-comment">// &#123; name: 'lisi' &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>不仅仅适用于对象，数组也是一样的情况，不过被冻结的对象也不是不可变的，比如冻结对象不是常量对象</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">obj = &#123;</span><br><span class="line">  a: &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.freeze(obj)</span><br><span class="line">obj.a.name = <span class="hljs-string">'zhangsan'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.a.name)  <span class="hljs-comment">// zhangsan</span></span><br></pre></td></tr></table></figure>
+
+<p>同拷贝一样，要使对象不可变，需要递归冻结每个属性</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 深冻结函数</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deepFreeze</span>(<span class="hljs-params">obj</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 取回定义在 obj 上的属性名</span></span><br><span class="line">  <span class="hljs-keyword">var</span> propNames = <span class="hljs-built_in">Object</span>.getOwnPropertyNames(obj)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 在冻结自身之前冻结属性</span></span><br><span class="line">  propNames.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">var</span> prop = obj[name]</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 如果 prop 是个对象，冻结它</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> prop == <span class="hljs-string">'object'</span> &amp;&amp; prop !== <span class="hljs-literal">null</span>)</span><br><span class="line">      deepFreeze(prop)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 最后在冻结自身</span></span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.freeze(obj)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">obj = &#123;</span><br><span class="line">  a: &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">deepFreeze(obj)</span><br><span class="line">obj.a.name = <span class="hljs-string">'zhangsan'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(obj.a.name)  <span class="hljs-comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Object-prototype-上的方法"><a href="#Object-prototype-上的方法" class="headerlink" title="Object.prototype 上的方法"></a>Object.prototype 上的方法</h2><p>相较于 <code>Object</code> 而言，<code>Object.prototype</code> 上的方法就少了许多，排除掉一些实验性的，主要有下面这些</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Object.prototype.hasOwnProperty()</code></td>
+<td>返回一个布尔值，指示对象自身属性中是否具有指定的属性（也就是，是否有指定的键），见 <a href="https://heptaluan.github.io/2018/03/17/JavaScript/25/#Object-prototype-hasOwnProperty" target="_blank" rel="noopener">JavaScript 中的类型判断</a></td>
+</tr>
+<tr>
+<td><code>Object.prototype.toString()</code></td>
+<td>返回一个表示该对象的字符串，见 <a href="https://heptaluan.github.io/2018/03/17/JavaScript/25/#Object-prototype-toString" target="_blank" rel="noopener">JavaScript 中的类型判断</a></td>
+</tr>
+<tr>
+<td><code>Object.prototype.isPrototypeOf()</code></td>
+<td>用于测试一个对象是否存在于另一个对象的原型链上，见 <a href="https://heptaluan.github.io/2018/03/17/JavaScript/25/#Object-prototype-isPrototypeOf" target="_blank" rel="noopener">JavaScript 中的类型判断</a></td>
+</tr>
+<tr>
+<td><code>Object.prototype.propertyIsEnumerable()</code></td>
+<td>返回一个布尔值，表示指定的属性是否可枚举</td>
+</tr>
+<tr>
+<td><code>Object.prototype.valueOf()</code></td>
+<td>返回指定对象的原始值</td>
+</tr>
+</tbody></table>
+<p>一眼看去，是不是发现很多熟悉的面孔，一些之前我们已经详细介绍过的方法就不再展开了，这里主要看几个比较少见的</p>
+<h2 id="Object-prototype-propertyIsEnumerable"><a href="#Object-prototype-propertyIsEnumerable" class="headerlink" title="Object.prototype.propertyIsEnumerable()"></a>Object.prototype.propertyIsEnumerable()</h2><p>该方法返回一个布尔值，表示指定的属性是否可枚举，看下面这个例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> obj = &#123;&#125;</span><br><span class="line"><span class="hljs-keyword">const</span> newObj = &#123;</span><br><span class="line">  name: <span class="hljs-number">123</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">Object</span>.defineProperty(obj, <span class="hljs-string">'name'</span>, &#123;</span><br><span class="line">  enumerable: <span class="hljs-literal">false</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">obj.propertyIsEnumerable(<span class="hljs-string">'name'</span>)     <span class="hljs-comment">// false</span></span><br><span class="line">newObj.propertyIsEnumerable(<span class="hljs-string">'name'</span>)  <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>每个对象都有一个 <code>propertyIsEnumerable</code> 方法，此方法可以确定对象中指定的属性是否可以被 <code>for-in</code> 循环枚举，但是通过原型链继承的属性除外，如果对象没有指定的属性，则此方法返回 <code>false</code></p>
+<h2 id="Object-prototype-valueOf"><a href="#Object-prototype-valueOf" class="headerlink" title="Object.prototype.valueOf()"></a>Object.prototype.valueOf()</h2><p>最后的最后，我们来看一个特殊的方法 <code>Object.prototype.valueOf()</code>，调用该方法会返回指定对象的原始值，但是很少需要我们自己手动的调用 <code>valueOf</code> 方法，因为当遇到要预期的原始值的对象时，<code>JavaScript</code> 会自动调用它</p>
+<p>默认情况下，<code>valueOf</code> 方法由 <code>Object</code> 后面的每个对象继承，每个内置的核心对象都会覆盖此方法以返回适当的值，如果对象没有原始值，则 <code>valueOf</code> 将返回对象本身，<code>JavaScript</code> 的许多内置对象都重写了该函数，以实现更适合自身的功能需要，因此不同类型对象的 <code>valueOf()</code> 方法的返回值和返回值类型均可能不同，具体可见下表</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Array</code></td>
+<td>返回数组对象本身</td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td>布尔值</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td>存储的时间是从 <code>1970</code> 年 <code>1</code> 月 <code>1</code> 日午夜开始计的毫秒数 <code>UTC</code></td>
+</tr>
+<tr>
+<td><code>Function</code></td>
+<td>函数本身</td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td>数字值</td>
+</tr>
+<tr>
+<td><code>Object</code></td>
+<td>对象本身，这是默认情况</td>
+</tr>
+<tr>
+<td><code>string</code></td>
+<td>字符串值</td>
+</tr>
+<tr>
+<td><code>Math 和 Error</code></td>
+<td>没有 <code>valueOf</code> 方法</td>
+</tr>
+</tbody></table>
+<p>下面我们主要来看几个特殊的例子，先来看看布尔类型</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 布尔类型</span></span><br><span class="line"><span class="hljs-keyword">var</span> newBool = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Boolean</span>(<span class="hljs-literal">true</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(newBool.valueOf() == newBool)   <span class="hljs-comment">// true  ==&gt; valueOf() 返回的是 true，两者的值相等（注意是 ==）</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(newBool.valueOf() === newBool)  <span class="hljs-comment">// false ==&gt; 但是不全等，两者类型不相等，前者是 Boolean 类型，后者是 Object 类型</span></span><br></pre></td></tr></table></figure>
+
+<p>函数</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123; &#125;</span><br><span class="line"><span class="hljs-keyword">var</span> bar = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Function</span>(<span class="hljs-string">'x'</span>, <span class="hljs-string">'y'</span>, <span class="hljs-string">'return x + y'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(foo.valueOf() === foo)          <span class="hljs-comment">// true ==&gt; Function 返回函数本身</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(bar.valueOf() === bar)          <span class="hljs-comment">// true ==&gt; 虽然它返回的结果是下面这样</span></span><br><span class="line"></span><br><span class="line">bar.valueOf()</span><br><span class="line"><span class="hljs-comment">// ƒ anonymous(x, y) &#123;</span></span><br><span class="line"><span class="hljs-comment">//   return x + y</span></span><br><span class="line"><span class="hljs-comment">// &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>字符串</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> str = <span class="hljs-string">'string'</span></span><br><span class="line"><span class="hljs-keyword">var</span> newStr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>(<span class="hljs-string">'string'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(str.valueOf() === str)          <span class="hljs-comment">// true  ==&gt; String 返回字符串值</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(newStr.valueOf() === newStr)    <span class="hljs-comment">// false ==&gt; 两者的值相等，但不全等，因为类型不同，前者为 String 类型，后者为 Object 类型</span></span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/JavaScript/">JavaScript</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/02/05/Essay/08/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">静态链表</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/01/16/JavaScript/50/">
+                <span class="level-item">Async 和 Await</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: 'aa6cc08c6e7ee3a3ec3e583f5cb4110d',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#Object-上的方法">
+        <span class="has-mr-6">1</span>
+        <span>Object 上的方法</span>
+        </a></li><li>
+        <a class="is-flex" href="#Object-defineProperty-和-Object-defineProperties">
+        <span class="has-mr-6">2</span>
+        <span>Object.defineProperty() 和 Object.defineProperties()</span>
+        </a></li><li>
+        <a class="is-flex" href="#Object-entries-和-Object-fromEntries">
+        <span class="has-mr-6">3</span>
+        <span>Object.entries() 和 Object.fromEntries()</span>
+        </a></li><li>
+        <a class="is-flex" href="#getOwnPropertyDescriptor-和-getOwnPropertyDescriptors">
+        <span class="has-mr-6">4</span>
+        <span>getOwnPropertyDescriptor() 和 getOwnPropertyDescriptors()</span>
+        </a></li><li>
+        <a class="is-flex" href="#Object-preventExtensions-，Object-seal-和-Object-freeze">
+        <span class="has-mr-6">5</span>
+        <span>Object.preventExtensions()，Object.seal() 和 Object.freeze()</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Object-preventExtensions">
+        <span class="has-mr-6">5.1</span>
+        <span>Object.preventExtensions()</span>
+        </a></li><li>
+        <a class="is-flex" href="#Object-seal">
+        <span class="has-mr-6">5.2</span>
+        <span>Object.seal()</span>
+        </a></li><li>
+        <a class="is-flex" href="#Object-freeze">
+        <span class="has-mr-6">5.3</span>
+        <span>Object.freeze()</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Object-prototype-上的方法">
+        <span class="has-mr-6">6</span>
+        <span>Object.prototype 上的方法</span>
+        </a></li><li>
+        <a class="is-flex" href="#Object-prototype-propertyIsEnumerable">
+        <span class="has-mr-6">7</span>
+        <span>Object.prototype.propertyIsEnumerable()</span>
+        </a></li><li>
+        <a class="is-flex" href="#Object-prototype-valueOf">
+        <span class="has-mr-6">8</span>
+        <span>Object.prototype.valueOf()</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Object 上的原生 API" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

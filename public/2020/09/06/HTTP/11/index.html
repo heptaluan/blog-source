@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>HTTP/2 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="最近在梳理 HTTP 协议相关内容，当梳理到追加协议相关内容的时候发现 HTTP/2 所涉及到的内容篇幅还是有些多的，所以就单独提取出来，更多相关内容可以参考 HTTP 协议 和 前端知识体系整理  这里推荐 HTTP/2 这篇文章，个人认为是目前看到的资料里介绍的最全面和详细的，HTTP/2 的二进制帧，多路复用，请求优先级，流量控制，服务器端推送以及首部压缩等新改进都涉及到了，还可以感受一下">
+<meta name="keywords" content="HTTP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP&#x2F;2">
+<meta property="og:url" content="http://yoursite.com/2020/09/06/HTTP/11/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="最近在梳理 HTTP 协议相关内容，当梳理到追加协议相关内容的时候发现 HTTP/2 所涉及到的内容篇幅还是有些多的，所以就单独提取出来，更多相关内容可以参考 HTTP 协议 和 前端知识体系整理  这里推荐 HTTP/2 这篇文章，个人认为是目前看到的资料里介绍的最全面和详细的，HTTP/2 的二进制帧，多路复用，请求优先级，流量控制，服务器端推送以及首部压缩等新改进都涉及到了，还可以感受一下">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/11.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP&#x2F;2">
+<meta name="twitter:description" content="最近在梳理 HTTP 协议相关内容，当梳理到追加协议相关内容的时候发现 HTTP/2 所涉及到的内容篇幅还是有些多的，所以就单独提取出来，更多相关内容可以参考 HTTP 协议 和 前端知识体系整理  这里推荐 HTTP/2 这篇文章，个人认为是目前看到的资料里介绍的最全面和详细的，HTTP/2 的二进制帧，多路复用，请求优先级，流量控制，服务器端推送以及首部压缩等新改进都涉及到了，还可以感受一下">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/11.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="HTTP/2" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/11.webp" alt="HTTP/2">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2020-09-06</div>
+                <!-- <time class="level-item has-text-grey" datetime="2020-09-05T16:00:00.000Z">2020-09-06</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/HTTP/">HTTP</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    2 小时 读完 (大约 21034 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                HTTP/2
+            
+        </h1>
+        <div class="content">
+            <p>最近在梳理 <code>HTTP</code> 协议相关内容，当梳理到追加协议相关内容的时候发现 <code>HTTP/2</code> 所涉及到的内容篇幅还是有些多的，所以就单独提取出来，更多相关内容可以参考 <a href="https://heptaluan.github.io/2020/09/01/HTTP/10/" target="_blank" rel="noopener">HTTP 协议</a> 和 <a href="https://heptaluan.github.io/target/" target="_blank" rel="noopener">前端知识体系整理</a></p>
+<blockquote>
+<p>这里推荐 <a href="https://hpbn.co/http2/" target="_blank" rel="noopener">HTTP/2</a> 这篇文章，个人认为是目前看到的资料里介绍的最全面和详细的，<code>HTTP/2</code> 的二进制帧，多路复用，请求优先级，流量控制，服务器端推送以及首部压缩等新改进都涉及到了，还可以感受一下 <a href="https://http2.akamai.com/demo" target="_blank" rel="noopener">https://http2.akamai.com/demo</a> 这个地址，它主要用来比较 <code>HTTP/2</code> 与 <code>HTTP/1.1</code> 在性能上的差异</p>
+</blockquote>
+<a id="more"></a>
+
+
+<h2 id="HTTP-2-的前身"><a href="#HTTP-2-的前身" class="headerlink" title="HTTP/2 的前身"></a>HTTP/2 的前身</h2><p><code>HTTP/2</code> 的前身是 <code>HTTP/1.0</code> 和 <code>HTTP/1.1</code>，虽然之前仅仅只有两个版本，但这两个版本所包含的协议规范之庞大，足以让任何一个有经验的工程师为之头疼，<code>HTTP/1.0</code> 诞生于 <code>1996</code> 年，协议文档足足 <code>60</code> 页，之后第三年，<code>HTTP/1.1</code> 也随之出生，协议文档膨胀到了 <code>176</code> 页，但是网络协议新版本并不会马上取代旧版本，实际上 <code>HTTP/1.0</code> 和 <code>HTTP/1.1</code> 在之后很长的一段时间内一直并存，这是由于网络基础设施更新缓慢所决定的，今天的 <code>HTTP/2</code> 也是一样，新版协议再好也需要业界的产品锤炼，需要基础设施逐年累月的升级换代才能普及</p>
+<h2 id="HTTP-站在-TCP-之上"><a href="#HTTP-站在-TCP-之上" class="headerlink" title="HTTP 站在 TCP 之上"></a>HTTP 站在 TCP 之上</h2><p>理解 <code>HTTP</code> 协议之前一定要对 <code>TCP</code> 有一定的了解，<code>HTTP</code> 是建立在 <code>TCP</code> 协议之上，<code>TCP</code> 协议作为传输层协议其实离应用层并不远，<code>HTTP</code> 协议的瓶颈及其优化技巧都是基于 <code>TCP</code> 协议本身的特性，比如 <code>TCP</code> 建立连接时三次握手有 <code>1.5</code> 个 <code>RTT</code>（来回时间）的延迟，为了避免每次请求的都经历握手带来的延迟，应用层会选择不同策略的 <code>HTTP</code> 长链接方案，又比如 <code>TCP</code> 在建立连接的初期有慢启动（<code>slow start</code>）的特性，所以连接的重用总是比新建连接性能要好</p>
+<h2 id="HTTP-应用场景"><a href="#HTTP-应用场景" class="headerlink" title="HTTP 应用场景"></a>HTTP 应用场景</h2><p><code>HTTP</code> 诞生之初主要是应用于 <code>Web</code> 端内容获取，对于早些时期简单的获取网页内容的场景，<code>HTTP</code> 表现得还算不错，但随着互联网的发展和 <code>Web 2.0</code> 的诞生，更多的内容开始被展示（比如更多的的图片文件，<code>CSS</code>，<code>JavaScript</code> 等），用户打开一个网站首页所加载的数据总量和请求的个数也在不断增加，今天绝大部分的门户网站首页大小都会超过 <code>2M</code>，请求数量可以多达 <code>100</code> 个，另一个广泛的应用场景就是在移动端，比如对于电商类 <code>App</code>，加载首页的请求也可能多达几十个</p>
+<h2 id="带宽和延迟"><a href="#带宽和延迟" class="headerlink" title="带宽和延迟"></a>带宽和延迟</h2><p>影响一个网络请求的因素主要有两个，带宽和延迟，今天的网络基础建设已经使得带宽得到极大的提升，大部分时候都是延迟在影响响应速度，<code>HTTP/1.0</code> 被抱怨最多的就是连接无法复用，和队头阻塞这两个问题，理解这两个问题有一个十分重要的前提就是客户端是依据域名来向服务器建立连接，一般浏览器会针对单个域名的服务器同时建立六到八个连接，而移动端的连接数则一般控制在四到六个，显然连接数并不是越多越好，资源开销和整体延迟都会随之增大</p>
+<p>连接无法复用会导致每次请求都经历三次握手和慢启动，三次握手在高延迟的场景下影响较明显，慢启动则对文件类大请求影响较大，队头阻塞会导致带宽无法被充分利用，以及后续健康请求被阻塞，假设有五个请求同时发出，如下图</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-01.png" alt></p>
+<p>对于 <code>HTTP/1.1</code> 的实现，在第一个请求没有收到回复之前，后续从应用层发出的请求只能排队，请求 <code>2，3，4，5</code> 只能等待请求 <code>1</code> 的响应回来之后才能逐个发出，网络通畅的时候性能影响不大，一旦请求 <code>1</code> 因为什么原因没有抵达服务器，或者响应因为网络阻塞没有及时返回，影响的就是所有后续请求</p>
+<h2 id="解决连接无法复用"><a href="#解决连接无法复用" class="headerlink" title="解决连接无法复用"></a>解决连接无法复用</h2><p><code>HTTP/1.0</code> 协议头里可以设置 <code>Connection: keep-alive</code>，在 <code>Header</code> 里设置 <code>keep-alive</code> 可以在一定时间内复用连接，具体复用时间的长短可以由服务器控制，一般在 <code>15s</code> 左右，到 <code>HTTP/1.1</code> 之后，<code>Connection</code> 的默认值就是 <code>keep-alive</code>，如果要关闭连接复用需要显式的设置 <code>Connection: close</code>，一段时间内的连接复用对电脑端的浏览器体验帮助很大，因为大部分的请求在集中在一小段时间以内，但对与移动端来说，成效不大，因为移动端的请求比较分散且时间跨度相对较大，所以移动端一般会从应用层寻求其它解决方案，比如长连接方案或者伪长连接方案</p>
+<h4 id="基于-TCP-的长链接"><a href="#基于-TCP-的长链接" class="headerlink" title="基于 TCP 的长链接"></a>基于 TCP 的长链接</h4><p>这种方式是建立一条自己的长链接通道，通道的实现是基于 <code>TCP</code> 协议，基于 <code>TCP</code> 的 <code>Socket</code> 编程技术难度相对复杂很多，而且需要自己制定协议，但带来的回报也很大，信息的上报和推送变得更及时，在请求量爆发的时间点还能减轻服务器压力（<code>HTTP</code> 短连接模式会频繁的创建和销毁连接）</p>
+<h4 id="长轮询"><a href="#长轮询" class="headerlink" title="长轮询"></a>长轮询</h4><p><code>HTTP</code> 长轮询可以用下图表示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-02.png" alt></p>
+<p>客户端在初始状态就会发送一个轮询请求到服务器，服务器并不会马上返回业务数据，而是等待有新的业务数据产生的时候再返回，所以连接会一直被保持，一旦结束马上又会发起一个新的轮询请求，如此反复，所以一直会有一个连接被保持，服务器有新的内容产生的时候，并不需要等待客户端建立一个新的连接，使用长轮询的好处以及需要注意的地方有以下这些</p>
+<ul>
+<li>和传统的 <code>HTTP</code> 短链接相比，长连接会在用户增长的时候极大的增加服务器压力</li>
+<li>移动端网络环境复杂，像 <code>Wi-Fi</code> 和 <code>4G</code> 之类的网络切换，进电梯导致网络临时断掉等，这些场景都需要考虑怎么重建健康的连接通道</li>
+<li>这种轮询的方式稳定性并不好，需要做好数据可靠性的保证，比如重发和 <code>ACk</code> 机制（消息确认机制）</li>
+<li>轮询的响应有可能会被中间代理缓存，要处理好业务数据的过期机制</li>
+</ul>
+<p>长轮询方式还有一些缺点是无法克服的，比如每次新的请求都会带上重复的 <code>Header</code> 信息，还有数据通道是单向的，主动权掌握在服务端这边，客户端有新的业务请求的时候无法及时传送</p>
+<h4 id="流"><a href="#流" class="headerlink" title="流"></a>流</h4><p><code>HTTP</code> 流的过程大致是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-03.png" alt></p>
+<p>同长轮询不同的是，服务端并不会结束初始的流请求，而是持续的通过这个通道返回最新的业务数据，显然这个数据通道也是单向的，流是通过在服务端响应的头部里增加 <code>Transfer Encoding: chunked</code> 来告诉客户端后续还会有新的数据到来，除了和长轮询相同的难点之外，流还有几个缺陷</p>
+<ul>
+<li>有些代理服务器会等待服务器的响应结束之后才会将结果推送到请求客户端，对于流这种永远不会结束的方式来说，客户端就会一直处于等待响应的过程中</li>
+<li>业务数据无法按照请求来做分割，所以客户端没收到一块数据都需要自己做协议解析，也就是说要做自己的协议定制</li>
+</ul>
+<blockquote>
+<p>关于 <code>HTTP</code> 流的更为详细的内容，我们会在下面的 <code>HTTP/2</code> 章节当中进行介绍</p>
+</blockquote>
+<h4 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h4><p><code>WebSocket</code> 和传统的 <code>TCP Socket</code> 连接相似，也是基于 <code>TCP</code> 协议，提供双向的数据通道，比基于字节流的 <code>TCP Socket</code> 使用更简单，同时又提供了传统的 <code>HTTP</code> 所缺少的长连接功能</p>
+<h2 id="解决队头阻塞"><a href="#解决队头阻塞" class="headerlink" title="解决队头阻塞"></a>解决队头阻塞</h2><p>队头阻塞是 <code>HTTP/2</code> 之前网络体验的最大祸源，正如上面带宽和延迟章节当中的图片所示，健康的请求会被不健康的请求影响，而且这种体验的损耗受网络环境影响，出现随机且难以监控，为了解决队头阻塞带来的延迟，协议设计者设计了一种新的 <code>HTTP</code> 管线化机制（<code>pipelining</code>），管线化的流程图可以用下图表示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-04.png" alt></p>
+<p>和之前相比最大的差别是，请求 <code>2，3，4，5</code> 不需要等待请求 <code>1</code> 的响应返回之后才发出，而是几乎在同一时间就把请求发向了服务器，<code>2，3，4，5</code> 及所有后续共用该连接的请求节约了等待的时间，极大的降低了整体延迟，下图可以清晰的看出这种新机制对延迟的改变</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-05.png" alt></p>
+<p>不过管线化并不是完美的，它也存在不少缺陷</p>
+<ul>
+<li>管线化只能适用于 <code>HTTP/1.1</code> ，一般来说，支持 <code>HTTP/1.1</code> 的服务端都要求支持管线化</li>
+<li>只有幂等的请求（<code>GET</code>，<code>HEAD</code>）能使用管线化，非幂等请求比如 <code>POST</code> 不能使用，因为请求之间可能会存在先后依赖关系</li>
+<li>队头阻塞并没有完全得到解决，服务端的响应还是要求依次返回，遵循 <code>FIFO</code>（<code>first in first out</code>）原则，也就是说如果请求 <code>1</code> 的响应没有回来，<code>2，3，4，5</code> 的响应也不会被送回来</li>
+<li>绝大部分的 <code>HTTP</code> 代理服务器不支持管线化</li>
+</ul>
+<p>正是因为有这么多的问题，各大浏览器厂商要么是根本就不支持管线化，要么就是默认关掉了管线化机制，而且启用的条件十分苛刻，可以参考 <code>Chrome</code> 对于管线化的 <a href="https://www.chromium.org/developers/design-documents/network-stack/http-pipelining" target="_blank" rel="noopener">问题描述</a></p>
+<h2 id="开拓者-SPDY"><a href="#开拓者-SPDY" class="headerlink" title="开拓者 SPDY"></a>开拓者 SPDY</h2><p><code>HTTP/1.0</code> 和 <code>HTTP/1.1</code> 虽然存在这么多问题，业界也想出了各种优化的手段，但这些方法手段都是在尝试绕开协议本身的缺陷，直到 <code>2012</code> 年 <code>Google</code> 提出了 <code>SPDY</code> 的方案，大家才开始从正面看待和解决老版本 <code>HTTP</code> 协议本身的问题，这也直接加速了 <code>HTTP/2</code> 的诞生，实际上 <code>HTTP/2</code> 是以 <code>SPDY</code> 为原型进行讨论和标准化的</p>
+<h2 id="SPDY-的目标"><a href="#SPDY-的目标" class="headerlink" title="SPDY 的目标"></a>SPDY 的目标</h2><p><code>SPDY</code> 的目标在一开始就是瞄准老版本所存在的一些痛点，即延迟和安全性，关于延迟我们在上面已经介绍过了，至于安全性，由于 <code>HTTP</code> 是明文协议，其安全性也一直被业界诟病，如果以降低延迟为目标，应用层的 <code>HTTP</code> 和传输层的 <code>TCP</code> 都是都有调整的空间，不过 <code>TCP</code> 作为更底层协议存在已达数十年之久，其实现已深植全球的网络基础设施当中，所以 <code>SPDY</code> 的瞄准的就是 <code>HTTP</code>，主要有以下几点</p>
+<ul>
+<li>降低延迟，客户端的单连接单请求，服务端的 <code>FIFO</code> 响应队列都是延迟的大头</li>
+<li><code>HTTP</code> 最初设计都是客户端发起请求，然后服务端响应，所以服务端无法主动推送内容到客户端</li>
+<li>头部压缩，<code>Cookie</code> 和 <code>User-Agent</code> 很容易让 <code>Header</code> 的大小增加，而且由于 <code>HTTP</code> 的无状态特性，<code>Header</code> 必须每次请求都重复携带，很浪费流量</li>
+</ul>
+<p>为了增加业界响应的可能性，聪明的 <code>Google</code> 一开始就避开了从传输层动手，对于协议使用者来说，也只需要在请求的 <code>Header</code> 里设置 <code>User-Agent</code>，然后在服务端端做好支持即可，极大的降低了部署的难度， <code>SPDY</code> 的设计如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-06.png" alt></p>
+<p><code>SPDY</code> 位于 <code>HTTP</code> 之下，<code>TCP</code> 和 <code>SSL</code> 之上，这样可以轻松兼容老版本的 <code>HTTP</code> 协议，同时可以使用已有的 <code>SSL</code> 功能，<code>SPDY</code> 的功能可以分为基础功能和高级功能两部分，基础功能默认启用，高级功能需要手动启用，它们有以下这些</p>
+<ul>
+<li>基础功能<ul>
+<li>多路复用（<code>multiplexing</code>），多路复用通过多个请求流共享一个 <code>TCP</code> 连接的方式，解决了队头阻塞的问题，降低了延迟同时提高了带宽的利用率</li>
+<li>请求优先级（<code>request prioritization</code>），多路复用带来一个新的问题是，在连接共享的基础之上有可能会导致关键请求被阻塞，<code>SPDY</code> 允许给每个请求设置优先级，这样重要的请求就会优先得到响应，比如浏览器加载首页，首页的 <code>HTML</code> 内容应该优先展示，之后才是各种静态资源文件，脚本文件等加载，这样可以保证用户能第一时间看到网页内容</li>
+<li><code>Header</code> 压缩，选择合适的压缩算法可以减小包的大小和数量，<code>SPDY</code> 对 <code>Header</code> 的压缩率可以达到 <code>80%</code> 以上，低带宽环境下效果很大</li>
+</ul>
+</li>
+<li>高级功能<ul>
+<li>服务端推送，最初只能由客户端发起请求，然后服务器被动的发送响应，开启服务端推送之后，服务端通过在 <code>Header</code> 中添加 <code>X-Associated-Content</code> 头域（<code>X</code> 开头的 <code>Header</code> 都属于非标准的，自定义 <code>Header</code> ）告知客户端会有新的内容推送过来，在用户第一次打开网站首页的时候，服务端将资源主动推送过来可以极大的提升用户体验</li>
+<li>服务端暗示，和服务端推送不同的是，服务端暗示并不会主动推送内容，只是告诉有新的内容产生，内容的下载还是需要客户端主动发起请求，服务端暗示通过在 <code>Header</code> 中添加 <code>X-Subresources</code> 头域来通知，一般应用场景是客户端需要先查询服务端状态，然后再下载资源，可以节约一次查询请求</li>
+</ul>
+</li>
+</ul>
+<h2 id="SPDY-的效果"><a href="#SPDY-的效果" class="headerlink" title="SPDY 的效果"></a>SPDY 的效果</h2><p><code>SPDY</code> 的成绩可以用 <code>Google</code> 官方的一个数字来说明，页面加载时间减少了 <code>64%</code>，<code>Google</code> 的官网也给出了他们自己做的一份测试数据，测试对象是 <code>25</code> 个访问量排名靠前的网站首页，每个网站测试 <code>10</code> 次取平均值，结果如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-07.png" alt></p>
+<p>不开启 <code>SSL</code> 的时候提升在 <code>27% ~ 60%</code>，开启之后为 <code>39% ~ 55%</code>， 这份测试结果有两点值得特别注意</p>
+<ul>
+<li>连接数的选择，连接到底是基于域名来建立，还是不做区分所有子域名都共享一个连接，这个策略选择上值得商榷，<code>Google</code> 的测试结果测试了两种方案，看结果似乎是单一连接性能高于多域名连接方式，之所以出现这种情况是由于网页所有的资源请求并不是同一时间发出，后续发出的子域名请求如果能复用之前的 <code>TCP</code> 连接当然性能更好，实际应用场景下应该也是单连接共享模式表现好</li>
+<li>带宽的影响，测试基于两种带宽环境，一慢一快，网速快的环境下对减小延迟的提升更大，单连接模式下可以提升至 <code>60%</code>，原因也比较简单，带宽越大，复用连接的请求完成越快，由于三次握手和慢启动导致的延迟损耗就变得更明显</li>
+</ul>
+<p>除了连接模式和带宽之外，丢包率和 <code>RTT</code> 也是需要测试的参数，<code>SPDY</code> 对 <code>Header</code> 的压缩有 <code>80%</code> 以上，整体包大小能减少大概 <code>40%</code>，发送的包越少，自然受丢包率影响也就越小，所以丢包率大的恶劣环境下 <code>SPDY</code> 反而更能提升体验，下图是受丢包率影响的测试结果，丢包率超过 <code>2.5%</code> 之后就没有提升了</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-08.png" alt></p>
+<p><code>RTT</code> 越大，延迟会越大，在高 <code>RTT</code> 的场景下，由于 <code>SPDY</code> 的请求是并发进行的，所有对包的利用率更高，反而能更明显的减小总体延迟，测试结果如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-09.png" alt></p>
+<p>不过 <code>SPDY</code> 从 <code>2012</code> 年诞生到 <code>2016</code> 停止维护，只有短短的四年，时间跨度对于网络协议来说其实非常之短，但 <code>SPDY</code> 也在某种意义上算是完成了自己的使命</p>
+<h2 id="HTTP-2"><a href="#HTTP-2" class="headerlink" title="HTTP/2"></a>HTTP/2</h2><p><code>SPDY</code> 的诞生和表现说明了两件事情，一是在现有互联网设施基础和 <code>HTTP</code> 协议广泛使用的前提下，是可以通过修改协议层来优化的，二是修改确实效果明显而且业界反馈很好，正是这两点让 <code>IETF</code>（<code>Internet Enginerring Task Force</code>）开始正式考虑制定 <code>HTTP/2</code> 的计划，最后决定以 <code>SPDY/3</code> 为蓝图起草 <code>HTTP/2</code>，<code>SPDY</code> 的部分设计人员也被邀请参与了 <code>HTTP/2</code> 的设计</p>
+<h2 id="HTTP-2-需要考虑的问题"><a href="#HTTP-2-需要考虑的问题" class="headerlink" title="HTTP/2 需要考虑的问题"></a>HTTP/2 需要考虑的问题</h2><p><code>HTTP/1.0</code> 最早在网页中使用是在 <code>1996</code> 年，那个时候只是使用一些较为简单的网页上和网络请求上，而 <code>HTTP/1.1</code> 则在 <code>1999</code> 年才开始广泛应用于现在的各大浏览器网络请求中，同时 <code>HTTP/1.1</code> 也是当前使用最为广泛的 <code>HTTP</code> 协议</p>
+<ul>
+<li><code>HTTP/0.9</code>，只支持 <code>GET</code> 方法，不支持多媒体内容的 <code>MIME</code> 类型、各种 <code>HTTP</code> 首部，或者版本号，只是为了获取 <code>HTML</code> 对象</li>
+<li><code>HTTP/1.0</code>，添加了版本号、各种 <code>HTTP</code> 首部、一些额外的方法，以及对多媒体对象的处理</li>
+<li><code>HTTP/1.0+</code>，<code>keep-alive</code> 连接、虚拟主机支持，以及代理连接支持都被加入到 <code>HTTP</code> 之中等等</li>
+<li><code>HTTP/1.1</code>，主要有下面几个部分<ul>
+<li>缓存处理，在 <code>HTTP/1.0</code> 中主要使用 <code>Header</code> 里的 <code>If-Modified-Since</code>，<code>Expires</code> 来做为缓存判断的标准，<code>HTTP/1.1</code> 则引入了更多的缓存控制策略例如 <code>Entity tag</code>，<code>If-Unmodified-Since</code>，<code>If-Match</code>，<code>If-None-Match</code> 等更多可供选择的缓存头来控制缓存策略</li>
+<li>在请求头引入了 <code>Range</code> 头域，它允许只请求资源的某个部分，即返回码是 <code>206</code>（<code>Partial Content</code>）</li>
+<li>错误通知的管理，新增了 <code>24</code> 个错误状态响应码，如 <code>409</code>（<code>Conflict</code>）表示请求的资源与资源的当前状态发生冲突，<code>410</code>（<code>Gone</code>）表示服务器上的某个资源被永久性的删除等</li>
+<li><code>Host</code> 头处理，<code>HTTP/1.1</code> 的请求消息和响应消息都应支持 <code>Host</code> 头域，且请求消息中如果没有 <code>Host</code> 头域会报告一个错误（<code>400 Bad Request</code>）</li>
+<li>长连接，<code>HTTP/1.1</code> 支持长连接和管线化处理，也就是 <code>Connection: keep-alive</code></li>
+</ul>
+</li>
+</ul>
+<p>而 <code>HTTP/2</code> 在此基础之上被寄予了如下期望，希望能够</p>
+<ul>
+<li>相比于使用 <code>TCP</code> 的 <code>HTTP/1.1</code>，最终用户可感知的多数延迟都有能够量化的显著改善</li>
+<li>解决 <code>HTTP</code> 中的队头阻塞问题</li>
+<li>并行的实现机制不依赖与服务器建立多个连接，从而提升 <code>TCP</code> 连接的利用率，特别是在拥塞控制方面</li>
+<li>保留 <code>HTTP/1.1</code> 的语义，可以利用已有的文档资源，包括 <code>HTTP</code> 方法、状态码、<code>URI</code> 和首部字段等</li>
+</ul>
+<h2 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h2><p>连接是所有 <code>HTTP/2</code> 会话的基础元素，其定义是客户端初始化的一个 <code>TCP/IP Socket</code>，客户端是指发送 <code>HTTP</code> 请求的实体，这和 <code>HTTP/1.1</code> 是一样的，不过与完全无状态的 <code>HTTP/1.1</code> 不同的是，<code>HTTP/2</code> 把它所承载的帧（<code>frame</code>）和流（<code>stream</code>）共同依赖的连接层元素捆绑在一起，其中既包含连接层设置也包含首部表</p>
+<p>为了向服务器双重确认客户端支持 <code>HTTP/2</code>，客户端会发送一个叫作 <code>Connection Preface</code> 字节流，作为连接的第一份数据，这主要是为了应对客户端通过纯文本的 <code>HTTP/1.1</code> 升级上来的情况，该字节流用十六进制表示如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-number">0x505249202a20485454502f322e300d0a0d0a534d0d0a0d0a</span></span><br></pre></td></tr></table></figure>
+
+<p>解码为 <code>ASCII</code> 是</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PRI * HTTP/<span class="hljs-number">2.0</span>\r\n\r\nSM\r\n\r\n</span><br></pre></td></tr></table></figure>
+
+<p>这个字节流的用处是，如果服务器（或者中间网络设备）不支持 <code>HTTP/2</code>，就会产生一个显式错误，这个消息特意设计成 <code>HTTP/1.1</code> 消息的样式，如果运行良好的 <code>HTTP/1.1</code> 服务器收到这个字节流，它会阻塞这个方法，并返回错误，可以让 <code>HTTP/2</code> 客户端明确地知道发生了什么错误</p>
+<p>这个字节流会有一个 <code>SETTINGS</code> 帧紧随其后，服务器为了确认它可以支持 <code>HTTP/2</code>，会声明收到客户端的 <code>SETTINGS</code> 帧，并返回一个它自己的 <code>SETTINGS</code> 帧（反过来也需要确认），然后确认环境正常，可以开始使用 <code>HTTP/2</code>（关于 <code>SETTINGS</code> 帧相关概念，我们会在下面进行介绍）</p>
+<h2 id="帧"><a href="#帧" class="headerlink" title="帧"></a>帧</h2><p><code>HTTP/2</code> 是基于帧的协议，采用分帧是为了将重要信息都封装起来，让协议的解析方可以轻松阅读、解析并还原信息， 相比之下，<code>HTTP/1.1</code> 不是基于帧的，而是以文本分隔，看看下面的简单例子</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET / HTTP/<span class="hljs-number">1.1</span> &lt;crlf&gt;</span><br><span class="line">Host: www.example.com &lt;crlf&gt;</span><br><span class="line">Connection: keep-alive &lt;crlf&gt;</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=<span class="hljs-number">0.9</span>... &lt;crlf&gt;</span><br><span class="line">User-Agent: Mozilla/<span class="hljs-number">5.0</span> (Macintosh; Intel Mac OS X <span class="hljs-number">10</span>_11_4)... &lt;crlf&gt;</span><br><span class="line">Accept-Encoding: gzip, deflate, sdch &lt;crlf&gt;</span><br><span class="line">Accept-Language: en-US,en;q=<span class="hljs-number">0.8</span> &lt;crlf&gt;</span><br><span class="line">Cookie: pfy_cbc_lb=p-browse-w; customerZipCode=<span class="hljs-number">99912</span>|N; ltc=%<span class="hljs-number">20</span>;...&lt;crlf&gt;</span><br></pre></td></tr></table></figure>
+
+<p>解析这种数据往往速度慢且容易出错，需要不断读入字节，直到遇到分隔符为止，同时还要考虑一些并不是按照规矩来进行发送的客户端，所以解析 <code>HTTP/1.1</code> 的请求或响应可能出现下列问题</p>
+<ul>
+<li>一次只能处理一个请求或响应，完成之前不能停止解析</li>
+<li>无法预判解析需要多少内存，这会带来一系列问题，例如需要把一行读到多大的缓冲区里，如果行太长会应该增加并重新分配内存，还是返回 <code>400</code> 错误？</li>
+</ul>
+<p>为了解决这些问题，保持内存处理的效率和速度可不简单，从另一方面来说，有了帧，处理协议的程序就能预先知道会收到什么，基于帧的协议，特别是 <code>HTTP/2</code>，开始有固定长度的字节，其中包含表示整帧长度的字段</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-16.png" alt></p>
+<p>下面我们就稍微深入的来了解一下 <code>HTTP/2</code> 当中帧的概念，这里主要涉及到帧大小，帧格式和帧定义</p>
+<h4 id="帧大小"><a href="#帧大小" class="headerlink" title="帧大小"></a>帧大小</h4><p>帧载荷的大小受接收者在 <code>SETTINGS_MAX_FRAME_SIZE</code> 设定的最大大小限制，值的范围为 <code>2^14</code> 至 <code>2^24 - 1</code>，包含所有的实现要必须能够接收并最低限度地处理长度最大在 <code>2^14</code> 字节的帧，外加 <code>9</code> 个字节的帧首部，当描述帧大小时，帧首部的大小不会被包含在内</p>
+<blockquote>
+<p>这里需要注意，某些帧类型，比如 <code>ING</code>，会对允许的载荷数据的大小强加额外的限制</p>
+</blockquote>
+<p>如果一个帧超出了 <code>SETTINGS_MAX_FRAME_SIZE</code> 定义的大小，超出了为帧类型定义的任何限制，或者太小以至于无法包含必要的帧数据，终端必须发送一个错误码 <code>FRAME_SIZE_ERROR</code>，可能改变整个连接状态的帧中的帧大小错误必须被当作一个连接错误，这包括所有携带首部块的帧（即 <code>HEADERS，PUSH_PROMISE</code>，<code>CONTINUATION</code>，<code>SETTINGS</code> 和所有流标识符为 <code>0</code> 的帧）</p>
+<p>终端没有义务用完帧中的所有的可用空间，响应能力可以通过使用比允许的最大大小小的帧来提升，在发送时间敏感的帧时发送大帧可能导致延时（比如 <code>RST_STREAM</code>，<code>WINDOW_UPDATE</code> 或 <code>PRIORITY</code>），如果传输由于一个大的帧而阻塞，则可能会影响性能</p>
+<h4 id="帧格式"><a href="#帧格式" class="headerlink" title="帧格式"></a>帧格式</h4><p>所有的帧都以一个固定的 <code>9</code> 字节首部开始，其后紧跟一个可变长度的载荷，如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-10.png" alt></p>
+<p>也可以简化为下面这样</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+-----------------------------------------------+</span><br><span class="line">|                 Length (<span class="hljs-number">24</span>)                   |</span><br><span class="line">+---------------+---------------+---------------+</span><br><span class="line">|   Type (<span class="hljs-number">8</span>)    |   Flags (<span class="hljs-number">8</span>)   |</span><br><span class="line">+-+-------------+---------------+-------------------------------+</span><br><span class="line">|R|                 Stream Identifier (<span class="hljs-number">31</span>)                      |</span><br><span class="line">+=+=============================================================+</span><br><span class="line">|                   Frame Payload (<span class="hljs-number">0.</span>..)                      ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>下面我们来看看它们各部分之间的含义</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>字节数</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Length</code></td>
+<td><code>3</code> 字节</td>
+<td>帧载荷的长度，以一个无符号 <code>24</code> 位整数表示，<code>2^14</code> 字节是默认的最大帧大小，如果需要更大的帧，必须在 <code>SETTINGS</code> 帧中设置</td>
+</tr>
+<tr>
+<td><code>Type</code></td>
+<td><code>1</code> 字节</td>
+<td>当前帧类型，帧类型决定了帧的格式和语义，<code>HTTP/2</code> 实现必须忽略并丢弃未知类型的帧</td>
+</tr>
+<tr>
+<td><code>Flags</code></td>
+<td><code>1</code> 字节</td>
+<td>具体帧类型的标识，一个特定于帧类型的 <code>8</code> 位 <code>boolean</code> 标记保留字段</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td><code>1</code> 位</td>
+<td>保留位，无需设置，否则可能带来严重后果</td>
+</tr>
+<tr>
+<td><code>Stream Identifier</code></td>
+<td><code>31</code> 位</td>
+<td>流标识符，被表示为一个 <code>31</code> 位无符号整型值</td>
+</tr>
+<tr>
+<td><code>Frame Payload</code></td>
+<td>可变</td>
+<td>真实的帧内容，长度是在 <code>Length</code> 字段中设置的</td>
+</tr>
+</tbody></table>
+<p><code>HTTP/1.1</code> 有个特性叫管线化，允许一次发送一组请求，但是只能按照发送顺序依次接收响应，而且管线化备受互操作性和部署的各种问题的困扰，在请求应答过程中，如果出现任何状况，剩下所有的工作都会被阻塞在那次请求应答之后，这就是队头阻塞，它会阻碍网络传输和 <code>Web</code> 页面渲染，直至失去响应，但是由于 <code>HTTP/2</code> 是分帧的，请求和响应可以交错甚至多路复用，多路复用有助于解决类似队头阻塞的问题</p>
+<h4 id="帧定义"><a href="#帧定义" class="headerlink" title="帧定义"></a>帧定义</h4><p><code>HTTP/2</code> 中定义了多种帧类型，每种都有一个唯一的 <code>8</code> 位类型码标识，每种帧类型都有不同的目的，特定帧类型的传输可能改变连接的状态，如果终端不能维护连接状态视图的一致性，连接内成功的通信将是不可能的，因此终端之间，关于特定帧的使用对状态所产生的影响具有相同的理解就变得非常重要</p>
+<h6 id="DATA-帧"><a href="#DATA-帧" class="headerlink" title="DATA 帧"></a>DATA 帧</h6><p><code>DATA</code> 帧（<code>type = 0x0</code>）传送与一个流关联的任意的可变长度的字节序列，一个或多个 <code>DATA</code> 帧被用于携带 <code>HTTP</code> 请求或响应载荷，<code>DATA</code> 帧也可以包含填充字节，填充字节可以被加进 <code>DATA</code> 帧来掩盖消息的大小，填充字节是一个安全性的功能</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|Pad Length? (<span class="hljs-number">8</span>)|</span><br><span class="line">+---------------+-----------------------------------------------+</span><br><span class="line">|                            Data (*)                         ...</span><br><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                           Padding (*)                       ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Pad Length</code></td>
+<td>填充长度</td>
+<td>一个 <code>8</code> 位的字段，包含了以字节为单位的帧的填充的长度，这个字段是有条件的，只有在 <code>PADDED</code> 标记设置时才出现</td>
+</tr>
+<tr>
+<td><code>Data</code></td>
+<td>数据</td>
+<td>应用数据，数据的大小是帧载荷减去出现的其它字段的长度剩余的大小</td>
+</tr>
+<tr>
+<td><code>Padding</code></td>
+<td>填充</td>
+<td>填充字节包含了无应用语义的值，当填充时填充字节必须被设置为 <code>0</code>，接收者没有义务去验证填充<br>可以将非零的填充当做一个类型为 <code>PROTOCOL_ERROR</code> 的连接错误</td>
+</tr>
+</tbody></table>
+<p><strong>标志</strong></p>
+<p><code>DATA</code> 帧定义了如下的标记</p>
+<ul>
+<li><code>END_STREAM</code>（<code>0x1</code>），当设置了这个标记时，位 <code>0</code> 表示这个帧是终端将为标识的流发送的最后一帧，设置这个标记使得流进入某种 <code>Half-Closed</code> 状态或 <code>Closed</code> 状态</li>
+<li><code>PADDED</code>（<code>0x8</code>），当设置了这个标记时，位 <code>3</code> 表示上面描述的填充长度字段及填充存在</li>
+</ul>
+<p><strong>流</strong></p>
+<ul>
+<li><code>DATA</code> 帧必须与一个流关联，如果收到了一个流标识符为 <code>0x0</code> 的 <code>DATA</code> 帧，接收者必须以一个类型为 <code>PROTOCOL_ERROR</code> 的连接错误来响应</li>
+<li><code>DATA</code> 帧受控于 <code>flow control</code>，而且只能在流处于 <code>open</code> 或 <code>Half-Closed (remote)</code> 状态时发送，整个的 <code>DATA</code> 帧载荷被包含在 <code>flow control</code> 中，可能包括填充长度和填充字段，如果收到 <code>DATA</code> 帧的流不处于 <code>open</code> 或 <code>Half-Closed (remote)</code> 状态，则接收者必须以一个类型为 <code>STREAM_CLOSED</code> 的流错误来响应</li>
+<li>填充字节的总大小由填充长度字段决定，如果填充的长度是帧载荷的长度或更大，则接收者必须将这作为一个类型为 <code>PROTOCOL_ERROR</code> 的连接错误来处理应</li>
+</ul>
+<blockquote>
+<p>这里需要注意的是，一个帧可以通过包含一个值为零的填充长度字段来使帧长度只增加一个字节</p>
+</blockquote>
+<h6 id="HEADERS-帧"><a href="#HEADERS-帧" class="headerlink" title="HEADERS 帧"></a>HEADERS 帧</h6><p><code>HEADERS</code> 帧（<code>type = 0x1</code>）用于打开一个流，此外还携带一个 <code>Header</code> 块片段，<code>HEADERS</code> 帧可以在状态为 <code>idle</code>，<code>Reserverd (local)</code>，<code>open</code>，或 <code>Half-Closed (remote)</code> 的流上发送</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|Pad Length? (<span class="hljs-number">8</span>)|</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|E|                 Stream Dependency? (<span class="hljs-number">31</span>)                     |</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|  Weight? (<span class="hljs-number">8</span>)  |</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|                   Header Block Fragment (*)                 ...</span><br><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                           Padding (*)                       ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p><code>HEADERS</code> 帧具有如下的字段</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Pad Length</code></td>
+<td>填充长度</td>
+<td>一个 <code>8</code> 位的字段，包含了以字节为单位的帧的填充的长度，只有在 <code>PADDED</code> 标记设置时才出现</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>单 <code>bit</code> 的标记</td>
+<td>指示流依赖是独占的，这个字段只有在 <code>PRIORITY</code> 标记设置时才会出现</td>
+</tr>
+<tr>
+<td><code>Stream Dependency</code></td>
+<td>流依赖</td>
+<td><code>31</code> 位的流标识符，标识这个流依赖的流，这个字段只有在 <code>PRIORITY</code> 标记设置时才会出现</td>
+</tr>
+<tr>
+<td><code>Weight</code></td>
+<td>权重</td>
+<td>无符号 <code>8</code> 位整型值，表示流的优先级权重，将值加 <code>1</code> 以获得介于 <code>1</code> 和 <code>256</code> 之间的权重<br>这个字段只有在 <code>PRIORITY</code> 标记设置时才会出现</td>
+</tr>
+<tr>
+<td><code>Header Block Fragment</code></td>
+<td>请求头片段</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>Padding</code></td>
+<td>填充</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<p><strong>标志</strong></p>
+<p><code>HEADERS</code> 帧定义了如下的标记</p>
+<ul>
+<li><code>END_STREAM</code>（<code>0x1</code>），当设置时，位 <code>0</code> 表示这个 <code>Header</code> 块是终端将是被标识的流发送的最后一个块，<code>HEADERS</code> 帧可以携带 <code>END_STREAM</code> 标记，标明流的结束，然而在相同的流上，一个设置了 <code>END_STREAM</code> 标记的 <code>HEADERS</code> 帧后面可以跟着 <code>CONTINUATION</code> 帧，逻辑上来说 <code>CONTINUATION</code> 帧是 <code>HEADERS</code> 帧的一部分</li>
+<li><code>END_HEADERS</code>（<code>0x4</code>）若设置，位 <code>2</code> 指示该帧包含整个头部块，并且没有任何 <code>CONTINUATION</code> 帧，没有 <code>END_HEADERS</code> 标记集的 <code>HEADERS</code> 帧必须跟随同一个流的 <code>CONTINUATION</code> 帧，接收方必须将接收到的任何其他类型的帧或不同流上的帧视为 <code>PROTOCOL_ERROR</code> 类型的连接错误</li>
+<li><code>PADDED</code>（<code>0x8</code>）若设置，位 <code>3</code> 指示 <code>Pad Length</code> 字段及其描述的填充符存在</li>
+<li><code>PRIORITY</code>（<code>0x20</code>）若设置，位 <code>5</code> 指示存在专用标志（<code>E</code>），流依赖性和权重字段</li>
+</ul>
+<p><strong>载荷</strong></p>
+<ul>
+<li><code>HEADERS</code> 帧的载荷包含一个 <code>Header</code> 块片段，不适合放在 <code>HEADERS</code> 帧中的 <code>Header</code> 块在 <code>CONTINUATION</code> 帧中继续，<code>HEADERS</code> 帧必须与流关联，如果收到的流标识符字段为 <code>0x0</code> 的 <code>HEADERS</code> 帧，收件人必须响应 <code>PROTOCOL_ERROR</code> 类型的连接错误</li>
+<li><code>HEADERS</code> 帧可以包含填充，填充字段和标志与为 <code>DATA</code> 帧定义的填充字段和标志相同，填充超过 <code>Header</code> 分段的剩余大小必须被视为 <code>PROTOCOL_ERROR</code></li>
+<li><code>HEADERS</code> 帧中的优先级信息在逻辑上等同于单独的 <code>PRIORITY</code> 帧，但包含在 <code>HEADERS</code> 中可避免在创建新流时在流优先级中进行流失的可能性，流之后的 <code>HEADERS</code> 帧中的优先级字段重新设置流的优先顺序</li>
+</ul>
+<h6 id="PRIORITY-帧"><a href="#PRIORITY-帧" class="headerlink" title="PRIORITY 帧"></a>PRIORITY 帧</h6><p><code>PRIORITY</code> 帧（<code>type = 0x2</code>）指定了流发送者建议的优先级，它可以以任何流状态发送，包括空闲或封闭的流</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+-+-------------------------------------------------------------+</span><br><span class="line">|E|                  Stream Dependency (<span class="hljs-number">31</span>)                     |</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|   Weight (<span class="hljs-number">8</span>)  |</span><br><span class="line">+-+-------------+</span><br></pre></td></tr></table></figure>
+
+<p><code>PRIORITY</code> 帧的有效载荷包含以下字段</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Pad Length</code></td>
+<td>填充长度</td>
+<td>一个 <code>8</code> 位的字段，包含了以字节为单位的帧的填充的长度，只有在 <code>PADDED</code> 标记设置时才出现</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>单 <code>bit</code> 的标记</td>
+<td>表示流依赖性是唯一的单比特标志</td>
+</tr>
+<tr>
+<td><code>Stream Dependency</code></td>
+<td>流依赖</td>
+<td>该数据流依赖的流的 <code>31</code> 位流标识符</td>
+</tr>
+<tr>
+<td><code>Weight</code></td>
+<td>权重</td>
+<td>一个无符号的 <code>8</code> 位整数，表示流的优先级权重，将值加 <code>1</code> 以获得介于 <code>1</code> 和 <code>256</code> 之间的权重</td>
+</tr>
+</tbody></table>
+<p><strong>标志</strong></p>
+<p><code>PRIORITY</code> 帧不定义任何标志</p>
+<p><strong>负载</strong></p>
+<ul>
+<li><code>PRIORITY</code> 帧始终标识一个流，如果接收到一个流标识符为 <code>0x0</code> 的 <code>PRIORITY</code> 帧，接收方必须响应 <code>PROTOCOL_ERROR</code> 类型的连接错误</li>
+<li><code>PRIORITY</code> 帧可以在任何状态下的流上发送，尽管它不能在构成单个 <code>Header</code> 块的连续帧之间发送，请注意，此帧可能在处理完成或帧发送完成后到达，这会导致它对已识别的流没有任何影响，对于处于 <code>Half-Closed (remote)</code> 或 <code>Closed</code> 状态的流，此帧只能影响对已识别流及其依赖流的处理，它不会影响该流上的帧传输</li>
+<li><code>PRIORITY</code> 帧可以从处于 <code>idle</code> 或 <code>Closed</code> 状态的流中发送，这允许通过改变未使用或已关闭的父流的优先级来重新设置一组从属流的优先级，长度不是 <code>5</code> 个字节的 <code>PRIORITY</code> 帧必须被视为类型为 <code>FRAME_SIZE_ERROR</code> 的流错误</li>
+</ul>
+<h6 id="RST-STREAM-帧"><a href="#RST-STREAM-帧" class="headerlink" title="RST_STREAM 帧"></a>RST_STREAM 帧</h6><p><code>RST_STREAM</code> 帧（<code>type = 0x3</code>）允许立即终止一个流，发送 <code>RST_STREAM</code> 以请求取消流或指示发生了错误情况</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                        <span class="hljs-built_in">Error</span> Code (<span class="hljs-number">32</span>)                        |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p><code>RST_STREAM</code> 帧包含标识错误代码的单个无符号的 <code>32</code> 位整数，错误代码指示流被终止的原因</p>
+<p><strong>标志</strong></p>
+<p><code>RST_STREAM</code> 帧不定义任何标志</p>
+<p><strong>说明</strong></p>
+<ul>
+<li><code>RST_STREAM</code> 帧完全终止流并使其进入 <code>close</code> 状态，在流上接收到 <code>RST_STREAM</code> 之后，接收者不得为该流发送额外的帧，但 <code>PRIORITY</code> 除外，但是在发送 <code>RST_STREAM</code> 之后，发送端点务必准备好接收和处理在 <code>RST_STREAM</code> 到达之前可能已经由对端在流上发送的帧</li>
+<li><code>RST_STREAM</code> 帧必须与一个流相关联，如果接收到 <code>RST_STREAM</code> 帧且流标识符为 <code>0x0</code>，则接收方必须将其视为 <code>PROTOCOL_ERROR</code> 类型的连接错误</li>
+<li><code>RST_STREAM</code> 帧不得在 <code>idle</code> 状态下发送流，如果接收到标识空闲流的 <code>RST_STREAM</code> 帧，接收者必须将其视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li>长度不是 <code>4</code> 个字节的 <code>RST_STREAM</code> 帧必须被视为 <code>FRAME_SIZE_ERROR</code> 类型的连接错误</li>
+</ul>
+<h6 id="SETTINGS-帧"><a href="#SETTINGS-帧" class="headerlink" title="SETTINGS 帧"></a>SETTINGS 帧</h6><p><code>SETTINGS</code> 帧（<code>type = 0x4</code>）的有效载荷由零个或多个参数组成，每个参数由一个无符号的 <code>16</code> 位设置标识符和一个无符号的 <code>32</code> 位值组成</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+-------------------------------+</span><br><span class="line">|       Identifier (<span class="hljs-number">16</span>)         |</span><br><span class="line">+-------------------------------+-------------------------------+</span><br><span class="line">|                        Value (<span class="hljs-number">32</span>)                             |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>如下参数定义</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SETTINGS_HEADER_TABLE_SIZE</code>（<code>0x1</code>）</td>
+<td>允许发送者以字节的形式通知远程端点用于解码 <code>Header</code> 块的 <code>Header</code> 压缩表的最大尺寸，编码器可以通过使用特定于 <code>Header</code> 块内头部压缩格式的信令来选择等于或小于此值的任何大小</td>
+</tr>
+<tr>
+<td><code>SETTINGS_ENABLE_PUSH</code>（<code>0x2</code>）</td>
+<td>此设置可用于禁用服务器推送，如果一个端点接收到这个参数设置为 <code>0</code> 的值，它不应该发送一个 <code>PUSH_PROMISE</code> 帧，一个端点既将这个参数设置为 <code>0</code>，并且确认它也必须将 <code>PUSH_PROMISE</code> 帧的接收视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误，初始值为 <code>1</code>，表示允许服务器推送，除 <code>0</code> 或 <code>1</code> 以外的任何值必须视为 <code>PROTOCOL_ERROR</code> 类型的连接错误</td>
+</tr>
+<tr>
+<td><code>SETTINGS_MAX_CONCURRENT_STREAMS</code>（<code>0x3</code>）</td>
+<td>表示发件人允许的最大并发流数，这个限制是有方向性的，它适用于发送者允许接收者创建的数据流，最初这个值没有限制，建议此值不小于 <code>100</code>，以免不必要地限制并行性，值为 <code>0</code> 的 <code>SETTINGS_MAX_CONCURRENT_STREAMS</code> 不应被视为特殊的端点，零值确实会阻止创建新的流，然而这也可能发生在活动流所耗尽的任何限制上，服务器应该只在短时间内设置一个零值，如果服务器不希望接受请求，关闭连接更合适</td>
+</tr>
+<tr>
+<td><code>SETTINGS_INITIAL_WINDOW_SIZE</code>（<code>0x4</code>）</td>
+<td>指示发送者的流级别流控制的初始窗口大小（以八位字节为单位），初始值是 <code>2^16 - 1</code> 个八位组，该设置会影响所有流的窗口大小，高于最大流量控制窗口大小 <code>2^31 - 1</code> 的值必须视为 <code>FLOW_CONTROL_ERROR</code> 类型的连接错误</td>
+</tr>
+<tr>
+<td><code>SETTINGS_MAX_FRAME_SIZE</code>（<code>0x5</code>）</td>
+<td>指示发送者愿意接收的最大帧有效载荷的大小，以八位字节为单位，初始值是 <code>2^14</code> 个八位字节，端点通告的值必须在该初始值和最大允许帧大小之间，包括在内，此范围之外的值务必视为 <code>PROTOCOL_ERROR</code> 类型的连接错误</td>
+</tr>
+<tr>
+<td><code>SETTINGS_MAX_HEADER_LIST_SIZE</code>（<code>0x6</code>）</td>
+<td>此通报设置以八位字节的形式通知对等方发送方准备接受的header列表的最大大小，该值基于header字段的未压缩大小，包括名称和八位字节的值的长度，以及每个 <code>Header</code> 字段的开销 <code>32</code> 个字节，对于任何给定的请求，可能会强制实施一个比所宣传的更低的限制，此设置的初始值是无限的，接收到带有任何未知或不支持标识符的 <code>SETTINGS</code> 帧的端点必须忽略该设置</td>
+</tr>
+</tbody></table>
+<p><strong>说明</strong></p>
+<ul>
+<li><code>SETTINGS</code> 帧传达影响端点通信方式的配置参数，例如对对等行为的偏好和约束，<code>SETTINGS</code> 帧也用于确认收到这些参数，<code>SETTINGS</code> 参数不协商，它们描述了发送端的特征，被接收端使用，每个对等体可以通告相同参数的不同值，例如客户端可能会设置较高的初始流量控制窗口，而服务器可能会设置较低的值以节省资源</li>
+<li>设置帧必须在连接开始时由两个端点发送，并且可以在连接的整个生命周期内由任一端点在任何其他时间发送，实现必须支持本规范定义的所有参数</li>
+<li><code>SETTINGS</code> 帧中的每个参数都会替换该参数的任何现有值，参数按它们出现的顺序进行处理，并且 <code>SETTINGS</code> 帧的接收者不需要保持除参数当前值以外的任何状态，因此 <code>SETTINGS</code> 参数的值是接收器看到的最后一个值</li>
+<li><code>SETTINGS</code> 参数由接收方确认，为了实现这一点，<code>SETTINGS</code> 帧定义了 <code>ACK</code>（<code>0x1</code>）标志，若设置，位 <code>0</code> 表示该帧确认接收和应用对等设备帧，当该位设置时，<code>SETTINGS</code> 帧的有效载荷必须为空，收到一个设置了 <code>ACK</code> 标志并且长度字段值不为 <code>0</code> 的 <code>SETTINGS</code> 帧必须被视为 <code>FRAME_SIZE_ERROR</code> 类型的连接错误</li>
+<li><code>SETTINGS</code> 帧始终适用于连接，而不是单个流，设置帧的流标识必须为零（<code>0x0</code>），如果端点收到 <code>SETTINGS</code> 帧，其流标识符字段不是 <code>0x0</code>，那么端点必须响应一个类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li><code>SETTINGS</code> 帧影响连接状态，错误格式或不完整的 <code>SETTINGS</code> 帧必须被视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li>长度不是 <code>6</code> 个字节倍数的 <code>SETTINGS</code> 帧必须被视为 <code>FRAME_SIZE_ERROR</code> 类型的连接错误</li>
+</ul>
+<p><strong>Settings 同步</strong></p>
+<ul>
+<li><code>SETTINGS</code> 中的大部分值受益于或需要了解对等体何时接收并应用更改的参数值，为了提供这样的同步时间点，其中未设置 <code>ACK</code> 标志的 <code>SETTINGS</code> 帧的接收方必须在收到后尽快应用更新的参数</li>
+<li><code>SETTINGS</code> 帧中的值必须按照它们出现的顺序进行处理，值之间没有其他帧处理，不支持的参数必须被忽略，一旦所有值都被处理完毕，接收者必须立即发出一个设置了 <code>ACK</code> 标志的 <code>SETTINGS</code> 帧， 一旦接收到设置了 <code>ACK</code> 标志的 <code>SETTINGS</code> 帧，改变参数的发送者就可以依赖已经应用的设置</li>
+<li>如果<code>SETTINGS</code> 帧的发送者在合理的时间内没有收到确认，它可能会发出<code>SETTINGS_TIMEOUT</code> 类型的连接错误</li>
+</ul>
+<h6 id="PUSH-PROMISE-帧"><a href="#PUSH-PROMISE-帧" class="headerlink" title="PUSH_PROMISE 帧"></a>PUSH_PROMISE 帧</h6><p><code>PUSH_PROMISE</code> 帧（<code>type = 0x5</code>）用于在发送者打算初始化流之前通知对端，<code>PUSH_PROMISE</code> 帧包括端点计划创建的流的无符号 <code>31</code> 位标识符以及为流提供附加上下文的一组 <code>Header</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|Pad Length? (<span class="hljs-number">8</span>)|</span><br><span class="line">+-+-------------+-----------------------------------------------+</span><br><span class="line">|R|                  Promised Stream ID (<span class="hljs-number">31</span>)                    |</span><br><span class="line">+-+-----------------------------+-------------------------------+</span><br><span class="line">|                   Header Block Fragment (*)                 ...</span><br><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                           Padding (*)                       ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Pad Length</code></td>
+<td>填充长度</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>一个保留位</td>
+</tr>
+<tr>
+<td><code>Promised Stream ID</code></td>
+<td>一个无符号的31位整数，用于标识由<code>PUSH_PROMISE</code> 保留的流，承诺流标识符必须是发送方发送的下一个流的有效选择</td>
+</tr>
+<tr>
+<td><code>Header Block Fragment</code></td>
+<td>包含请求头部字段的 <code>Header</code> 块片段</td>
+</tr>
+<tr>
+<td><code>Padding</code></td>
+<td>填充字节</td>
+</tr>
+</tbody></table>
+<p><strong>标志</strong></p>
+<ul>
+<li><code>END_HEADERS</code>（<code>0x4</code>），置位时，位 <code>2</code> 指示该帧包含整个 <code>Header</code> 块，并且没有任何 <code>CONTINUATION</code> 帧，没有设置 <code>END_HEADERS</code> 标志的 <code>PUSH_PROMISE</code> 帧必须跟着同一个流的 <code>CONTINUATION</code> 帧，接收方必须将接收到的任何其他类型的帧或不同流上的帧视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li><code>PADDED</code>（<code>0x8</code>），置位时，位 <code>3</code> 指示 <code>Pad Length</code> 字段及其描述的填充符存在</li>
+</ul>
+<p><strong>说明</strong></p>
+<ul>
+<li><code>PUSH_PROMISE</code> 帧必须只能在处于 <code>open</code> 或 <code>Half-Closed (remote)</code> 状态的已对端初始化的流上发送，<code>PUSH_PROMISE</code> 帧的流标识符指示与其关联的流，如果流标识符字段指定值 <code>0x0</code>，则接收方必须响应类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li>承诺的流不需要按照承诺的顺序使用， <code>PUSH_PROMISE</code> 仅保留流标识符供以后使用</li>
+<li>如果对端端点的 <code>SETTINGS_ENABLE_PUSH</code> 设置被设置为 <code>0</code>，则不应发送 <code>PUSH_PROMISE</code>，已设置此设置并已收到确认的端点务必将 <code>PUSH_PROMISE</code> 帧的接收视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li><code>PUSH_PROMISE</code> 帧的接受者可以选择拒绝承诺的流，通过发送带有承诺的流标识符的 <code>RST_STREAM</code> 返回给 <code>PUSH_PROMISE</code> 的发送者来</li>
+</ul>
+<h6 id="PING-帧"><a href="#PING-帧" class="headerlink" title="PING 帧"></a>PING 帧</h6><p><code>PING</code> 帧（<code>type = 0x6</code>）是一种机制，用于测量来自发送方的最小往返时间，以及确定空闲连接是否仍然有效，<code>PING</code> 帧可以从任何端点发送</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                                                               |</span><br><span class="line">|                      Opaque Data (<span class="hljs-number">64</span>)                         |</span><br><span class="line">|                                                               |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>除帧头外，<code>PING</code> 帧必须在有效载荷中包含 <code>8</code> 个不透明数据字节，发送者可以包含它选择的任何值，并以任何方式使用这些八位字节，不包括 <code>ACK</code> 标记的 <code>PING</code> 帧的接收者务必发送一个 <code>PING</code> 帧，并在响应中设置 <code>ACK</code> 标志，并使用相同的有效载荷，<code>PING</code> 响应应该被赋予比任何其他帧更高的优先级</p>
+<p><strong>标志</strong></p>
+<p><code>ACK</code>（<code>0x1</code>），置位时，位 <code>0</code> 表示该 <code>PING</code> 帧是 <code>PING</code> 响应，端点必须在 <code>PING</code> 响应中设置这个标志，端点不能响应包含这个标志的 <code>PING</code> 帧</p>
+<p><strong>说明</strong></p>
+<p><code>PING</code> 帧不与任何独立的流关联，如果接收到流标识符字段不是 <code>0</code> 的<code>PING</code> 帧，接收者必须以类型是 <code>PROTOCOL_ERROR</code> 的连接错误来响应，接收到长度字段的值不是 <code>8</code> 的 <code>PING</code> 帧，则必须被作为类型是 <code>FRAME_SIZE_ERROR</code> 的连接错误</p>
+<h6 id="GOAWAY-帧"><a href="#GOAWAY-帧" class="headerlink" title="GOAWAY 帧"></a>GOAWAY 帧</h6><p><code>GOAWAY</code> 帧（<code>type = 0x7</code>）用于启动连接关闭或发出严重错误状态信号，<code>GOAWAY</code> 允许端点正常停止接受新的流，同时仍然完成对先前建立的流的处理，这可以实现管理操作，例如服务器维护，在端点开始新流和端点远程发送 <code>GOAWAY</code> 帧之间存在固有的竞争条件，为了处理这种情况，<code>GOAWAY</code> 包含在此连接中的发送端点上已处理或可能处理的最后一个 <code>Peer-initiated</code> 流的流标识符，例如，如果服务器发送 <code>GOAWAY</code> 帧，则标识的流是由客户端发起的编号最大的流</p>
+<p>一旦发送，如果流的标识符高于包含的最后流标识符，则发送方将忽略由接收方发起的流上发送的帧，<code>GOAWAY</code> 帧的接收者不能在连接上打开额外的流，尽管可以为新的流建立新的连接，如果 <code>GOAWAY</code> 的接收者已经发送了具有比 <code>GOAWAY</code> 帧更高的流标识符的流的数据，那么这些流不被处理或将不被处理，<code>GOAWAY</code> 帧的接收者可以将这些流视为从未被创建，从而允许这些流稍后在新连接上重试</p>
+<p>端点应该总是在关闭连接之前发送一个 <code>GOAWAY</code> 帧，以便远程节点可以知道流是否已被部分处理，例如，如果 <code>HTTP</code> 客户端在服务器关闭连接的同时发送 <code>POST</code>，则客户端无法知道服务器是否开始处理该 <code>POST</code> 请求，如果服务器未发送 <code>GOAWAY</code> 帧来指示它可能具有哪些流采取行动，对于行为不当的对端，端点可以选择关闭连接而不发送 <code>GOAWAY</code></p>
+<p><code>GOAWAY</code> 帧可能不会立即关闭连接之前，<code>GOAWAY</code> 的接收器不再用于连接应该在终止连接之前仍然发送 <code>GOAWAY</code> 帧</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+-+-------------------------------------------------------------+</span><br><span class="line">|R|                  Last-Stream-ID (<span class="hljs-number">31</span>)                        |</span><br><span class="line">+-+-------------------------------------------------------------+</span><br><span class="line">|                      <span class="hljs-built_in">Error</span> Code (<span class="hljs-number">32</span>)                          |</span><br><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                  Additional Debug Data (*)                    |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p><strong>标志</strong></p>
+<p><code>GOAWAY</code> 帧不定义任何标记</p>
+<p><strong>说明</strong></p>
+<ul>
+<li><code>GOAWAY</code> 帧适用于连接，而不是特定的流，端点必须将带有 <code>0x0</code> 以外的流标识符的 <code>GOAWAY</code> 帧视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li><code>GOAWAY</code> 帧还包含一个 <code>32</code> 位错误代码，其中包含关闭连接的原因，端点可以将不透明数据附加到任何<code>GOAWAY</code> 帧的有效载荷，额外的调试数据仅用于诊断目的，并没有语义值，调试信息可能包含安全或隐私敏感数据，记录或以其他方式持久存储的调试数据必须有足够的安全措施以防止未经授权的访问，</li>
+</ul>
+<h6 id="CONTINUATION-帧"><a href="#CONTINUATION-帧" class="headerlink" title="CONTINUATION 帧"></a>CONTINUATION 帧</h6><p><code>CONTINUATION</code> 帧（<code>type = 0x9</code>）被用于继续发送 <code>Header</code> 块片段的序列，只要相同流上的前导帧是没有设置 <code>END_HEADERS</code> 标记的 <code>HEADERS</code>，<code>PUSH_PROMISE</code> 或 <code>CONTINUATION</code> 帧，就可以发送任意数量的 <code>CONTINUATION</code> 帧</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+---------------------------------------------------------------+</span><br><span class="line">|                   Header Block Fragment (*)                 ...</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p><code>CONTINUATION</code> 帧有效载荷包含一个 <code>Header</code> 块片段</p>
+<p><strong>标志</strong></p>
+<p><code>CONTINUATION</code> 帧定义了以下标志</p>
+<ul>
+<li><code>END_HEADERS</code>（<code>0x4</code>），置位时，位 <code>2</code> 表示该帧结束 <code>Header</code> 块，如果未设置 <code>END_HEADERS</code> 位，则该帧必须紧跟着另一个 <code>CONTINUATION</code> 帧，接收方必须将接收到的任何其他类型的帧或不同流上的帧视为 <code>PROTOCOL_ERROR</code> 类型的连接错误</li>
+</ul>
+<p><strong>说明</strong></p>
+<ul>
+<li><code>CONTINUATION</code> 帧必须与流相关联，如果收到其流标识符字段为 <code>0x0</code> 的 <code>CONTINUATION</code> 帧，接收方必须响应 <code>PROTOCOL_ERROR</code> 类型的连接错误</li>
+<li><code>CONTINUATION</code> 帧必须在前面加上 <code>HEADERS</code>，<code>PUSH_PROMISE</code> 或 <code>CONTINUATION</code> 帧，而不要设置 <code>END_HEADERS</code> 标志，观察到违反此规则的接受者必须响应 <code>PROTOCOL_ERROR</code> 类型的连接错误</li>
+</ul>
+<h2 id="流-1"><a href="#流-1" class="headerlink" title="流"></a>流</h2><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-11.png" alt></p>
+<p><code>HTTP/2</code> 规范对流的定义是，<code>HTTP/2</code> 连接上独立的、双向的帧序列交换，因为在客户端与服务器之间，双方都可以互相发送二进制帧，这样的双向传输的序列就可以称为流，你也可以将流看作在连接上的一系列帧，它们构成了单独的 <code>HTTP</code> 请求和响应，如果客户端想要发出请求，它会开启一个新的流，然后服务器将在这个流上回复，这与 请求/响应 的流程很类似，重要的区别在于，因为有分帧，所以多个请求和响应可以交错，而不会互相阻塞 </p>
+<p>流具有一些重要的特性</p>
+<ul>
+<li>单个的 <code>HTTP/2</code> 连接可以包含多个并发打开的流，各个终端多个流的帧可以交叉</li>
+<li>流可以单方面地建立和使用，或由客户端或服务器共享</li>
+<li>流可以被任何一端关闭</li>
+<li>流中帧的发送顺序是值得注意的，接收者以它们收到帧的顺序处理，特别的，<code>HEADERS</code> 帧和 <code>DATA</code> 帧在语义上是非常重要的</li>
+<li>流由一个整数标识，流标识符由发起流的终端来赋值</li>
+</ul>
+<p>这里也存在一个问题，那就是乱序的二进制帧，是如何组装成对于的报文呢？</p>
+<ul>
+<li>所谓的乱序，指的是不同 <code>ID</code> 的 <code>Stream</code> 是乱序的，对于同一个 <code>Stream ID</code> 的帧是按顺序传输的</li>
+<li>接收方收到二进制帧后，将相同的 <code>Stream ID</code> 组装成完整的请求报文和响应报文</li>
+<li>二进制帧中有一些字段，控制着优先级和流量控制等功能，这样就可以设置数据帧的优先级，让服务器处理重要资源，优化用户体验</li>
+</ul>
+<h4 id="流的生命周期"><a href="#流的生命周期" class="headerlink" title="流的生命周期"></a>流的生命周期</h4><p>流的生命周期如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">                         +--------+</span><br><span class="line">                 send PP |        | recv PP</span><br><span class="line">                ,--------|  idle  |--------.</span><br><span class="line">               /         |        |         \</span><br><span class="line">              v          +--------+          v</span><br><span class="line">       +----------+          |           +----------+</span><br><span class="line">       |          |          | send H /  |          |</span><br><span class="line">,------| Reserved |          | recv H    | Reserved |------.</span><br><span class="line">|      | (local)  |          |           | (remote) |      |</span><br><span class="line">|      +----------+          v           +----------+      |</span><br><span class="line">|          |             +--------+             |          |</span><br><span class="line">|          |     recv ES |        | send ES     |          |</span><br><span class="line">|   send H |     ,-------|  open  |-------.     | recv H   |</span><br><span class="line">|          |    <span class="hljs-regexp">/        |        |        \    |          |</span></span><br><span class="line"><span class="hljs-regexp">|          v   v         +--------+         v   v          |</span></span><br><span class="line"><span class="hljs-regexp">|      +----------+          |           +----------+      |</span></span><br><span class="line"><span class="hljs-regexp">|      |   Half   |          |           |   Half   |      |</span></span><br><span class="line"><span class="hljs-regexp">|      |  Closed  |          | send R /</span>  |  Closed  |      |</span><br><span class="line">|      | (remote) |          | recv R    | (local)  |      |</span><br><span class="line">|      +----------+          |           +----------+      |</span><br><span class="line">|           |                |                 |           |</span><br><span class="line">|           | send ES /      |       recv ES / |           |</span><br><span class="line">|           | send R /       v        send R / |           |</span><br><span class="line">|           | recv R     +--------+   recv R   |           |</span><br><span class="line">| send R /  <span class="hljs-string">`-----------&gt;|        |&lt;-----------'  send R / |</span></span><br><span class="line"><span class="hljs-string">| recv R                 | Closed |               recv R   |</span></span><br><span class="line"><span class="hljs-string">`</span>-----------------------&gt;|        |<span class="hljs-xml"><span class="hljs-tag">&lt;<span class="hljs-name">----------------------'</span></span></span></span><br><span class="line"><span class="hljs-xml">                         +--------+</span></span><br><span class="line"><span class="hljs-xml"></span></span><br><span class="line"><span class="hljs-xml">   send:   endpoint sends this frame</span></span><br><span class="line"><span class="hljs-xml">   recv:   endpoint receives this frame</span></span><br><span class="line"><span class="hljs-xml"></span></span><br><span class="line"><span class="hljs-xml">   H:  HEADERS frame (with implied CONTINUATIONs)</span></span><br><span class="line"><span class="hljs-xml">   PP: PUSH_PROMISE frame (with implied CONTINUATIONs)</span></span><br><span class="line"><span class="hljs-xml">   ES: END_STREAM flag</span></span><br><span class="line"><span class="hljs-xml">   R:  RST_STREAM frame</span></span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意的是，此图显示了流状态转换以及会影响这些转换的帧和标志，在这方面，<code>CONTINUATION</code> 帧不会导致状态转换，实际上是它们跟随的 <code>HEADERS</code> 或 <code>PUSH_PROMISE</code> 的一部分，出于状态转换的目的，<code>END_STREAM</code> 标志作为单独的事件处理到承载它的帧，具有 <code>END_STREAM</code> 标志设置的 <code>HEADERS</code> 帧可以导致两个状态转换</p>
+<p>两个端点都有流状态的主观视图，当帧在传输过程中可能会有所不同，端点不协调创建流，它们是由任一端点单方面创建的，在发送 <code>RST_STREAM</code> 之后，状态不匹配的负面影响仅限于 <code>Closed</code> 状态，在关闭后帧可能会被接收一段时间</p>
+<h4 id="流的状态"><a href="#流的状态" class="headerlink" title="流的状态"></a>流的状态</h4><p>数据流具有以下状态</p>
+<h6 id="idle"><a href="#idle" class="headerlink" title="idle"></a>idle</h6><p>所有的流都以 <code>idle</code> 状态开始，以下转换在此状态下有效</p>
+<ul>
+<li>发送或接收 <code>HEADERS</code> 帧会导致流成为 <code>open</code>，同样 <code>HEADERS</code> 帧也可以使流立即变成 <code>Half-Closed</code></li>
+<li>在另一个流上发送 <code>PUSH_PROMISE</code> 帧将保留标识的空闲流为以后使用，保留流的流状态转换为 <code>Reserved (local)</code></li>
+<li>在另一个流上接收 <code>PUSH_PROMISE</code> 帧将保留标识的空闲流为以后使用，保留流的流状态转换为 <code>Reserved (remote)</code></li>
+<li>特别注意，<code>PUSH_PROMISE</code> 帧不在空闲流上发送，而是在 <code>Promised Stream ID</code> 字段中引用新保留的流</li>
+</ul>
+<p>在 <code>idle</code> 状态下，在流上接收除 <code>HEADERS</code> 或 <code>PRIORITY</code> 之外的任何帧必须被视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</p>
+<h6 id="Reserved-local"><a href="#Reserved-local" class="headerlink" title="Reserved (local)"></a>Reserved (local)</h6><p>处于 <code>Reserved (local)</code> 状态的流是通过发送 <code>PUSH_PROMISE</code> 帧来承诺的流，<code>PUSH_PROMISE</code> 帧通过将流与远程对等端发起的开放流关联来保留 <code>idle</code> 流，在这种状态下，只有以下转换是可能的</p>
+<ul>
+<li>端点可以发送 <code>HEADERS</code> 帧，这会导致流开启为 <code>Half-Closed (remote)</code> 状态</li>
+<li>任一端点都可以发送 <code>RST_STREAM</code> 帧，以使流成为 <code>Closed</code>，这将释放流预留</li>
+</ul>
+<p>在此状态下，端点不得发送除 <code>HEADERS</code>，<code>RST_STREAM</code> 或 <code>PRIORITY</code> 之外的任何类型的帧，可以在此状态下接收 <code>PRIORITY</code> 或 <code>WINDOW_UPDATE</code> 帧，在此状态的流上接收除 <code>RST_STREAM</code>，<code>PRIORITY</code> 或 <code>WINDOW_UPDATE</code> 以外的任何类型的帧必须视为 <code>PROTOCOL_ERROR</code> 类型的连接错误</p>
+<h6 id="Reserved-remote"><a href="#Reserved-remote" class="headerlink" title="Reserved (remote)"></a>Reserved (remote)</h6><p>处于 <code>Reserved (remote)</code> 状态的流已被远程对端保留，在这种状态下，只有以下转换是可能的</p>
+<ul>
+<li>接收 <code>HEADERS</code> 帧会导致数据流转换为 <code>Half-Closed (local)</code></li>
+<li>任一端点都可以发送 <code>RST_STREAM</code> 帧，以使流成为 <code>Closed</code>，这将释放流预留</li>
+</ul>
+<p>端点可以在这种状态下发送 <code>PRIORITY</code> 帧来重新设置保留流的优先级，在此状态下，端点不得发送除 <code>RST_STREAM</code>，<code>WINDOW_UPDATE</code> 或 <code>PRIORITY</code> 以外的任何类型的帧，在这种状态下，在流上接收除 <code>HEADERS</code>，<code>RST_STREAM</code> 或 <code>PRIORITY</code> 以外的任何类型的帧必须被视为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</p>
+<h6 id="open"><a href="#open" class="headerlink" title="open"></a>open</h6><p>处于<code>open</code>状态的流可以被两个对端用来发送任何类型的帧，在这种状态下，发送对等方遵守流级别的流量控制限制，</p>
+<p>在这种状态下，任何端点都可以发送带有 <code>END_STREAM</code> 标志的帧，这会导致流转换到 <code>Half-Closed</code> 状态之一，发送 <code>END_STREAM</code> 标志的端点导致流状态变为 <code>Half-Closed (local)</code>，接收 <code>END_STREAM</code> 标志的端点将导致流状态变为 <code>half-close (remote)</code>，每个端点都可以从此状态发送 <code>RST_STREAM</code> 帧，使其立即转换为<code>Closed</code></p>
+<h6 id="Half-Closed-local"><a href="#Half-Closed-local" class="headerlink" title="Half-Closed (local)"></a>Half-Closed (local)</h6><p>处于 <code>Half-Closed (local)</code> 状态的流不能用于发送 <code>WINDOW_UPDATE</code>，<code>PRIORITY</code> 和 <code>RST_STREAM</code> 以外的帧，当接收到包含 <code>END_STREAM</code> 标志的帧或任一对端发送 <code>RST_STREAM</code> 帧时，流将从此状态转换为 <code>Closed</code> 状态</p>
+<p>端点可以在这种状态下接收任何类型的帧，使用 <code>WINDOW_UPDATE</code> 帧提供流量控制信用是继续接收流量控制帧所必需的，在这种状态下，接收方可以忽略 <code>WINDOW_UPDATE</code> 帧，因为带有 <code>END_STREAM</code> 标志的帧可能会在短时间内到达，在此状态下收到的优先级帧用于重新确定依赖于已识别流的流的优先级</p>
+<h6 id="Half-Closed-remote"><a href="#Half-Closed-remote" class="headerlink" title="Half-Closed (remote)"></a>Half-Closed (remote)</h6><p><code>Half-Closed (remote)</code> 的流不再被对端用来发送帧，在这种状态下，端点不再需要维护接收器流量控制窗口，如果端点接收到除 <code>WINDOW_UPDATE</code>，<code>PRIORITY</code> 或 <code>RST_STREAM</code> 之外的其他帧，则对于处于此状态的流，它必须响应类型为 <code>STREAM_CLOSED</code> 的流错误</p>
+<p><code>Half-Closed (remote)</code> 的流可以被端点用来发送任何类型的帧，在这种状态下，端点会继续观察流级别的流量控制限制，通过发送一个包含 <code>END_STREAM</code> 标志的帧或任一对端发送 <code>RST_STREAM</code> 帧，流可以从此状态转换为 <code>Closed</code> 状态</p>
+<h6 id="Closed"><a href="#Closed" class="headerlink" title="Closed"></a>Closed</h6><p><code>Closed</code> 状态是终结状态，端点不得在封闭流上发送 <code>PRIORITY</code> 以外的帧，在接收到 <code>RST_STREAM</code> 后接收除 <code>PRIORITY</code> 以外的任何帧的端点必须将其视为类型 <code>STREAM_CLOSED</code> 的流错误，类似地，在接收到设置了 <code>END_STREAM</code> 标志的帧后接收任何帧的端点必须将其视为 <code>STREAM_CLOSED</code> 类型的连接错误，除非该帧是允许的，如下所述</p>
+<ul>
+<li><code>WINDOW_UPDATE</code> 或 <code>RST_STREAM</code> 帧可以在包含 <code>END_STREAM</code> 标志的 <code>DATA</code> 或 <code>HEADERS</code> 帧发送后的短时间内在此状态下接收，在远程节点接收并处理 <code>RST_STREAM</code> 或带有 <code>END_STREAM</code> 标志的帧之前，它可能会发送这些类型的帧，终端必须忽略在这种状态下接收到的 <code>WINDOW_UPDATE</code> 或 <code>RST_STREAM</code> 帧，当然终端也可以选择将在发送 <code>END_STREAM</code> 相当长时间之后到达的帧作为类型为 <code>PROTOCOL_ERROR</code> 的连接错误</li>
+<li><code>PRIORITY</code> 帧可以在 <code>Closed</code> 流上发送，以设置依赖于这个 <code>Closed</code> 流的其他流的优先级，端点应该处理 <code>PRIORITY</code> 帧，当然如果流已经从依赖关系树中移除，则它们可以被忽略</li>
+<li>如果由于发送 <code>RST_STREAM</code> 帧而达到此状态，那么接收 <code>RST_STREAM</code> 的对端可能已经在流上发送或已排队发送帧而无法取消，端点必须在发送 <code>RST_STREAM</code> 帧后忽略它在 <code>Closed</code> 流上接收到的帧，端点可以选择限制它忽略帧的时间段，并将在此时间后到达的帧视为错误</li>
+<li>在发送 <code>RST_STREAM</code> 之后接收的适用于流量控制的帧（即 <code>DATA</code>）被计数到连接流量控制窗口，即使这些帧可能被忽略，因为它们是在发送者收到 <code>RST_STREAM</code> 之前发送的，发送者会认为这些帧是针对流量控制窗口进行计数的</li>
+<li>端点在发送 <code>RST_STREAM</code> 后可能会收到一个 <code>PUSH_PROMISE</code> 帧，即使关联的流已重置，<code>PUSH_PROMISE</code> 也会使流成为 <code>Reserved</code>，因此，需要 <code>RST_STREAM</code> 来关闭不需要的承诺流</li>
+</ul>
+<h6 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h6><p>实现应该将描述中没有明确表示允许的帧的状态的接收作为一个类型为 <code>PROTOCOL_ERROR</code> 的连接错误，注意任何状态下的流都可以发送和接收 <code>PRIORITY</code>，类型未知的帧被忽略</p>
+<h4 id="流的标识符"><a href="#流的标识符" class="headerlink" title="流的标识符"></a>流的标识符</h4><p>流用无符号的 <code>31</code> 位整数标识</p>
+<ul>
+<li>客户端发起的流必须使用『奇数』流标识符</li>
+<li>由服务器发起的必须使用『偶数』流标识符</li>
+</ul>
+<p>连接控制消息使用零（<code>0x0</code>）的流标识符，零流标识符不能用于建立新的流，被升级到 <code>HTTP/2</code> 的 <code>HTTP/1.1</code> 请求以流标识符（<code>0x1</code>）响应，升级完成后，<br>对于客户端来说流 <code>0x1</code> 是 <code>Half-Closed (local)</code>，因此，流 <code>0x1</code> 不能被从 <code>HTTP/1.1</code> 升级的客户端选择为新的流标识符</p>
+<p>新建立的流的标识符必须在数字上大于发起端点已经打开或保留的所有流，这将控制使用 <code>HEADERS</code> 帧打开的流和使用 <code>PUSH_PROMISE</code> 保留的流，接收到意外流标识符的端点必须响应 <code>PROTOCOL_ERROR</code> 类型的连接错误</p>
+<p>新流的标识符的第一次使用隐式地关闭了所有由该对端以低值流标识符发起的处于 <code>idle</code> 状态的流，例如如果客户端在流 <code>7</code> 上发送 <code>HEADERS</code> 帧而没有在流 <code>5</code> 上发送帧，则当流 <code>7</code> 的第一帧被发送或接收时，流 <code>5</code> 转换到 <code>Closed</code> 状态</p>
+<p>流标识符不能被重用，长时间连接会导致端点耗尽流标识符的可用范围，无法建立新流标识符的客户端可以为新流建立新连接，无法建立新流标识符的服务器可以发送 <code>GOAWAY</code> 帧，以便强制客户端为新流打开新连接</p>
+<h2 id="连接、流和帧的关系"><a href="#连接、流和帧的关系" class="headerlink" title="连接、流和帧的关系"></a>连接、流和帧的关系</h2><p>关系如下</p>
+<ul>
+<li>一个连接同时被多个流复用</li>
+<li>一个流代表一次完整的 请求/响应 过程，包含多个帧</li>
+<li>一个消息被拆分封装成多个帧进行传输</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-12.png" alt></p>
+<h2 id="消息"><a href="#消息" class="headerlink" title="消息"></a>消息</h2><p><code>HTTP</code> 消息泛指 <code>HTTP</code> 请求或响应，流是用来传输一对 请求/响应消息的，一个消息至少由 <code>HEADERS</code> 帧（初始化流）组成，并且可以另外包含 <code>CONTINUATION</code> 和 <code>DATA</code> 帧，以及其他的 <code>HEADERS</code> 帧</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-13.png" alt></p>
+<p><code>HTTP/1.1</code> 的请求和响应都分成消息首部和消息体两部分，与之类似 <code>HTTP/2</code> 的请求和响应分成 <code>HEADERS</code> 帧和 <code>DATA</code> 帧，<code>HTTP/1.1</code> 把消息分成两部分 请求/状态行 与 首部，<code>HTTP/2</code> 取消了这种区分，并把这些行变成了伪首部，举个例子，<code>HTTP/1.1</code> 的请求和响应可能是这样的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GET / HTTP/<span class="hljs-number">1.1</span></span><br><span class="line">Host: www.example.com</span><br><span class="line">User-agent: Next-Great-h2-browser<span class="hljs-number">-1.0</span><span class="hljs-number">.0</span></span><br><span class="line">Accept-Encoding: compress, gzip</span><br><span class="line">HTTP/<span class="hljs-number">1.1</span> <span class="hljs-number">200</span> OK</span><br><span class="line">Content-type: text/plain</span><br><span class="line">Content-length: <span class="hljs-number">2</span> ...</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>HTTP/2</code> 中，它等价于</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">:scheme: https:method: GET</span><br><span class="line">:path: <span class="hljs-regexp">/</span></span><br><span class="line"><span class="hljs-regexp">:authority: www.example.com</span></span><br><span class="line"><span class="hljs-regexp">User-agent: Next-Great-h2-browser-1.0.0</span></span><br><span class="line"><span class="hljs-regexp">Accept-Encoding: compress, gzip </span></span><br><span class="line"><span class="hljs-regexp">:status: 200 </span></span><br><span class="line"><span class="hljs-regexp">content-type: text/</span>plain</span><br></pre></td></tr></table></figure>
+
+<p>请注意，请求和状态行在这里拆分成了多个首部，即 <code>:scheme</code>、<code>:method</code>、<code>:path</code> 和 <code>:status</code>，同时要注意的是，<code>HTTP/2</code> 的这种表示方式跟数据传输时不同，主要有以下两点</p>
+<ul>
+<li>没有分块编码（<code>chunked encoding</code>），在基于帧的世界里，只有在无法预先知道数据长度的情况下向对方发送数据时，才会用到分块，在使用帧作为核心协议的 <code>HTTP/2</code> 里，就不再需要它了</li>
+<li>不再有 <code>101</code> 的响应，<code>Switching Protocol</code> 响应是 <code>HTTP/1.1</code> 的边缘应用，它如今最常见的应用可能就是用以升级到 <code>WebSocket</code> 连接，<code>ALPN</code> 提供了更明确的协议协商路径，往返的开销也更小</li>
+</ul>
+<h2 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h2><p><code>HTTP/2</code> 的新特性之一是基于流的流量控制，不同于 <code>HTTP/1.1</code> 的世界，只要客户端可以处理，服务端就会尽可能快地发送数据，<code>HTTP/2</code> 提供了客户端调整传输速度的能力，<code>WINDOW_UPDATE</code> 帧用来指示流量控制信息，每个帧告诉对方，发送方想要接收多少字节</p>
+<p>客户端有很多理由使用流量控制，一个很现实的原因可能是，确保某个流不会阻塞其他流，也可能客户端可用的带宽和内存比较有限，强制数据以可处理的分块来加载反而可以提升效率，尽管流量控制不能关闭，把窗口最大值设定为设置 <code>2^31 - 1</code> 就等效于禁用它，至少对小于 <code>2GB</code> 的文件来说是如此</p>
+<p>另一个需要注意的是中间代理，通常情况下，网络内容通过代理或者 <code>CDN</code> 来传输，也许它们就是传输的起点或终点，由于代理两端的吞吐能力可能不同，有了流量控制，代理的两端就可以密切同步，把代理的压力降到最低</p>
+<h2 id="请求优先级"><a href="#请求优先级" class="headerlink" title="请求优先级"></a>请求优先级</h2><p>流的最后一个重要特性是依赖关系，现代浏览器都经过了精心设计，首先请求网页上最重要的元素，以最优的顺序获取资源，由此来优化页面性能，拿到了 <code>HTML</code> 之后，在渲染页面之前，浏览器通常还需要 <code>CSS</code> 和 <code>JavaScript</code> 这样的东西，在没有多路复用的时候，在它可以发出对新对象的请求之前，需要等待前一个响应完成</p>
+<p>有了 <code>HTTP/2</code>，客户端就可以一次发出所有资源的请求，服务端也可以立即着手处理这些请求，由此带来的问题是，浏览器失去了在 <code>HTTP/1.1</code> 时代默认的资源请求优先级策略，假设服务器同时接收到了 <code>100</code> 个请求，也没有标识哪个更重要，那么它将几乎同时发送每个资源，次要元素就会影响到关键元素的传输</p>
+<p><code>HTTP/2</code> 通过流的依赖关系来解决这个问题，通过 <code>HEADERS</code> 帧和 <code>PRIORITY</code> 帧，客户端可以明确地和服务端沟通它需要什么，以及它需要这些资源的顺序，这是通过声明依赖关系树 和树里的相对权重实现的</p>
+<ul>
+<li>依赖关系为客户端提供了一种能力，通过指明某些对象对另一些对象有依赖，告知服务器这些对象应该优先传输</li>
+<li>权重让客户端告诉服务器如何确定具有共同依赖关系的对象的请求优先级</li>
+</ul>
+<p>我们来看看这个简单的网站</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">index.html</span><br><span class="line">  – header.jpg</span><br><span class="line">  – critical.js</span><br><span class="line">  – less_critical.js</span><br><span class="line">  – style.css</span><br><span class="line">  – ad.js</span><br><span class="line">  – photo.jpg</span><br></pre></td></tr></table></figure>
+
+<p>在收到主体 <code>HTML</code> 文件之后，客户端会解析它，并生成依赖树，然后给树里的元素分配权重，这时这棵树可能是这样的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">index.html</span><br><span class="line">  – style.css</span><br><span class="line">    – critical.js</span><br><span class="line">      –  less_critical.js (weight <span class="hljs-number">20</span>)</span><br><span class="line">      –  photo.jpg (weight <span class="hljs-number">8</span>)</span><br><span class="line">      –  header.jpg (weight <span class="hljs-number">8</span>)</span><br><span class="line">      –  ad.js (weight <span class="hljs-number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在这个依赖树里，客户端表明它最需要的是 <code>style.css</code>，其次是 <code>critical.js</code>，没有这两个文件，它就不能接着渲染页面，等它收到了 <code>critical.js</code>，就可以给出其余对象的相对权重，权重表示服务一个对象时所需要花费时间的重要程度</p>
+<h2 id="HTTP-2-主要改动"><a href="#HTTP-2-主要改动" class="headerlink" title="HTTP/2 主要改动"></a>HTTP/2 主要改动</h2><p><code>HTTP/2</code> 作为新版协议，改动细节必然很多，不过对应用开发者和服务提供商来说，影响较大的有以下这些</p>
+<h4 id="多路复用"><a href="#多路复用" class="headerlink" title="多路复用"></a>多路复用</h4><p>多路复用允许同时通过单一的 <code>HTTP/2</code> 连接发起多重的 请求/响应 消息，众所周知在 <code>HTTP/1.1</code> 协议中，浏览器客户端在同一时间，针对同一域名下的请求有一定数量限制，超过限制数目的请求会被阻塞，也就是如果想并发多个请求，必须使用多个 <code>TCP</code> 链接</p>
+<p>这也是为何一些站点会有多个静态资源 <code>CDN</code> 域名的原因之一，目的就是变相的解决浏览器针对同一域名的请求限制阻塞问题，而 <code>HTTP/2</code> 的多路复用（<code>Multiplexing</code>）则允许同时通过单一的 <code>HTTP/2</code> 连接发起多重的 请求/响应 消息</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-15.png" alt></p>
+<p>因此 <code>HTTP/2</code> 可以很容易的去实现多流并行而不用依赖建立多个 <code>TCP</code> 连接，<code>HTTP/2</code> 把 <code>HTTP</code> 协议通信的基本单位缩小为一个一个的帧，这些帧对应着逻辑流中的消息，并行地在同一个 <code>TCP</code> 连接上双向交换消息</p>
+<p>关于多路复用的特点与好处，简单总结就是</p>
+<ul>
+<li>同域名下所有通信都在单个连接上完成，单个连接可以承载任意数量的双向数据流</li>
+<li>数据流以消息的形式发送，而消息又由一个或多个帧组成，多个帧之间可以乱序发送，因为根据帧首部的流标识可以重新组装，也就是 <code>Stream ID</code>，流标识符，有了它，接收方就能从乱序的二进制帧中选择 <code>ID</code> 相同的帧，按照顺序组装成请求/响应报文</li>
+<li>减少服务端连接压力，减少占用内存，提升连接吞吐量</li>
+<li>连接数的减少改善了网络拥塞状况，慢启动时间减少，拥塞和丢包恢复速度更快</li>
+<li>避免连接频繁创建和关闭（三次连接、四次挥手）</li>
+</ul>
+<h4 id="首部压缩（Header-Compression）"><a href="#首部压缩（Header-Compression）" class="headerlink" title="首部压缩（Header Compression）"></a>首部压缩（Header Compression）</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-17.png" alt></p>
+<p>现代网页平均包含 <code>140</code> 个请求，每个 <code>HTTP</code> 请求平均有 <code>460</code> 字节，总数据量达到 <code>63KB</code>，即使在最好的环境下，这也会造成相当长的延时，如果考虑到拥挤的 <code>Wi-Fi</code> 或连接不畅的蜂窝网络，那可是非常痛苦的，这些请求之间通常几乎没有新的或不同的内容，这才是真正的浪费，所以大家迫切渴望某种类型的压缩</p>
+<p><code>HTTP/1.1</code> 并不支持 <code>HTTP</code> 首部压缩，为此 <code>SPDY</code> 和 <code>HTTP/2</code> 应运而生，<code>SPDY</code> 使用的是通用的 <a href="https://zh.wikipedia.org/zh-hans/DEFLATE" target="_blank" rel="noopener">DEFLATE</a> 算法，而 <code>HTTP/2</code> 则使用了专门为首部压缩而设计的 <a href="http://http2.github.io/http2-spec/compression.html" target="_blank" rel="noopener">HPACK</a> 算法</p>
+<p>比如下面这两个请求</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">:authority: www.example.com</span><br><span class="line">:method: GET</span><br><span class="line">:path: <span class="hljs-regexp">/</span></span><br><span class="line"><span class="hljs-regexp">:scheme: https</span></span><br><span class="line"><span class="hljs-regexp">accept: text/</span>html,application/xhtml+xml</span><br><span class="line">accept-language: en-US,en;q=<span class="hljs-number">0.8</span></span><br><span class="line">cookie: last_page=<span class="hljs-number">286</span>A7F3DE</span><br><span class="line">upgrade-insecure-requests: <span class="hljs-number">1</span></span><br><span class="line">user-agent: Awesome H2/<span class="hljs-number">1.0</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">:authority: www.example.com</span><br><span class="line">:method: GET</span><br><span class="line">:path: <span class="hljs-regexp">/style.css</span></span><br><span class="line"><span class="hljs-regexp">:scheme: https</span></span><br><span class="line"><span class="hljs-regexp">accept: text/</span>html,application/xhtml+xml accept-language: en-US,en;q=<span class="hljs-number">0.8</span></span><br><span class="line">cookie: last_page=*<span class="hljs-number">398</span>AB8E8F</span><br><span class="line">upgrade-insecure-requests: <span class="hljs-number">1</span></span><br><span class="line">user-agent: Awesome H2/<span class="hljs-number">1.0</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，后者的很多数据与前者重复了，第一个请求约有 <code>220</code> 字节，第二个约有 <code>230</code> 字节，但二者只有 <code>36</code> 字节是不同的，如果仅仅发送这 <code>36</code> 字节，就可以节省约 <code>85%</code> 的字节数，简而言之，<code>HPACK</code> 的原理就是这样，下面我们简单的来看看 <code>HPACK</code> 算法是什么样的，如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-19.png" alt></p>
+<p>从上面看，我们可以看到类似于索引表，每个索引表对应一个值，比如索引为 <code>2</code> 对应头部中的 <code>Method</code> 头部信息，这样的话，在传输的时候，不在是传输对应的头部信息了，而是传递索引，对于之前出现过的头部信息，只需要把索引传给对方，对方拿到索引查表即可</p>
+<p>这种传索引的方式，可以说让请求头字段得到极大程度的精简和复用，其次是对于整数和字符串进行哈夫曼编码，哈夫曼编码的原理就是先将所有出现的字符建立一张索引表，然后让出现次数多的字符对应的索引尽可能短，传输的时候也是传输这样的索引序列，可以达到非常高的压缩率</p>
+<p>最后我们再来看一个问题，那就是为什么不使用 <code>GZIP</code> 压缩，而去使用专门为首部压缩而设计的 <code>HPACK</code> 算法呢？</p>
+<blockquote>
+<p><code>GZIP</code> 也有泄漏加密信息的风险（<code>CRIME</code> 攻击），<code>CRIME</code> 的原理是这样的，攻击者在请求中添加数据，观察压缩加密后的数据量是否会小于预期，如果变小了，攻击者就知道注入的文本和请求中的其他内容（比如私有的会话 <code>Cookie</code>）有重复，在很短的时间内，经过加密的数据内容就可以全部搞清楚，因此大家放弃了已有的压缩方案，研发出 <code>HPACK</code></p>
+</blockquote>
+<h4 id="服务端推送（Server-Push）"><a href="#服务端推送（Server-Push）" class="headerlink" title="服务端推送（Server Push）"></a>服务端推送（Server Push）</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-18.png" alt></p>
+<p>提升单个对象性能的最佳方式，就是在它被用到之前就放到浏览器的缓存里面，这正是 <code>HTTP/2</code> 的服务端推送的目的，推送使服务器能够主动将对象发给客户端，这可能是因为它知道客户端不久将用到该对象</p>
+<p>如果服务器决定要推送一个对象（<code>RFC</code> 中称为推送响应），会构造一个 <code>PUSH_PROMISE</code> 帧，它的用处有很多</p>
+<ul>
+<li><code>PUSH_PROMISE</code> 帧首部中的流 <code>ID</code> 用来响应相关联的请求，推送的响应一定会对应到客户端已发送的某个请求，如果浏览器请求一个主体 <code>HTML</code> 页面，如果要推送此页面使用的某个 <code>JavaScript</code> 对象，服务器将使用请求对应的流 <code>ID</code> 构造 <code>PUSH_PROMISE</code> 帧</li>
+<li><code>PUSH_PROMISE</code> 帧的首部块与客户端请求推送对象时发送的首部块是相似的，所以客户端有办法放心检查将要发送的请求</li>
+<li>被发送的对象必须确保是可缓存的</li>
+<li><code>Method</code> 首部的值必须确保安全，安全的方法就是幂等的那些方法，这是一种不改变任何状态的好办法，例如 <code>GET</code> 请求被认为是幂等的，因为它通常只是获取对象，而 <code>POST</code> 请求被认为是非幂等的，因为它可能会改变服务器端的状态</li>
+<li>理想情况下 <code>PUSH_PROMISE</code> 帧应该更早发送，应当早于客户端接收到可能承载着推送对象的 <code>DATA</code> 帧，假设服务器要在发送 <code>PUSH_PROMISE</code> 之前发送完整的 <code>HTML</code>，那客户端可能在接收到 <code>PUSH_PROMISE</code> 之前已经发出了对这个资源的请求，<code>HTTP/2</code> 足够健壮，可以优雅地解决这类问题，但还是会有些浪费</li>
+<li><code>PUSH_PROMISE</code> 帧会指示将要发送的响应所使用的流 <code>ID</code></li>
+</ul>
+<blockquote>
+<p>其实简单来说就是客户端会从 <code>1</code> 开始设置流 <code>ID</code>，之后每新开启一个流，就会增加 <code>2</code>，之后一直使用奇数，服务器开启在 <code>PUSH_PROMISE</code> 中标明的流时，设置的流 <code>ID</code> 从 <code>2</code> 开始，之后一直使用偶数，这种设计避免了客户端和服务器之间的流 <code>ID</code> 冲突，也可以轻松地判断哪些对象是由服务端推送的，<code>0</code> 是保留数字，用于连接级控制消息，不能用于创建新的流</p>
+</blockquote>
+<p>如果客户端对 <code>PUSH_PROMISE</code> 的任何元素不满意，就可以按照拒收原因选择重置这个流（使用 <code>RST_STREAM</code>），或者发送 <code>PROTOCOL_ERROR</code>（在 <code>GOAWAY</code> 帧中），常见的情况是缓存中已经有了这个对象，而 <code>PROTOCOL_ERROR</code> 是专门留给 <code>PUSH_PROMISE</code> 涉及的协议层面问题的，比如方法不安全，或者当客户端已经在 <code>SETTINGS</code> 帧中表明自己不接受推送时，仍然进行了推送，值得注意的是，服务器可以在 <code>PUSH_PROMISE</code> 发送后立即启动推送流，因此拒收正在进行的推送可能仍然无法避免推送大量资源，推送正确的资源是不够的，还需要保证只推送正确的资源，这是重要的性能优化手段</p>
+<p>所以到底如何选择要推送的资源？决策的过程需要考虑到如下方面</p>
+<ul>
+<li>资源已经在浏览器缓存中的概率</li>
+<li>从客户端看来，这些资源的优先级</li>
+<li>可用的带宽，以及其他类似的会影响客户端接收推送的资源 </li>
+</ul>
+<p>如果用户第一次访问页面时，就能向客户端推送页面渲染所需的关键 <code>CSS</code> 和 <code>JavaScript</code> 资源，那么服务端推送的真正价值就实现了，不过这要求服务器端实现足够智能，以避免推送承诺（<code>push promise</code>）与主体 <code>HTML</code> 页面传输竞争带宽</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-14.png" alt></p>
+<p>相比较 <code>HTTP/1.1</code> 的优势</p>
+<ul>
+<li>推送资源可以由不同页面共享</li>
+<li>服务器可以按照优先级推送资源</li>
+<li>客户端可以缓存推送的资源</li>
+<li>客户端可以拒收推送过来的资源</li>
+</ul>
+<p>关于服务端推送，有一个常见的问题，那就是如果客户端早已在缓存中有了一份副本该怎么办？</p>
+<p>因为 <code>Push</code> 本身具有投机性，所以肯定会出现推送过去的东西浏览器不需要的情况，这种情况下 <code>HTTP/2</code> 允许客户端通过 <code>RESET_STREAM</code> 主动取消 <code>Push</code>，然而这样的话，原本可以用于更好方向的 <code>Push</code> 就白白的浪费掉数据往返的价值</p>
+<p>对此，一个推荐的解决方案是，客户端使用一个简洁的 <a href="https://tools.ietf.org/html/draft-ietf-httpbis-cache-digest-05" target="_blank" rel="noopener">Cache Digest</a> 来告诉服务器，哪些东西已经在缓存，因此服务器也就会知道哪些是客户端所需要的，因为 <code>Cache Digest</code> 使用的是 <a href="https://www.imperialviolet.org/2011/04/29/filters.html" target="_blank" rel="noopener">Golumb Compressed Sets</a>，浏览器客户端可以通过一个连接发送少于 <code>1K</code> 字节的 <code>Packets</code> 给服务端，通知哪些是已经在缓存中存在的</p>
+<p><code>Cache Digests</code> 只是其中一个提案之一， 在 <code>HTTP</code> 社区有着更多其他的解决方案，我们也希望在不久的将来看到他们的身影</p>
+<h2 id="HTTP-2-反模式"><a href="#HTTP-2-反模式" class="headerlink" title="HTTP/2 反模式"></a>HTTP/2 反模式</h2><p><code>HTTP/1.1</code> 下的一些性能调优办法在 <code>HTTP/2</code> 下会起到反作用</p>
+<h4 id="域名拆分"><a href="#域名拆分" class="headerlink" title="域名拆分"></a>域名拆分</h4><p>域名拆分是为了利用浏览器对每个域名开启多个连接的能力，以便实现资源的并行下载，绕过 <code>HTTP/1.1</code> 的串行化下载的限制，对于包含大量小型资源的网站，普遍的做法是拆分域名，以利用现代浏览器针能对每个域名开启 <code>6</code> 个连接的特性，这样实际上做到了让浏览器并行发送多个请求，以及充分利用可用带宽的效果，因为 <code>HTTP/2</code> 采取多路复用，所以域名拆分就不是必要的了，并且反而会让协议力图实现的目标落空</p>
+<h4 id="资源内联"><a href="#资源内联" class="headerlink" title="资源内联"></a>资源内联</h4><p>资源内联包括把 <code>JavaScript</code>、样式，甚至图片插入到 <code>HTML</code> 页面中，目的是省掉加载外部资源所需的新连接以及请求响应的时间，然而有些 <code>Web</code> 性能的最佳实践不推荐使用内联，因为这样会损失更有价值的特性，比如缓存，如果有同一个页面上的重复访问，缓存通常可以减少请求数（而且能够加速页面渲染），尽管如此，对那些渲染滚动条以上区域所需的微小资源进行内联处理仍是值得的</p>
+<blockquote>
+<p>事实上有证据表明，在性能较弱的设备上，缓存对象的好处不够多，把内联资源拆分出来并不划算，使用 <code>HTTP/2</code> 时的一般原则是避免内联，但是内联也并不一定毫无价值</p>
+</blockquote>
+<h4 id="资源合并"><a href="#资源合并" class="headerlink" title="资源合并"></a>资源合并</h4><p>资源合并意味着把几个小文件合并成一个大文件，它与内联很相似，旨在省掉那些加载外部资源的请求响应时间，以及 解码/执行 那些资源所消耗的 <code>CPU</code> 资源，之前针对资源内联的规则同样适用于资源合并，我们可以使用它来合并非常小的文件（<code>1KB</code> 或更小），以及对初始渲染很关键的最简化 <code>JavaScript/CSS</code> 资源</p>
+<h4 id="禁用-Cookie-的域名"><a href="#禁用-Cookie-的域名" class="headerlink" title="禁用 Cookie 的域名"></a>禁用 Cookie 的域名</h4><p>通过禁用 <code>Cookie</code> 的域名来提供静态资源是一项标准的性能优化最佳实践，尤其是使用 <code>HTTP/1.1</code> 时，你无法压缩首部，而且有些网站使用的 <code>Cookie</code> 大小常常超过单个 <code>TCP</code> 数据包的限度，不过在 <code>HTTP/2</code> 下请求首部使用 <code>HPACK</code> 算法被压缩，会显著减少巨型 <code>Cookie</code> 的字节数（尤其是当它们在先后请求之间保持不变），与此同时禁用 <code>Cookie</code> 的域名需要额外的主机名称，这意味着将开启更多的连接</p>
+<blockquote>
+<p>如果你正在使用禁用 <code>Cookie</code> 的域名，以后有机会你可能得考虑消灭它，如果你确实不需要那些域名，最好删掉它们，省一个字节就是一个字节</p>
+</blockquote>
+<h4 id="生成精灵图"><a href="#生成精灵图" class="headerlink" title="生成精灵图"></a>生成精灵图</h4><p>目前，生成精灵图仍是一种避免小资源请求过多的技术（你能看到人们乐意做什么来优化 <code>HTTP/1.1</code>），为了生成精灵图，开发者把较小的图片拼合成较大的图片，然后用 <code>CSS</code> 选择图片中某个部分展示出来，依据设备及其硬件图形处理能力的不同，精灵图要么非常高效，要么非常低效，如果用 <code>HTTP/2</code>，最佳实践就是避免生成精灵图，主要原因在于，多路复用和首部压缩去掉了大量的请求开销，即便如此，还是有些场景适合使用精灵图</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://hpbn.co/http2/" target="_blank" rel="noopener">HTTP/2</a></li>
+<li><a href="https://www.mnot.net/talks/h2fe/" target="_blank" rel="noopener">HTTP/2 for Front-End Developers</a></li>
+<li><a href="https://blog.csdn.net/zqjflash/article/details/50179235" target="_blank" rel="noopener">HTTP 2.0 协议详解</a></li>
+<li><a href="https://item.jd.com/11444582.html" target="_blank" rel="noopener">Web 性能权威指南</a></li>
+<li><a href="https://www.w3ctech.com/topic/1563#tip7sharding" target="_blank" rel="noopener">使用 HTTP/2 提升性能的 7 个建议</a></li>
+<li><a href="https://www.zhihu.com/question/34074946" target="_blank" rel="noopener">HTTP/2 资料汇总</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/HTTP/">HTTP</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/09/12/HTTP/12/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">HTTP/3</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/09/01/HTTP/10/">
+                <span class="level-item">HTTP 协议</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '50b963fbef99c42cc51685ef6c8c0309',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#HTTP-2-的前身">
+        <span class="has-mr-6">1</span>
+        <span>HTTP/2 的前身</span>
+        </a></li><li>
+        <a class="is-flex" href="#HTTP-站在-TCP-之上">
+        <span class="has-mr-6">2</span>
+        <span>HTTP 站在 TCP 之上</span>
+        </a></li><li>
+        <a class="is-flex" href="#HTTP-应用场景">
+        <span class="has-mr-6">3</span>
+        <span>HTTP 应用场景</span>
+        </a></li><li>
+        <a class="is-flex" href="#带宽和延迟">
+        <span class="has-mr-6">4</span>
+        <span>带宽和延迟</span>
+        </a></li><li>
+        <a class="is-flex" href="#解决连接无法复用">
+        <span class="has-mr-6">5</span>
+        <span>解决连接无法复用</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#基于-TCP-的长链接">
+        <span class="has-mr-6">5.1</span>
+        <span>基于 TCP 的长链接</span>
+        </a></li><li>
+        <a class="is-flex" href="#长轮询">
+        <span class="has-mr-6">5.2</span>
+        <span>长轮询</span>
+        </a></li><li>
+        <a class="is-flex" href="#流">
+        <span class="has-mr-6">5.3</span>
+        <span>流</span>
+        </a></li><li>
+        <a class="is-flex" href="#WebSocket">
+        <span class="has-mr-6">5.4</span>
+        <span>WebSocket</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#解决队头阻塞">
+        <span class="has-mr-6">6</span>
+        <span>解决队头阻塞</span>
+        </a></li><li>
+        <a class="is-flex" href="#开拓者-SPDY">
+        <span class="has-mr-6">7</span>
+        <span>开拓者 SPDY</span>
+        </a></li><li>
+        <a class="is-flex" href="#SPDY-的目标">
+        <span class="has-mr-6">8</span>
+        <span>SPDY 的目标</span>
+        </a></li><li>
+        <a class="is-flex" href="#SPDY-的效果">
+        <span class="has-mr-6">9</span>
+        <span>SPDY 的效果</span>
+        </a></li><li>
+        <a class="is-flex" href="#HTTP-2">
+        <span class="has-mr-6">10</span>
+        <span>HTTP/2</span>
+        </a></li><li>
+        <a class="is-flex" href="#HTTP-2-需要考虑的问题">
+        <span class="has-mr-6">11</span>
+        <span>HTTP/2 需要考虑的问题</span>
+        </a></li><li>
+        <a class="is-flex" href="#连接">
+        <span class="has-mr-6">12</span>
+        <span>连接</span>
+        </a></li><li>
+        <a class="is-flex" href="#帧">
+        <span class="has-mr-6">13</span>
+        <span>帧</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#帧大小">
+        <span class="has-mr-6">13.1</span>
+        <span>帧大小</span>
+        </a></li><li>
+        <a class="is-flex" href="#帧格式">
+        <span class="has-mr-6">13.2</span>
+        <span>帧格式</span>
+        </a></li><li>
+        <a class="is-flex" href="#帧定义">
+        <span class="has-mr-6">13.3</span>
+        <span>帧定义</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#DATA-帧">
+        <span class="has-mr-6">13.3.1</span>
+        <span>DATA 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#HEADERS-帧">
+        <span class="has-mr-6">13.3.2</span>
+        <span>HEADERS 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#PRIORITY-帧">
+        <span class="has-mr-6">13.3.3</span>
+        <span>PRIORITY 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#RST-STREAM-帧">
+        <span class="has-mr-6">13.3.4</span>
+        <span>RST_STREAM 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#SETTINGS-帧">
+        <span class="has-mr-6">13.3.5</span>
+        <span>SETTINGS 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#PUSH-PROMISE-帧">
+        <span class="has-mr-6">13.3.6</span>
+        <span>PUSH_PROMISE 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#PING-帧">
+        <span class="has-mr-6">13.3.7</span>
+        <span>PING 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#GOAWAY-帧">
+        <span class="has-mr-6">13.3.8</span>
+        <span>GOAWAY 帧</span>
+        </a></li><li>
+        <a class="is-flex" href="#CONTINUATION-帧">
+        <span class="has-mr-6">13.3.9</span>
+        <span>CONTINUATION 帧</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#流-1">
+        <span class="has-mr-6">14</span>
+        <span>流</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#流的生命周期">
+        <span class="has-mr-6">14.1</span>
+        <span>流的生命周期</span>
+        </a></li><li>
+        <a class="is-flex" href="#流的状态">
+        <span class="has-mr-6">14.2</span>
+        <span>流的状态</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#idle">
+        <span class="has-mr-6">14.2.1</span>
+        <span>idle</span>
+        </a></li><li>
+        <a class="is-flex" href="#Reserved-local">
+        <span class="has-mr-6">14.2.2</span>
+        <span>Reserved (local)</span>
+        </a></li><li>
+        <a class="is-flex" href="#Reserved-remote">
+        <span class="has-mr-6">14.2.3</span>
+        <span>Reserved (remote)</span>
+        </a></li><li>
+        <a class="is-flex" href="#open">
+        <span class="has-mr-6">14.2.4</span>
+        <span>open</span>
+        </a></li><li>
+        <a class="is-flex" href="#Half-Closed-local">
+        <span class="has-mr-6">14.2.5</span>
+        <span>Half-Closed (local)</span>
+        </a></li><li>
+        <a class="is-flex" href="#Half-Closed-remote">
+        <span class="has-mr-6">14.2.6</span>
+        <span>Half-Closed (remote)</span>
+        </a></li><li>
+        <a class="is-flex" href="#Closed">
+        <span class="has-mr-6">14.2.7</span>
+        <span>Closed</span>
+        </a></li><li>
+        <a class="is-flex" href="#补充">
+        <span class="has-mr-6">14.2.8</span>
+        <span>补充</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#流的标识符">
+        <span class="has-mr-6">14.3</span>
+        <span>流的标识符</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#连接、流和帧的关系">
+        <span class="has-mr-6">15</span>
+        <span>连接、流和帧的关系</span>
+        </a></li><li>
+        <a class="is-flex" href="#消息">
+        <span class="has-mr-6">16</span>
+        <span>消息</span>
+        </a></li><li>
+        <a class="is-flex" href="#流量控制">
+        <span class="has-mr-6">17</span>
+        <span>流量控制</span>
+        </a></li><li>
+        <a class="is-flex" href="#请求优先级">
+        <span class="has-mr-6">18</span>
+        <span>请求优先级</span>
+        </a></li><li>
+        <a class="is-flex" href="#HTTP-2-主要改动">
+        <span class="has-mr-6">19</span>
+        <span>HTTP/2 主要改动</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#多路复用">
+        <span class="has-mr-6">19.1</span>
+        <span>多路复用</span>
+        </a></li><li>
+        <a class="is-flex" href="#首部压缩（Header-Compression）">
+        <span class="has-mr-6">19.2</span>
+        <span>首部压缩（Header Compression）</span>
+        </a></li><li>
+        <a class="is-flex" href="#服务端推送（Server-Push）">
+        <span class="has-mr-6">19.3</span>
+        <span>服务端推送（Server Push）</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#HTTP-2-反模式">
+        <span class="has-mr-6">20</span>
+        <span>HTTP/2 反模式</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#域名拆分">
+        <span class="has-mr-6">20.1</span>
+        <span>域名拆分</span>
+        </a></li><li>
+        <a class="is-flex" href="#资源内联">
+        <span class="has-mr-6">20.2</span>
+        <span>资源内联</span>
+        </a></li><li>
+        <a class="is-flex" href="#资源合并">
+        <span class="has-mr-6">20.3</span>
+        <span>资源合并</span>
+        </a></li><li>
+        <a class="is-flex" href="#禁用-Cookie-的域名">
+        <span class="has-mr-6">20.4</span>
+        <span>禁用 Cookie 的域名</span>
+        </a></li><li>
+        <a class="is-flex" href="#生成精灵图">
+        <span class="has-mr-6">20.5</span>
+        <span>生成精灵图</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">21</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="HTTP/2" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

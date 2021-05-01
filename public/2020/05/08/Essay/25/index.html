@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>关键路径 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="在上一章当中我们研究了 最短路径 的相关算法，它们是迪杰斯特拉算法（Dijkstra）和弗洛伊德算法（Floyd），本章我们就来了解一下关键路径的一些相关算法，这也是图结构相关内容的最后一部分，但是在展开之前，我们需要先来了解一些前置知识，它们就是『拓扑序列』和『拓扑排序』">
+<meta name="keywords" content="Essay">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关键路径">
+<meta property="og:url" content="http://yoursite.com/2020/05/08/Essay/25/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="在上一章当中我们研究了 最短路径 的相关算法，它们是迪杰斯特拉算法（Dijkstra）和弗洛伊德算法（Floyd），本章我们就来了解一下关键路径的一些相关算法，这也是图结构相关内容的最后一部分，但是在展开之前，我们需要先来了解一些前置知识，它们就是『拓扑序列』和『拓扑排序』">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/25.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关键路径">
+<meta name="twitter:description" content="在上一章当中我们研究了 最短路径 的相关算法，它们是迪杰斯特拉算法（Dijkstra）和弗洛伊德算法（Floyd），本章我们就来了解一下关键路径的一些相关算法，这也是图结构相关内容的最后一部分，但是在展开之前，我们需要先来了解一些前置知识，它们就是『拓扑序列』和『拓扑排序』">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/25.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="关键路径" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/25.webp" alt="关键路径">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2020-05-08</div>
+                <!-- <time class="level-item has-text-grey" datetime="2020-05-07T16:00:00.000Z">2020-05-08</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Essay/">Essay</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    28 分钟 读完 (大约 4156 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                关键路径
+            
+        </h1>
+        <div class="content">
+            <p>在上一章当中我们研究了 <a href="https://heptaluan.github.io/2020/05/06/Essay/24/" target="_blank" rel="noopener">最短路径</a> 的相关算法，它们是迪杰斯特拉算法（<code>Dijkstra</code>）和弗洛伊德算法（<code>Floyd</code>），本章我们就来了解一下关键路径的一些相关算法，这也是图结构相关内容的最后一部分，但是在展开之前，我们需要先来了解一些前置知识，它们就是『拓扑序列』和『拓扑排序』</p>
+<a id="more"></a>
+
+
+<h2 id="拓扑序列"><a href="#拓扑序列" class="headerlink" title="拓扑序列"></a>拓扑序列</h2><p>那么什么是拓扑序列呢？在前面的章节当中，我们已经知道，一个无环的有向图可以称之为无环图（<code>Directed Acyclic Graph</code>），我们可以将其简称为 <code>DAG</code> 图，而在一个表示工程的有向图中，如果用顶点表示活动，用弧表示活动之间的优先关系，这样的有向图就称为顶点表示活动的网，我们称之为 <code>AOV</code> 网（<code>Active On Vertex Network</code>），而 <code>AOV</code> 网中的弧表示活动之间存在的某种制约关系，简单来说就说 <code>AOV</code> 网不能存在回路</p>
+<p>这里涉及到几个新的概念，比如工程和活动，我们可以这样来进行理解</p>
+<p>比如你想要开一家店铺，那么开店铺这整个流程，我们就可以将其称之为一个工程，而开店铺过程当中涉及到的比如选址，装修，进货等行为，我们就可以将其称之为一个一个的活动，所有的工程或者某种流程都可以分为若干个小的工程或者阶段，我们称这些小的工程或阶段为活动，而至于不能存在回路，可以理解为你不能先进行装修和进货，而是必须要在店铺的选址工作完成了以后才能进行接下来的流程，这样一来是不是就比较容易理解了，下面我们在来看看拓扑排序</p>
+<h2 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h2><p>之前我们介绍的拓扑序列，如果使用概念来进行定义的话，是这样的</p>
+<blockquote>
+<p>设 <code>G = (V, E)</code> 是一个具有 <code>n</code> 个顶点的有向图，<code>V</code> 中的顶点序列 <code>V1, V2, ... Vn</code> 满足若从顶点 <code>Vi</code> 到 <code>Vj</code> 有一条路径，则在顶点序列中顶点 <code>Vi</code> 必在顶点 <code>Vj</code> 之前，则我们称这样的顶点序列为一个拓扑序列</p>
+</blockquote>
+<p>而所谓的拓扑排序，其实就是对一个『有向图构造拓扑序列』的过程，我们可以以一个具体的例子来进行理解，如下图</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-01.png" alt></p>
+<p>上图是某校计算机专业所修课程，比如代号 <code>C1</code> 的课程，它就不需要前置课程，而比如对于课程 <code>C3</code> 它就需要 <code>C1</code> 和 <code>C14</code> 这两门前置课程，我们将上图转换为 <code>AOV</code> 网是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-02.png" alt></p>
+<p>针对于上图其中的一种拓扑序列为 <code>1, 13, 4, 8, 14, 15, 5, 2, 3, 10, 11, 12, 7, 6, 9</code>（在下面我们会通过代码来进行求解），在用代码实现之前，我们先来看看针对 <code>AOV</code> 网进行拓扑排序的方法和步骤，主要流程如下，主要利用了栈的特点</p>
+<ul>
+<li>从 <code>AOV</code> 网中选择一个没有前趋的顶点（该顶点的入度为 <code>0</code>）并且输出它</li>
+<li>从网中删去该顶点，并且删去从该顶点发出的全部有向边</li>
+<li>重复上述两步，直到剩余网中不再存在没有前趋的顶点为止</li>
+</ul>
+<p>有了实现步骤，下面我们就来看看如何使用代码来进行实现，由于需要删除顶点，所以在这里我们选择『邻接表』的数据结构来表示会更加方便（相较于邻边矩阵），形式如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-03.png" alt></p>
+<p>针对于该算法时间复杂度而言</p>
+<ul>
+<li>对一个具有 <code>n</code> 个顶点，<code>e</code> 条边的网来说，初始建立入度为零的顶点栈，要检查所有顶点一次，执行时间为 <code>O(n)</code></li>
+<li>排序中，若 <code>AOV</code> 网无回路，则每个顶点入、出栈各一次，每个表结点被检查一次，因而执行时间是 <code>O(n + e)</code></li>
+<li>所以，整个算法的时间复杂度是 <code>O(n + e)</code></li>
+</ul>
+<p>首先我们需要先来生成图</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">vex</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(value) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.data = value</span><br><span class="line">    <span class="hljs-keyword">this</span>.firstEdge = <span class="hljs-literal">null</span></span><br><span class="line">    <span class="hljs-comment">// 用于存放顶点的入度</span></span><br><span class="line">    <span class="hljs-keyword">this</span>.in = <span class="hljs-number">0</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">adjvex</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(node, weight) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.node = node</span><br><span class="line">    <span class="hljs-keyword">this</span>.weight = weight</span><br><span class="line">    <span class="hljs-keyword">this</span>.next = <span class="hljs-literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Graph</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(v, vr) &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> len = v.length</span><br><span class="line">    <span class="hljs-keyword">let</span> vexs = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(len)</span><br><span class="line">    <span class="hljs-keyword">let</span> v1 = <span class="hljs-number">0</span>, v2 = <span class="hljs-number">0</span></span><br><span class="line">    <span class="hljs-keyword">let</span> newvex = <span class="hljs-literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">      vexs[i] = <span class="hljs-keyword">new</span> vex(v[i])</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> arc <span class="hljs-keyword">of</span> vr) &#123;</span><br><span class="line">      v1 = v.indexOf(arc[<span class="hljs-number">0</span>])</span><br><span class="line">      v2 = v.indexOf(arc[<span class="hljs-number">1</span>])</span><br><span class="line"></span><br><span class="line">      newvex = <span class="hljs-keyword">new</span> adjvex(v2, arc[<span class="hljs-number">2</span>])</span><br><span class="line">      newvex.next = vexs[v1].firstEdge</span><br><span class="line">      vexs[v1].firstEdge = newvex</span><br><span class="line">      vexs[v2].in++</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">this</span>.adjList = vexs</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> a = <span class="hljs-keyword">new</span> Graph([<span class="hljs-string">'v0'</span>, <span class="hljs-string">'v1'</span>, <span class="hljs-string">'v2'</span>, <span class="hljs-string">'v3'</span>, <span class="hljs-string">'v4'</span>, <span class="hljs-string">'v5'</span>, <span class="hljs-string">'v6'</span>, <span class="hljs-string">'v7'</span>, <span class="hljs-string">'v8'</span>, <span class="hljs-string">'v9'</span>, <span class="hljs-string">'v10'</span>, <span class="hljs-string">'v11'</span>, <span class="hljs-string">'v12'</span>, <span class="hljs-string">'v13'</span>], [[<span class="hljs-string">'v0'</span>, <span class="hljs-string">'v11'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v0'</span>, <span class="hljs-string">'v4'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v0'</span>, <span class="hljs-string">'v5'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v1'</span>, <span class="hljs-string">'v4'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v1'</span>, <span class="hljs-string">'v8'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v1'</span>, <span class="hljs-string">'v2'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v2'</span>, <span class="hljs-string">'v5'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v2'</span>, <span class="hljs-string">'v6'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v3'</span>, <span class="hljs-string">'v2'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v3'</span>, <span class="hljs-string">'v13'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v4'</span>, <span class="hljs-string">'v7'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v5'</span>, <span class="hljs-string">'v8'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v5'</span>, <span class="hljs-string">'v12'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v6'</span>, <span class="hljs-string">'v5'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v8'</span>, <span class="hljs-string">'v7'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v9'</span>, <span class="hljs-string">'v11'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v9'</span>, <span class="hljs-string">'v10'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v10'</span>, <span class="hljs-string">'v13'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'v12'</span>, <span class="hljs-string">'v9'</span>, <span class="hljs-number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(a)</span><br></pre></td></tr></table></figure>
+
+<p>当有了图以后，我们就可以来实现我们的排序操作</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">topoSort</span>(<span class="hljs-params">G</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 辅助栈</span></span><br><span class="line">  <span class="hljs-keyword">let</span> stack = []</span><br><span class="line">  <span class="hljs-comment">// 寻找入度为 0 的顶点推入栈</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.adjList.length; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (G.adjList[i].in === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">      stack.push(i)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> currentVex = <span class="hljs-literal">null</span></span><br><span class="line">  <span class="hljs-comment">// 用于计数已经输出的顶点</span></span><br><span class="line">  <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">while</span> (stack.length &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    currentVex = G.adjList[stack.pop()]</span><br><span class="line">    <span class="hljs-comment">// 输出栈顶顶点</span></span><br><span class="line">    <span class="hljs-built_in">console</span>.log(currentVex.data)</span><br><span class="line">    count++</span><br><span class="line">    currentVex = currentVex.firstEdge</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 删除当前顶点，遍历其邻接顶点，使它们入度减 1</span></span><br><span class="line">    <span class="hljs-keyword">while</span> (currentVex) &#123;</span><br><span class="line">      <span class="hljs-comment">// 当邻接顶点入度为 0 时</span></span><br><span class="line">      <span class="hljs-keyword">if</span> ((--G.adjList[currentVex.node].in) === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">        <span class="hljs-comment">// 将邻接顶点压入栈中</span></span><br><span class="line">        stack.push(currentVex.node)</span><br><span class="line">      &#125;</span><br><span class="line">      currentVex = currentVex.next</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 若输出的顶点数少于图中顶点数，则存在环</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (count &lt; G.adjList.length) &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`存在环路`</span>)</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="关键路径的作用"><a href="#关键路径的作用" class="headerlink" title="关键路径的作用"></a>关键路径的作用</h2><p>在了解完拓扑排序以后，我们就可以正式的来看看关键路径，不过对于一个新东西，在了解它之前我们一般都会先了解它是做什么的，它解决了什么样的问题，同样的，我们也使用一个示例来进行说明</p>
+<p>比如某汽车公司生产一辆汽车，其中生产轮子需要 <code>0.5</code> 天，发动机需要 <code>3</code> 天，底盘需要 <code>2</code> 天，外壳需要 <code>2</code> 天，其他零部件需要 <code>2</code> 天，全部零部件集中到一处需要 <code>0.5</code> 天，组装成车并测试需要 <code>2</code> 天，那么请问生成一辆汽车最短需要多少时间呢？</p>
+<p>针对于上面这个例子，通过简单的计算就可以得出结果，但是如果是在实际当中，往往会涉及到其他更多的部门分工合作，所以也就会变得更为复杂，那么针对于这种情况，我们该如何处理这样的问题呢？所以这就有了我们的关键路径算法，它的定义是下面这样的</p>
+<blockquote>
+<p>在一个表示工程的带权有向图（注意这里是带权的）中，用顶点表示事件，用有向边表示活动，用边上的权值表示活动的持续时间，这种有向图的边表示活动的网，我们称之为 <code>AOE</code> 网（<code>Activity On Edge Network</code>）</p>
+</blockquote>
+<p>我们把 <code>AOE</code> 网中没有『入边』的顶点称为始点或源点，没有『出边』的顶点称为终点或汇点，如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-04.png" alt></p>
+<h2 id="AOV-网与-AOE-网的比较"><a href="#AOV-网与-AOE-网的比较" class="headerlink" title="AOV 网与 AOE 网的比较"></a>AOV 网与 AOE 网的比较</h2><p>下面我们来看看两者之间的区别，有一个比较好的记忆方式就是，注意它们是否带权，不带权的就是 <code>AOV</code>，而带权的就是 <code>AOE</code>，如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-05.png" alt></p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-06.png" alt></p>
+<p>而像上图 <code>AOE</code> 网当中标注的红色路线就是我们的关键路径，下面我们就来看看关键路径是如何建立在拓扑序列之上的</p>
+<h2 id="关键路径"><a href="#关键路径" class="headerlink" title="关键路径"></a>关键路径</h2><p>简单来说，关键路径的算法就是我们先求得顶点事件的最早和最晚发生时间，再求得弧活动的最早和最晚开工时间，最后比较弧活动的两者时间是否相等，然后判断其是否为关键活动，在这里涉及到了四个新的概念，我们先来了解一下</p>
+<table>
+<thead>
+<tr>
+<th>名词</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>etv</code></td>
+<td>事件的最早发生时间，就是顶点的最早发生时间，简单来说就是 源点 ==&gt; 汇点</td>
+</tr>
+<tr>
+<td><code>ltv</code></td>
+<td>事件的最晚发生时间，就是每个顶点对应的事件最晚需要开始的时间，如果超出此时间将会延误整个工期，简单来说就是 汇点 ==&gt; 源点</td>
+</tr>
+<tr>
+<td><code>ete</code></td>
+<td>活动的最早开工时间，就是弧的最早发生时间</td>
+</tr>
+<tr>
+<td><code>lte</code></td>
+<td>活动的最晚开工时间，不推迟工期的最晚开工时间</td>
+</tr>
+</tbody></table>
+<p>其实简单来说，关键路径就是『源点到汇点之间权值最大的一条路径』，这条路径决定了整个工期，关键路径上的关键活动的最早开始的时间和最晚开始的时间应该是相同的（也就是 <code>etv == ltv</code>），否则说明还有其他工程会影响工期，这条路径就不是关键路径了，而引入 <code>ete</code> 和 <code>lte</code> 是为了通过循环边来找出关键活动，同时可以得到边上的权，还是以下图为例</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-04.png" alt></p>
+<p>根据图中的信息，我们可以得到如下信息</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-07.png" alt></p>
+<p>下面来简单介绍一下上图中的信息</p>
+<ul>
+<li>顶点我们就使用 <code>C1，C2 ... C9</code> 来进行表示，左边是源点，右边是汇点</li>
+<li><code>etv</code>，事件的最早发生时间，也就是从左往右，比如 <code>C2</code> 这个点，它需要经过 <code>a1</code> 这个活动结束以后才能到达 <code>C2</code>，所以 <code>C2</code> 的值为 <code>6</code>，这里我们主要看一下 <code>C5</code> 这种情况，它需要等两条线路都结束以后才能开始，所以它的值为 <code>7</code>，其他的点都是同理</li>
+<li><code>ltv</code>，事件的最晚发生时间，我们这里是从右往左，整个工程所需要的时间是 <code>16</code> 个单位，因为 <code>a11</code> 执行需要四个单位，所以 <code>C8</code> 所需要的最迟时间也就是 <code>12</code>，这里我们主要看一下 <code>C6</code> 的情况，因为 <code>a9</code> 需要 <code>4</code> 个单位，所以 <code>C6</code> 的值是 <code>8</code>（这里需要注意的就是 <code>ltv</code> 的 <code>C1</code> 是取的较小的值，也就是这里的 <code>0</code>），所以在 <code>C6</code> 这个点上我们可以发现，它最早发生的时间是 <code>7</code>，而最晚发生的时间是 <code>8</code>，它们之间是相差一个单位的</li>
+<li><code>ete</code>，活动的最早开工时间，我们可以发现，我们有 <code>9</code> 个顶点，但是却产生了 <code>11</code> 条弧，比如 <code>a1，a2，a3</code> 它们的事件都是从 <code>C1</code> 开始的，所以它们都是 <code>0</code>，我们来看 <code>a4</code> 这条弧，它对应着 <code>C2</code> 最早的发生时间，通过观察可知，<code>C2</code> 的 <code>etv</code> 的值为 <code>6</code>，所以它的 <code>ete</code> 的值也为 <code>6</code>，同理，<code>a5</code> 就相当于 <code>C3</code> 的最早发生时间，是不是有点眉目了，后面都是以此类推</li>
+<li><code>lte</code>，活动的最晚开工时间，又是最晚，所以我们需要从右往左来看，简单来说比如 <code>a9</code> 这条弧，对应着 <code>C8</code> 这个点的 <code>ltv</code>，它的 <code>ltv</code> 的值为 <code>12</code>，所以 <code>a9</code> 为 <code>12 - 4 = 8</code></li>
+</ul>
+<p>所以简单的总结一下就是，如果得出了 <code>etv</code> 和 <code>ltv</code> 的值以后，就可以很简单的推算出 <code>ete</code> 和 <code>lte</code> 的值了</p>
+<ul>
+<li><code>etv</code> 可以直接推断出 <code>ete</code></li>
+<li>而 <code>lte</code> 可以简单的换算得到 <code>ltv</code></li>
+</ul>
+<p>这里有一个需要注意的地方，就是如果细心观察可以发现，图上的 <code>C1，C2，C5 ...</code> 等点，也就是下图这些点</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-08.png" alt></p>
+<p>它们的 <code>etv</code> 是等于 <code>ltv</code> 的，通过图我们可以发现，其实它们之间的连线也就是我们所要的关键路径，但是这里存在一个问题，既然知道连接弧就是关键路径，那么为什么还有必要要求得 <code>ete</code> 和 <code>lte</code> 呢</p>
+<p>首先，关键路径是活动的集合，也就是弧的集合而不是事件的集合，虽然我们可以求出 <code>etv == ltv</code> 的情况，也可以一眼就看出结果，但是对于计算机而言，我们还是需要让它通过弧将其表现出来的，况且有了 <code>etv</code> 和 <code>ltv</code>，通过我们上面的介绍，得出 <code>ete</code> 和 <code>lte</code> 也是十分简单的</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>其实通过上面的内容，我们可以将整个求解关键路径的过程划分为三部分</p>
+<ul>
+<li>求解各顶点事件的最早发生时间</li>
+<li>求解各顶点事件的最晚发生时间</li>
+<li>求解各弧上活动的最早和最晚发生时间，并做关键活动的判断</li>
+</ul>
+<p>邻边表如下，右侧加粗的部分表示权值</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/25-09.png" alt></p>
+<p>我们还是在我们之前的拓扑排序的基础之上来进行调整，首先求得各顶点事件的最早发生时间，可以与拓扑排序相对比，可以发现它们是很相似的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getEtvs</span>(<span class="hljs-params">G</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> etvs = []            <span class="hljs-comment">// 用于存储各顶点的最早发生时间</span></span><br><span class="line">  <span class="hljs-keyword">let</span> stack = [], T = []   <span class="hljs-comment">// stack 为辅助栈，T 为存储拓扑序列的数组</span></span><br><span class="line">  <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>            <span class="hljs-comment">// 用于统计顶点个数</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 初始化数组，并将入度为 0 的顶点推入栈</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.adjList.length; i++) &#123;</span><br><span class="line">    etvs[i] = <span class="hljs-number">0</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (G.adjList[i].in === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">      stack.push(i)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> currentAdjVex = <span class="hljs-literal">null</span></span><br><span class="line">  <span class="hljs-keyword">let</span> currentIndex = <span class="hljs-number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">while</span> (stack.length &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-comment">// 弹出栈顶入度为 0 的顶点</span></span><br><span class="line">    currentIndex = stack.pop()</span><br><span class="line">    count++</span><br><span class="line">    T.push(currentIndex)</span><br><span class="line">    currentAdjVex = G.adjList[currentIndex].firstEdge</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 遍历当前顶点的所有邻接顶点</span></span><br><span class="line">    <span class="hljs-keyword">while</span> (currentAdjVex) &#123;</span><br><span class="line">      <span class="hljs-comment">// 关键代码，求各顶点事件最早发生时间</span></span><br><span class="line">      <span class="hljs-keyword">if</span> (etvs[currentIndex] + currentAdjVex.weight &gt; etvs[currentAdjVex.node]) &#123;</span><br><span class="line">        etvs[currentAdjVex.node] = etvs[currentIndex] + currentAdjVex.weight</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 将当前邻接顶点入度减 1，若等于 0，则推入栈中</span></span><br><span class="line">      <span class="hljs-keyword">if</span> (--G.adjList[currentAdjVex.node].in === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">        stack.push(currentAdjVex.node)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      currentAdjVex = currentAdjVex.next</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> (count &lt; G.adjList.length) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> [etvs, T]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着根据各顶点事件的最早发生时间，反向求各顶点的最晚发生时间，相当于把拓扑排序倒过来</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLtvs</span>(<span class="hljs-params">G, etvs, T</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> ltvs = []</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 初始化每个顶点的最晚发生时间</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.adjList.length; i++) &#123;</span><br><span class="line">    ltvs[i] = etvs[G.adjList.length - <span class="hljs-number">1</span>]</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> currentAdjVex = <span class="hljs-literal">null</span></span><br><span class="line">  <span class="hljs-keyword">let</span> currentIndex = <span class="hljs-number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">while</span> (T.length &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-comment">// 反向拓扑序列计算</span></span><br><span class="line">    currentIndex = T.pop()</span><br><span class="line">    currentAdjVex = G.adjList[currentIndex].firstEdge</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">while</span> (currentAdjVex) &#123;</span><br><span class="line">      <span class="hljs-comment">// 关键代码，求各顶点事件的最晚发生时间，注意与 etv 的判断条件不一样</span></span><br><span class="line">      <span class="hljs-keyword">if</span> (ltvs[currentIndex] &gt; ltvs[currentAdjVex.node] - currentAdjVex.weight) &#123;</span><br><span class="line">        ltvs[currentIndex] = ltvs[currentAdjVex.node] - currentAdjVex.weight</span><br><span class="line">      &#125;</span><br><span class="line">      currentAdjVex = currentAdjVex.next</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> ltvs</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后即可根据各顶点事件的最早和最晚发生时间，计算弧上活动的最早和最晚时间，并作比较判断是否为关键活动，需要注意的是，弧上活动 <code>&lt;Vi, Vj&gt;</code> 的最早开工时间不可能早于顶点 <code>Vi</code> 事件最早发生时间，而最晚开工时间则不可能晚于顶点 <code>Vj</code> 事件最晚发生时间减去弧上活动持续时间</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">criticalPath</span>(<span class="hljs-params">G</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> etvs = <span class="hljs-literal">null</span>, ltvs = <span class="hljs-literal">null</span></span><br><span class="line">  <span class="hljs-keyword">let</span> T = <span class="hljs-literal">null</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 调用函数获取图各顶点事件的最早和最晚发生时间</span></span><br><span class="line">  [etvs, T] = getEtvs(G)</span><br><span class="line">  ltvs = getLtvs(G, etvs, T)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> ete = <span class="hljs-number">0</span>, lte = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-keyword">let</span> currentAdjVex = <span class="hljs-literal">null</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 遍历每一条弧</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.adjList.length; i++) &#123;</span><br><span class="line">    currentAdjVex = G.adjList[i].firstEdge</span><br><span class="line">    <span class="hljs-keyword">while</span> (currentAdjVex) &#123;</span><br><span class="line">      <span class="hljs-comment">// 弧上活动的最早开工时间</span></span><br><span class="line">      ete = etvs[i]</span><br><span class="line">      <span class="hljs-comment">// 弧上活动的最晚开工时间</span></span><br><span class="line">      lte = ltvs[currentAdjVex.node] - currentAdjVex.weight</span><br><span class="line">      <span class="hljs-keyword">if</span> (ete === lte) &#123;</span><br><span class="line">        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'v'</span> + i, <span class="hljs-string">'v'</span> + currentAdjVex.node, currentAdjVex.weight)</span><br><span class="line">      &#125;</span><br><span class="line">      currentAdjVex = currentAdjVex.next</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Essay/">Essay</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/05/25/Essay/26/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">查找算法</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/05/06/Essay/24/">
+                <span class="level-item">最短路径</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '2fd8f3400253a1dddece803ed5066ca6',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#拓扑序列">
+        <span class="has-mr-6">1</span>
+        <span>拓扑序列</span>
+        </a></li><li>
+        <a class="is-flex" href="#拓扑排序">
+        <span class="has-mr-6">2</span>
+        <span>拓扑排序</span>
+        </a></li><li>
+        <a class="is-flex" href="#关键路径的作用">
+        <span class="has-mr-6">3</span>
+        <span>关键路径的作用</span>
+        </a></li><li>
+        <a class="is-flex" href="#AOV-网与-AOE-网的比较">
+        <span class="has-mr-6">4</span>
+        <span>AOV 网与 AOE 网的比较</span>
+        </a></li><li>
+        <a class="is-flex" href="#关键路径">
+        <span class="has-mr-6">5</span>
+        <span>关键路径</span>
+        </a></li><li>
+        <a class="is-flex" href="#代码实现">
+        <span class="has-mr-6">6</span>
+        <span>代码实现</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="关键路径" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

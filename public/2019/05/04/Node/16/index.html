@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Node.js 中的多进程 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="最后更新于 2020-01-05  最近在深入学习 Node.js，有涉及到这一部分内容，翻出来重新更新整理一下，主要涉及到浏览器与 Node.js 当中的进程与线程相关知识，建议在阅读本文之前先了解一下 体系结构与操作系统 当中的进程和线程相关概念">
+<meta name="keywords" content="Node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js 中的多进程">
+<meta property="og:url" content="http://yoursite.com/2019/05/04/Node/16/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="最后更新于 2020-01-05  最近在深入学习 Node.js，有涉及到这一部分内容，翻出来重新更新整理一下，主要涉及到浏览器与 Node.js 当中的进程与线程相关知识，建议在阅读本文之前先了解一下 体系结构与操作系统 当中的进程和线程相关概念">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/16.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js 中的多进程">
+<meta name="twitter:description" content="最后更新于 2020-01-05  最近在深入学习 Node.js，有涉及到这一部分内容，翻出来重新更新整理一下，主要涉及到浏览器与 Node.js 当中的进程与线程相关知识，建议在阅读本文之前先了解一下 体系结构与操作系统 当中的进程和线程相关概念">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/16.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Node.js 中的多进程" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/16.webp" alt="Node.js 中的多进程">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2019-05-04</div>
+                <!-- <time class="level-item has-text-grey" datetime="2019-05-03T16:00:00.000Z">2019-05-04</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 7021 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Node.js 中的多进程
+            
+        </h1>
+        <div class="content">
+            <blockquote>
+<p>最后更新于 <code>2020-01-05</code></p>
+</blockquote>
+<p>最近在深入学习 <code>Node.js</code>，有涉及到这一部分内容，翻出来重新更新整理一下，主要涉及到浏览器与 <code>Node.js</code> 当中的进程与线程相关知识，建议在阅读本文之前先了解一下 <a href="https://heptaluan.github.io/2020/01/01/Essay/06/" target="_blank" rel="noopener">体系结构与操作系统</a> 当中的进程和线程相关概念</p>
+<a id="more"></a>
+
+
+<h2 id="Node-js-中的进程"><a href="#Node-js-中的进程" class="headerlink" title="Node.js 中的进程"></a>Node.js 中的进程</h2><p>对于操作系统来说，一个任务就是进程（<code>process</code>），比如打开一个浏览器就是启动了一个浏览器进程，打开一个记事本就启动了一个记事本进程，有些进程还不止同时干一件事，比如 <code>word</code>，它可以同时进行打字、拼写检查，打印等，在一个进程的内部，要同时干多件事，就需要同时运行多个子任务，我们把进程内的这些子任务称为线程（<code>thread</code>），由于每个进程至少要干一件事，所以『一个进程至少有一个线程』，当然也可以有多个，也可以多个线程同时执行</p>
+<blockquote>
+<p>简单来说就是，线程是最小的执行单元，而进程由至少一个线程组成</p>
+</blockquote>
+<p>进程是系统进行资源分配和调度的基本单位，是操作系统结构的基础，进程是线程的容器，<code>Node.js</code> 里通过命令行可以开启一个服务进程，多进程就是进程的复制（<code>fork</code>），<code>fork</code> 出来的每个进程都拥有自己的独立空间地址、数据栈，一个进程无法访问另外一个进程里定义的变量、数据结构，只有建立了 <code>IPC</code> 通信（进程间通信技术），进程之间才可数据共享（关于 <code>IPC</code> 通信相关内容可以见文章下方），我们可以通过一个简单的示例来验证一下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)</span><br><span class="line"></span><br><span class="line">http.createServer().listen(<span class="hljs-number">3000</span>, () =&gt; &#123;</span><br><span class="line">  process.title = <span class="hljs-string">'测试进程'</span></span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`process.pid: `</span>, process.pid)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>打开任务管理器，可以在进程选项当中发现我们刚开启的 <code>Node.js</code> 进程</p>
+<h2 id="为什么需要多进程"><a href="#为什么需要多进程" class="headerlink" title="为什么需要多进程"></a>为什么需要多进程</h2><p>在展开之前，我们先来来看下面这个 <code>Node.js</code> 的示例，我们实现一个计算耗时过长造成线程阻塞的例子，来了解阻塞所带来的后果</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> computation = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> sum = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-built_in">console</span>.info(<span class="hljs-string">'计算开始'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.time(<span class="hljs-string">'计算耗时'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10000000000</span>; i++) &#123;</span><br><span class="line">    sum += i</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-built_in">console</span>.info(<span class="hljs-string">'计算结束'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'计算耗时'</span>)</span><br><span class="line">  <span class="hljs-keyword">return</span> sum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> server = http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> sum = computation()</span><br><span class="line">  res.end(<span class="hljs-string">`Sum is <span class="hljs-subst">$&#123;sum&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="hljs-string">'3000'</span>, _ =&gt; &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`app is running at port 3000.`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>运行完成后可以发现，页面会处于很长时间的空白状态，而执行完成以后会发现，计算耗时会有 <code>13554.335ms</code> 左右（处理器不同可能造成结果有所不同），不过不用担心，在后面我们会使用 <code>child_process.fork</code> 来实现多个进程来处理</p>
+<h2 id="Node-js-的线程与进程"><a href="#Node-js-的线程与进程" class="headerlink" title="Node.js 的线程与进程"></a>Node.js 的线程与进程</h2><p><code>Node.js</code> 是 <code>JavaScript</code> 在服务端的运行环境，构建在 <code>Chrome</code> 的 <code>V8</code> 引擎之上，基于事件驱动、非阻塞 <code>I/O</code> 模型，充分利用操作系统提供的异步 <code>I/O</code> 进行多任务的执行，适合于 <code>I/O</code> 密集型的应用场景，因为异步，程序无需阻塞等待结果返回，而是基于回调通知的机制，原本同步模式等待的时间，则可以用来处理其它任务</p>
+<ul>
+<li>在单核 <code>CPU</code> 系统之上一般采用『单进程 + 单线程』的模式来开发</li>
+<li>在多核 <code>CPU</code> 系统之上，可以用过 <code>child_process.fork</code> 开启多个进程（在 <code>v0.8</code> 版本之后新增了 <code>Cluster</code> 来实现多进程架构），即『多进程 + 单线程』模式</li>
+</ul>
+<p>不过需要注意的是，开启多进程不是为了解决高并发，而是主要为了解决单进程模式下 <code>Node.js</code> 的 <code>CPU</code> 利用率不足的情况，充分利用多核 <code>CPU</code> 的性能</p>
+<h2 id="process"><a href="#process" class="headerlink" title="process"></a>process</h2><p><code>Node.js</code> 中的进程（<code>process</code>）是一个全局对象，无需 <code>require</code> 直接使用，给我们提供了当前进程中的相关信息</p>
+<ul>
+<li><code>process.env</code>，环境变量，例如通过 <code>process.env.NODE_ENV</code> 获取不同环境项目配置信息</li>
+<li><code>process.nextTick</code>，这个在谈及 <code>EventLoop</code> 时经常为会提到</li>
+<li><code>process.pid</code>，获取当前进程 <code>id</code></li>
+<li><code>process.ppid</code>，当前进程对应的父进程</li>
+<li><code>process.cwd()</code>，获取当前进程工作目录</li>
+<li><code>process.platform</code>，获取当前进程运行的操作系统平台</li>
+<li><code>process.uptime()</code>，当前进程已运行时间，例如 <code>pm2</code> 守护进程的 <code>uptime</code> 值</li>
+<li>进程事件，<code>process.on(&#39;uncaughtException&#39;, cb)</code> 捕获异常信息、<code>process.on(&#39;exit&#39;, cb)</code> 进程退出监听</li>
+<li>三个标准流，标准输出（<code>process.stdout</code>）、标准输入（<code>process.stdin</code>）、标准错误输出（<code>process.stderr</code>）</li>
+</ul>
+<p>以上仅列举了部分常用到功能点，除了 <code>process</code> 之外，<code>Node.js</code> 还提供了 <code>child_process</code> 模块用来对子进程进行操作，我们下面简单的总结一下</p>
+<ul>
+<li><code>JavaScript</code> 是单线程，但是做为宿主环境的 <code>Node.js</code> 并非是单线程的</li>
+<li>由于单线程原故，一些复杂的、消耗 <code>CPU</code> 资源的任务建议不要交给 <code>Node.js</code> 来处理，当你的业务需要一些大量计算、视频编码解码等 <code>CPU</code> 密集型的任务，可以采用 <code>C</code> 语言</li>
+<li><code>Node.js</code> 和 <code>Nginx</code> 均采用事件驱动方式，避免了多线程的线程创建、线程上下文切换的开销，如果业务大多是基于 <code>I/O</code> 操作，那么你可以选择 <code>Node.js</code> 来开发</li>
+</ul>
+<h2 id="进程创建"><a href="#进程创建" class="headerlink" title="进程创建"></a>进程创建</h2><p><code>Node.js</code> 提供了 <code>child_process</code> 内置模块，用于创建子进程，有四种方式可以选择</p>
+<ul>
+<li><code>child_process.spawn()</code>，适用于返回大量数据，例如图像处理，二进制数据处理</li>
+<li><code>child_process.exec()</code>，适用于小量数据，<code>maxBuffer</code> 默认值为 <code>200 * 1024</code> 超出这个默认值将会导致程序崩溃，数据量过大可采用 <code>spawn</code></li>
+<li><code>child_process.execFile()</code>，类似 <code>child_process.exec()</code>，区别是不能通过 <code>shell</code> 来执行，不支持像 <code>I/O</code> 重定向和文件查找这样的行为</li>
+<li><code>child_process.fork()</code>，衍生新的进程，进程之间是相互独立的，每个进程都有自己的 <code>V8</code> 实例、内存，系统资源是有限的，不建议衍生太多的子进程出来，通长根据系统 <code>CPU</code> 核心数设置</li>
+</ul>
+<p><code>.exec()</code>、<code>.execFile()</code>、<code>.fork()</code> 底层都是通过 <code>.spawn()</code> 实现的，<code>.exec()</code>、<code>execFile()</code> 额外提供了回调，当子进程停止的时候执行，下面我们就详细的来看看以上几个方法</p>
+<h2 id="child-process-spawn-command-args-options"><a href="#child-process-spawn-command-args-options" class="headerlink" title="child_process.spawn(command[, args][, options])"></a>child_process.spawn(command[, args][, options])</h2><p><code>spawn</code> 方法创建一个子进程来执行特定命令，用法与 <code>execFile</code> 方法类似，但是没有回调函数，只能通过监听事件，来获取运行结果，它属于异步执行，适用于子进程长时间运行的情况</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> child_process = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> path = <span class="hljs-string">'.'</span></span><br><span class="line"><span class="hljs-keyword">var</span> ls = child_process.spawn(<span class="hljs-string">'/bin/ls'</span>, [<span class="hljs-string">'-l'</span>, path])</span><br><span class="line"></span><br><span class="line">ls.stdout.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stdout: '</span> + data)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">ls.stderr.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stderr: '</span> + data)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">ls.on(<span class="hljs-string">'close'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">code</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'child process exited with code '</span> + code)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><code>spawn</code> 方法接受两个参数，第一个是可执行文件，第二个是参数数组，<code>spawn</code> 对象返回一个对象，代表子进程，该对象部署了 <code>EventEmitter</code> 接口，它的 <code>data</code> 事件可以监听，从而得到子进程的输出结果，<code>spawn</code> 方法与 <code>exec</code> 方法非常类似，只是使用格式略有区别</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">child_process.exec(command, [options], callback)</span><br><span class="line"></span><br><span class="line">child_process.spawn(command, [args], [options])</span><br></pre></td></tr></table></figure>
+
+<p>但是需要区分两者的默认参数不同，<code>spawn</code> 的 <code>options</code> 默认为</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">  cwd: <span class="hljs-literal">undefined</span>,</span><br><span class="line">  env: process.env,</span><br><span class="line">  setsid: <span class="hljs-literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>exec</code> 的 <code>options</code> 默认为</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">  encoding: <span class="hljs-string">'utf8'</span>,</span><br><span class="line">  timeout: <span class="hljs-number">0</span>,            <span class="hljs-comment">/* 子进程最长执行时间 */</span></span><br><span class="line">  maxBuffer: <span class="hljs-number">200</span>*<span class="hljs-number">1024</span>,   <span class="hljs-comment">/* stdout 和 stderr 的最大长度 */</span></span><br><span class="line">  killSignal: <span class="hljs-string">'SIGTERM'</span>,</span><br><span class="line">  cwd: <span class="hljs-literal">null</span>,</span><br><span class="line">  env: <span class="hljs-literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="child-process-exec-command-options-callback"><a href="#child-process-exec-command-options-callback" class="headerlink" title="child_process.exec(command[, options][, callback])"></a>child_process.exec(command[, options][, callback])</h2><p>创建一个 <code>shell</code>，然后在 <code>shell</code> 里执行命令，执行完成后，将 <code>stdout</code>、<code>stderr</code> 作为参数传入回调方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> exec = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).exec</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 成功的例子</span></span><br><span class="line">exec(<span class="hljs-string">'ls -al'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, stdout, stderr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (error) &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'error: '</span> + error)</span><br><span class="line">    <span class="hljs-keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stdout: '</span> + stdout)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stderr: '</span> + <span class="hljs-keyword">typeof</span> stderr)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 失败的例子</span></span><br><span class="line">exec(<span class="hljs-string">'ls hello.txt'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, stdout, stderr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (error) &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'error: '</span> + error)</span><br><span class="line">    <span class="hljs-keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stdout: '</span> + stdout)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stderr: '</span> + stderr)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>不过需要注意的是，如果传入的命令是用户输入的，有可能产生类似 <code>sql</code> 注入的风险，比如</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">exec(<span class="hljs-string">'ls hello.txt; rm -rf *'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, stdout, stderr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (error) &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'error: '</span> + error)</span><br><span class="line">    <span class="hljs-comment">// return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stdout: '</span> + stdout)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stderr: '</span> + stderr)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="child-process-execFile-file-args-options-callback"><a href="#child-process-execFile-file-args-options-callback" class="headerlink" title="child_process.execFile(file[, args][, options][, callback])"></a>child_process.execFile(file[, args][, options][, callback])</h2><p>跟 <code>.exec()</code> 类似，不同点在于，没有创建一个新的 <code>shell</code>，至少有两点影响</p>
+<ul>
+<li>比 <code>child_process.exec()</code> 效率高一些</li>
+<li>一些操作，比如 <code>I/O</code> 重定向，文件 <code>glob</code> 等不支持</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> child_process = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>)</span><br><span class="line"></span><br><span class="line">child_process.execFile(<span class="hljs-string">'node'</span>, [<span class="hljs-string">'--version'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, stdout, stderr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (error) &#123;</span><br><span class="line">    <span class="hljs-keyword">throw</span> error</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(stdout)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">child_process.execFile(<span class="hljs-string">'/Users/a/.nvm/versions/node/v6.1.0/bin/node'</span>, [<span class="hljs-string">'--version'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, stdout, stderr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (error) &#123;</span><br><span class="line">    <span class="hljs-keyword">throw</span> error</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(stdout)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>从源码层面来看，<code>exec()</code> 和 <code>execFile()</code> 最大的差别就在于是否创建了 <code>shell</code>，那么可以手动设置 <code>shell</code>，比如下面的代码差不多是等价的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> child_process = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> execFile = child_process.execFile</span><br><span class="line"><span class="hljs-keyword">var</span> exec = child_process.exec</span><br><span class="line"></span><br><span class="line">exec(<span class="hljs-string">'ls -al .'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, stdout, stderr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (error) &#123;</span><br><span class="line">    <span class="hljs-keyword">throw</span> error</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(stdout)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">execFile(<span class="hljs-string">'ls -al .'</span>, &#123; <span class="hljs-attr">shell</span>: <span class="hljs-string">'/bin/bash'</span> &#125;, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, stdout, stderr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (error) &#123;</span><br><span class="line">    <span class="hljs-keyword">throw</span> error</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(stdout)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><code>execFile()</code> 内部最终还是通过 <code>spawn()</code> 实现的，如果没有设置 <code>{ shell: &#39;/bin/bash&#39; }</code>，那么 <code>spawm()</code> 内部对命令的解析会有所不同，<code>execFile(&#39;ls -al .&#39;)</code> 会直接报错</p>
+<h2 id="child-process-fork-modulePath-args-options"><a href="#child-process-fork-modulePath-args-options" class="headerlink" title="child_process.fork(modulePath[, args][, options])"></a>child_process.fork(modulePath[, args][, options])</h2><p><code>fork</code> 方法直接创建一个子进程来执行脚本，<code>fork(&#39;./child.js&#39;)</code> 相当于 <code>spawn(&#39;node&#39;, [&#39;./child.js&#39;])</code>，与 <code>spawn</code> 方法不同的是，<code>fork</code> 会在父进程与子进程之间建立一个通信管道，用于进程之间的通信（<code>IPC</code>）</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// parent.js</span></span><br><span class="line"><span class="hljs-keyword">var</span> child_process = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> child = child_process.fork(<span class="hljs-string">'./child.js'</span>)</span><br><span class="line"></span><br><span class="line">child.on(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">m</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'message from child: '</span> + <span class="hljs-built_in">JSON</span>.stringify(m))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">child.send(&#123; <span class="hljs-attr">from</span>: <span class="hljs-string">'parent'</span> &#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// child.js</span></span><br><span class="line">process.on(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">m</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'message from parent: '</span> + <span class="hljs-built_in">JSON</span>.stringify(m))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">process.send(&#123; <span class="hljs-attr">from</span>: <span class="hljs-string">'child'</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message <span class="hljs-keyword">from</span> child: &#123; <span class="hljs-string">'from'</span>: <span class="hljs-string">'child'</span> &#125;</span><br><span class="line"></span><br><span class="line">message <span class="hljs-keyword">from</span> parent: &#123; <span class="hljs-string">'from'</span>: <span class="hljs-string">'parent'</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>在之前章节当中，我们实现了一个计算耗时的函数，可以发现在 <code>CPU</code> 计算密度大的情况程序会造成阻塞导致后续请求需要等待，不过在了解了多进程相关知识以后，我们下面就可以采用 <code>child_process.fork</code> 方法来进行改写，主要流程有以下几步</p>
+<ul>
+<li>在进行 <code>cpmpute</code> 计算时创建子进程</li>
+<li>子进程计算完成通过 <code>send</code> 方法将结果发送给主进程</li>
+<li>主进程通过 <code>message</code> 监听到信息后处理并退出</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// fork_app.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> fork = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).fork</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> server = http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (req.url == <span class="hljs-string">'/compute'</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> compute = fork(<span class="hljs-string">'./fork_compute.js'</span>)</span><br><span class="line">    compute.send(<span class="hljs-string">'开启一个新的子进程'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 当一个子进程使用 process.send() 发送消息时会触发 'message' 事件</span></span><br><span class="line">    compute.on(<span class="hljs-string">'message'</span>, sum =&gt; &#123;</span><br><span class="line">      res.end(<span class="hljs-string">`Sum is <span class="hljs-subst">$&#123;sum&#125;</span>`</span>)</span><br><span class="line">      compute.kill()</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 子进程监听到一些错误消息退出</span></span><br><span class="line">    compute.on(<span class="hljs-string">'close'</span>, (code, signal) =&gt; &#123;</span><br><span class="line">      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`收到 close 事件，子进程收到信号 <span class="hljs-subst">$&#123;signal&#125;</span> 而终止，退出码 <span class="hljs-subst">$&#123;code&#125;</span>`</span>)</span><br><span class="line">      compute.kill()</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    res.end(<span class="hljs-string">`ok`</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="hljs-number">3000</span>, () =&gt; &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`app is running at port 3000`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// fork_compute.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> computation = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> sum = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-built_in">console</span>.info(<span class="hljs-string">'计算开始'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.time(<span class="hljs-string">'计算耗时'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10000000000</span>; i++) &#123;</span><br><span class="line">    sum += i</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-built_in">console</span>.info(<span class="hljs-string">'计算结束'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'计算耗时'</span>)</span><br><span class="line">  <span class="hljs-keyword">return</span> sum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">process.on(<span class="hljs-string">'message'</span>, msg =&gt; &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(msg, <span class="hljs-string">'process.pid'</span>, process.pid)</span><br><span class="line">  <span class="hljs-keyword">const</span> sum = computation()</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 如果 Node.js 进程是通过进程间通信产生的，那么 process.send() 方法可以用来给父进程发送消息</span></span><br><span class="line">  process.send(sum)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Node-js-多进程架构模型"><a href="#Node-js-多进程架构模型" class="headerlink" title="Node.js 多进程架构模型"></a>Node.js 多进程架构模型</h2><p>多进程架构解决了单进程、单线程无法充分利用系统多核 <code>CPU</code> 的问题，下面就通过一个示例来了解如何启动一批 <code>Node.js</code> 进程来提供服务</p>
+<h4 id="主进程-master-js"><a href="#主进程-master-js" class="headerlink" title="主进程 master.js"></a>主进程 master.js</h4><p>代码如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// master.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> fork = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).fork</span><br><span class="line"><span class="hljs-keyword">const</span> cpus = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>).cpus()</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'net'</span>).createServer()</span><br><span class="line">server.listen(<span class="hljs-number">3000</span>)</span><br><span class="line">process.title = <span class="hljs-string">'node-master'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> workers = &#123;&#125;</span><br><span class="line"><span class="hljs-keyword">const</span> createWorker = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> worker = fork(<span class="hljs-string">'worker.js'</span>)</span><br><span class="line">  worker.on(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (message.act === <span class="hljs-string">'close'</span>) &#123;</span><br><span class="line">      createWorker()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  worker.on(<span class="hljs-string">'exit'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">code, signal</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'worker process exited, code: %s signal: %s'</span>, code, signal)</span><br><span class="line">    <span class="hljs-keyword">delete</span> workers[worker.pid]</span><br><span class="line">  &#125;)</span><br><span class="line">  worker.send(<span class="hljs-string">'server'</span>, server)</span><br><span class="line">  workers[worker.pid] = worker</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'worker process created, pid: %s ppid: %s'</span>, worker.pid, process.pid);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; cpus.length; i++) &#123;</span><br><span class="line">  createWorker()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">process.once(<span class="hljs-string">'SIGINT'</span>, close.bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'SIGINT'</span>))    <span class="hljs-comment">// kill(2) Ctrl-C</span></span><br><span class="line">process.once(<span class="hljs-string">'SIGQUIT'</span>, close.bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'SIGQUIT'</span>))  <span class="hljs-comment">// kill(3) Ctrl-\</span></span><br><span class="line">process.once(<span class="hljs-string">'SIGTERM'</span>, close.bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'SIGTERM'</span>))  <span class="hljs-comment">// kill(15) default</span></span><br><span class="line">process.once(<span class="hljs-string">'exit'</span>, close.bind(<span class="hljs-keyword">this</span>))</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">close</span>(<span class="hljs-params">code</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'进程退出！'</span>, code)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> (code !== <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> pid <span class="hljs-keyword">in</span> workers) &#123;</span><br><span class="line">      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'master process exited, kill worker pid: '</span>, pid)</span><br><span class="line">      workers[pid].kill(<span class="hljs-string">'SIGINT'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  process.exit(<span class="hljs-number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>master.js</code> 作为入口文件，主要处理以下逻辑</p>
+<ul>
+<li>创建一个 <code>server</code> 并监听 <code>3000</code> 端口</li>
+<li>根据系统 <code>CPU</code> 个数开启多个子进程</li>
+<li>通过子进程对象的 <code>send</code> 方法发送消息到子进程进行通信</li>
+<li>在主进程中监听了子进程的变化，如果是自杀信号重新启动一个工作进程</li>
+<li>主进程在监听到退出消息的时候，先退出子进程在退出主进程</li>
+</ul>
+<h4 id="工作进程"><a href="#工作进程" class="headerlink" title="工作进程"></a>工作进程</h4><p>下面来看看上面我们 <code>fork</code> 的 <code>worker.js</code>，主要逻辑如下</p>
+<ul>
+<li>创建一个 <code>server</code> 对象，注意最开始并没有监听 <code>3000</code> 端口</li>
+<li>通过 <code>message</code> 事件接收主进程 <code>send</code> 方法发送的消息</li>
+<li>监听 <code>uncaughtException</code> 事件，捕获未处理的异常，发送关闭信息由主进程重建进程，子进程在链接关闭之后退出</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// worker.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> server = http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.writeHead(<span class="hljs-number">200</span>, &#123;</span><br><span class="line">    <span class="hljs-string">'Content-Type'</span>: <span class="hljs-string">'text/plan'</span></span><br><span class="line">  &#125;)</span><br><span class="line">  res.end(<span class="hljs-string">'I am worker, pid: '</span> + process.pid + <span class="hljs-string">', ppid: '</span> + process.ppid)</span><br><span class="line">  <span class="hljs-comment">// 测试异常进程退出、重建</span></span><br><span class="line">  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'worker process exception!'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> worker</span><br><span class="line">process.title = <span class="hljs-string">'node-worker'</span></span><br><span class="line">process.on(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message, sendHandle</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (message === <span class="hljs-string">'server'</span>) &#123;</span><br><span class="line">    worker = sendHandle</span><br><span class="line">    worker.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">socket</span>) </span>&#123;</span><br><span class="line">      server.emit(<span class="hljs-string">'connection'</span>, socket)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">process.on(<span class="hljs-string">'uncaughtException'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(err)</span><br><span class="line">  process.send(&#123; <span class="hljs-attr">act</span>: <span class="hljs-string">'close'</span> &#125;)</span><br><span class="line">  worker.close(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    process.exit(<span class="hljs-number">1</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>控制台执行 <code>node master.js</code> 可以看到已成功创建了四个工作进程</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ node master</span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">19280</span> ppid: <span class="hljs-number">19279</span></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">19281</span> ppid: <span class="hljs-number">19279</span></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">19282</span> ppid: <span class="hljs-number">19279</span></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">19283</span> ppid: <span class="hljs-number">19279</span></span><br></pre></td></tr></table></figure>
+
+<p>打开活动监视器查看我们的进程情况，由于在创建进程时对进程进行了命名，很清楚的看到一个主进程对应多个子进程，如果想要了解更多相关内容可以参考 <code>Egg</code> 官方文档当中的 <a href="https://eggjs.org/zh-cn/core/cluster-and-ipc.html" target="_blank" rel="noopener">多进程模型和进程间通讯</a></p>
+<h2 id="守护进程"><a href="#守护进程" class="headerlink" title="守护进程"></a>守护进程</h2><p>本章节主要涉及下面几个问题</p>
+<ul>
+<li>什么是守护进程</li>
+<li>守护进程的作用</li>
+<li>如何编写守护进程</li>
+</ul>
+<p>守护进程运行在后台不受终端的影响，比如在 <code>Node.js</code> 当中，当我们打开终端执行 <code>node app.js</code> 开启一个服务进程之后，这个终端就会一直被占用，如果关掉终端，服务就会断掉，即前台运行模式，如果采用守护进程进程方式，这个终端在我们使用 <code>node app.js</code> 开启一个服务进程之后，还可以在这个终端上做些别的事情，且不会相互影响</p>
+<h4 id="创建步骤"><a href="#创建步骤" class="headerlink" title="创建步骤"></a>创建步骤</h4><p>主要有下面四个步骤</p>
+<ul>
+<li>借助 <code>clild_process</code> 中的 <code>spawn</code> 创建子进程</li>
+<li>在子进程中创建新会话，在 <code>spawn</code> 的第三个参数中，可以设置 <code>detached</code> 属性，如果该属性为 <code>true</code>，则会调用系统函数 <code>setsid</code> 方法</li>
+<li>改变子进程工作目录（如：<code>/</code> 或 <code>/usr/</code> 等），<code>options.cwd</code> 指定当前子进程工作目录若不做设置默认继承当前工作目录</li>
+<li>父进程终止（运行 <code>daemon.unref()</code> 退出父进程）</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// index.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> spawn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).spawn</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">startDaemon</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> daemon = spawn(<span class="hljs-string">'node'</span>, [<span class="hljs-string">'daemon.js'</span>], &#123;</span><br><span class="line">    cwd: <span class="hljs-string">'/usr'</span>,</span><br><span class="line">    detached: <span class="hljs-literal">true</span>,</span><br><span class="line">    stdio: <span class="hljs-string">'ignore'</span>,</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'守护进程开启 父进程 pid: %s, 守护进程 pid: %s'</span>, process.pid, daemon.pid)</span><br><span class="line">  daemon.unref()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">startDaemon()</span><br></pre></td></tr></table></figure>
+
+<p><code>daemon.js</code> 文件里处理逻辑开启一个定时器每 <code>10</code> 秒执行一次，使得这个资源不会退出，同时写入日志到子进程当前工作目录下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// daemon.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> &#123; Console &#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">'console'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// custom simple logger</span></span><br><span class="line"><span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Console(fs.createWriteStream(<span class="hljs-string">'./stdout.log'</span>), fs.createWriteStream(<span class="hljs-string">'./stderr.log'</span>))</span><br><span class="line"></span><br><span class="line">setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  logger.log(<span class="hljs-string">'daemon pid: '</span>, process.pid, <span class="hljs-string">', ppid: '</span>, process.ppid)</span><br><span class="line">&#125;, <span class="hljs-number">1000</span> * <span class="hljs-number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h4><figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ node index.js</span><br><span class="line"></span><br><span class="line">守护进程开启 父进程 pid: <span class="hljs-number">47608</span>, 守护进程 pid: <span class="hljs-number">47609</span></span><br></pre></td></tr></table></figure>
+
+<p>打开活动监视器查看，目前只有一个进程 <code>47609</code>，这就是我们需要进行守护的进程，当然，以上只是一个简单的示例，在实际工作中对守护进程的健壮性要求还是很高的，比如进程的异常监听、工作进程管理调度、进程挂掉之后重启等等，推荐阅读 <a href="https://cnodejs.org/topic/57adfadf476898b472247eac" target="_blank" rel="noopener">编写守护进程</a> 了解更多</p>
+<h2 id="问题汇总"><a href="#问题汇总" class="headerlink" title="问题汇总"></a>问题汇总</h2><p>下面是一些在实际使用当中可能会遇到的问题，主要包括以下内容</p>
+<ul>
+<li>什么是进程和线程？两者之间有什么区别？</li>
+<li>什么是孤儿进程？</li>
+<li>创建多进程时，代码里有 <code>app.listen(port)</code> 在进行 <code>fork</code> 时，为什么没有报端口被占用？</li>
+<li>什么是 <code>IPC</code> 通信，如何建立 <code>IPC</code> 通信？什么场景下需要用到 <code>IPC</code> 通信？</li>
+<li>父进程与子进程是如何通信的？</li>
+<li><code>Node.js</code> 是单线程还是多线程？</li>
+<li>如何实现一个简单的命令行交互程序？</li>
+<li>如何让一个 <code>js</code> 文件在 <code>Linux</code> 下成为一个可执行命令程序?</li>
+<li>进程的当前工作目录是什么? 有什么作用?</li>
+<li>多进程或多个 <code>Web</code> 服务之间的状态共享问题？</li>
+</ul>
+<p>下面我们就一个一个来看</p>
+<h4 id="什么是进程和线程？两者之间有什么区别？"><a href="#什么是进程和线程？两者之间有什么区别？" class="headerlink" title="什么是进程和线程？两者之间有什么区别？"></a>什么是进程和线程？两者之间有什么区别？</h4><p>之前已经介绍过了，这里小小的总结一下</p>
+<ul>
+<li>关系<ul>
+<li>进程中包含着至少一个线程</li>
+<li>在进程创建之初，就会包含一个线程，这个线程会根据需要，调用系统库函数去创建其他线程</li>
+<li>但需要注意的是，这些线程之间是没有层级关系的，他们之间协同完成工作，在整个进程完成工作之后，其中的线程会被销毁，释放资源</li>
+</ul>
+</li>
+<li>共性<ul>
+<li>都包含三个状态，就绪、阻塞、运行</li>
+<li>阻塞就是资源未到位，等待资源中</li>
+<li>就绪，就是资源到位了，但是 <code>CPU</code> 未到位，还在运行其他</li>
+</ul>
+</li>
+</ul>
+<h4 id="什么是孤儿进程？"><a href="#什么是孤儿进程？" class="headerlink" title="什么是孤儿进程？"></a>什么是孤儿进程？</h4><p>父进程创建子进程之后，父进程退出了，但是父进程对应的一个或多个子进程还在运行，这些子进程会被系统的 <code>init</code> 进程收养，对应的进程 <code>ppid</code> 为 <code>1</code>，这就是孤儿进程</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// master.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> fork = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).fork</span><br><span class="line"><span class="hljs-keyword">const</span> server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'net'</span>).createServer()</span><br><span class="line">server.listen(<span class="hljs-number">3000</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> worker = fork(<span class="hljs-string">'worker.js'</span>)</span><br><span class="line"></span><br><span class="line">worker.send(<span class="hljs-string">'server'</span>, server)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'worker process created, pid: %s ppid: %s'</span>, worker.pid, process.pid)</span><br><span class="line"><span class="hljs-comment">// 创建子进程之后，主进程退出，此时创建的 worker 进程会成为孤儿进程</span></span><br><span class="line">process.exit(<span class="hljs-number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// worker.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> server = http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-comment">// 记录当前工作进程 pid 及父进程 ppid</span></span><br><span class="line">  res.end(<span class="hljs-string">'I am worker, pid: '</span> + process.pid + <span class="hljs-string">', ppid: '</span> + process.ppid)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> worker</span><br><span class="line">process.on(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message, sendHandle</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (message === <span class="hljs-string">'server'</span>) &#123;</span><br><span class="line">    worker = sendHandle</span><br><span class="line">    worker.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">socket</span>) </span>&#123;</span><br><span class="line">      server.emit(<span class="hljs-string">'connection'</span>, socket)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在控制台进行测试，输出当前工作进程 <code>pid</code> 和 父进程 <code>ppid</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ node master</span><br><span class="line"></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">32971</span> ppid: <span class="hljs-number">32970</span></span><br></pre></td></tr></table></figure>
+
+<p>由于在 <code>master.js</code> 里退出了父进程，活动监视器所显示的也就只有工作进程，再次验证，打开控制台调用接口，可以看到工作进程 <code>32971</code> 对应的 <code>ppid</code> 为 <code>1</code>（为 <code>init</code> 进程），此时已经成为了孤儿进程</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://127.0.0.1:3000</span><br><span class="line"></span><br><span class="line">I am worker, pid: 32971, ppid: 1</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建多进程时，代码里有-app-listen-port-在进行-fork-时，为什么没有报端口被占用？"><a href="#创建多进程时，代码里有-app-listen-port-在进行-fork-时，为什么没有报端口被占用？" class="headerlink" title="创建多进程时，代码里有 app.listen(port) 在进行 fork 时，为什么没有报端口被占用？"></a>创建多进程时，代码里有 app.listen(port) 在进行 fork 时，为什么没有报端口被占用？</h4><p>我们先来看一个端口被占用的情况</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// master.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> fork = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).fork</span><br><span class="line"><span class="hljs-keyword">const</span> cpus = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>).cpus()</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; cpus.length; i++) &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> worker = fork(<span class="hljs-string">'worker.js'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'worker process created, pid: %s ppid: %s'</span>, worker.pid, process.pid)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//worker.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)</span><br><span class="line">http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.end(<span class="hljs-string">'I am worker, pid: '</span> + process.pid + <span class="hljs-string">', ppid: '</span> + process.ppid)</span><br><span class="line">&#125;).listen(<span class="hljs-number">3000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>以上代码示例，控制台执行 <code>node master.js</code> 只有一个 <code>worker</code> 可以监听到 <code>3000</code> 端口，其余将会抛出 <code>Error: listen EADDRINUSE :::3000</code> 错误，那么多进程模式下怎么实现多端口监听呢？</p>
+<p>通过上面的多进程当中的示例可以发现，在这种情况下就可以通过句柄传递来实现多端口监听，当父子进程之间建立 <code>IPC</code> 通道之后，通过子进程对象的 <code>send</code> 方法发送消息，第二个参数 <code>sendHandle</code> 就是句柄，可以是 <code>TCP</code> 套接字、<code>TCP</code> 服务器、<code>UDP</code> 套接字等，为了解决上面多进程端口占用问题，我们将主进程的 <code>socket</code> 传递到子进程，修改代码</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">//master.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> fork = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).fork</span><br><span class="line"><span class="hljs-keyword">const</span> cpus = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>).cpus()</span><br><span class="line"><span class="hljs-keyword">const</span> server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'net'</span>).createServer()</span><br><span class="line">server.listen(<span class="hljs-number">3000</span>)</span><br><span class="line">process.title = <span class="hljs-string">'node-master'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; cpus.length; i++) &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> worker = fork(<span class="hljs-string">'worker.js'</span>)</span><br><span class="line">  worker.send(<span class="hljs-string">'server'</span>, server)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'worker process created, pid: %s ppid: %s'</span>, worker.pid, process.pid)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> (i + <span class="hljs-number">1</span> === cpus.length) &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'serve close'</span>)</span><br><span class="line">    <span class="hljs-comment">// 关闭服务器监听，交由子进程处理</span></span><br><span class="line">    server.close()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// worker.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)</span><br><span class="line"><span class="hljs-keyword">const</span> server = http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.end(<span class="hljs-string">'I am worker, pid: '</span> + process.pid + <span class="hljs-string">', ppid: '</span> + process.ppid)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> worker</span><br><span class="line">process.title = <span class="hljs-string">'node-worker'</span></span><br><span class="line">process.on(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message, sendHandle</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (message === <span class="hljs-string">'server'</span>) &#123;</span><br><span class="line">    worker = sendHandle</span><br><span class="line">    worker.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">socket</span>) </span>&#123;</span><br><span class="line">      server.emit(<span class="hljs-string">'connection'</span>, socket)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>验证一番，控制台执行 <code>node master.js</code> 以下结果是我们预期的，多进程端口占用问题已经被解决了</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ node master.js</span><br><span class="line"></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">34512</span> ppid: <span class="hljs-number">34511</span></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">34513</span> ppid: <span class="hljs-number">34511</span></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">34514</span> ppid: <span class="hljs-number">34511</span></span><br><span class="line">worker process created, <span class="hljs-attr">pid</span>: <span class="hljs-number">34515</span> ppid: <span class="hljs-number">34511</span></span><br></pre></td></tr></table></figure>
+
+<p>关于多进程端口占用问题，可以参考 <a href="https://cnodejs.org/topic/56e84480833b7c8a0492e20c" target="_blank" rel="noopener">通过源码解析 Node.js 中 cluster 模块的主要功能实现</a></p>
+<h4 id="什么是-IPC-通信，如何建立-IPC-通信？什么场景下需要用到-IPC-通信？"><a href="#什么是-IPC-通信，如何建立-IPC-通信？什么场景下需要用到-IPC-通信？" class="headerlink" title="什么是 IPC 通信，如何建立 IPC 通信？什么场景下需要用到 IPC 通信？"></a>什么是 IPC 通信，如何建立 IPC 通信？什么场景下需要用到 IPC 通信？</h4><p><code>IPC</code>（<code>Inter-process communication</code>），即进程间通信技术，由于每个进程创建之后都有自己的独立地址空间，实现 <code>IPC</code> 的目的就是为了进程之间资源共享访问，实现 <code>IPC</code> 的方式有多种方式，例如管道、消息队列、信号量、<code>Domain Socket</code> 等，在 <code>Node.js</code> 当中是通过 <code>pipe</code> 来实现，我们先来看一个未使用 <code>IPC</code> 的情况</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// pipe.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> spawn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).spawn</span><br><span class="line"><span class="hljs-keyword">const</span> child = spawn(<span class="hljs-string">'node'</span>, [<span class="hljs-string">'worker.js'</span>])</span><br><span class="line"><span class="hljs-built_in">console</span>.log(process.pid, child.pid)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// worker.js</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'I am worker, PID: '</span>, process.pid)</span><br></pre></td></tr></table></figure>
+
+<p>控制台执行 <code>node pipe.js</code>，输出主进程 <code>id</code>、子进程 <code>id</code>，但是子进程 <code>worker.js</code> 的信息并没有在控制台打印，原因是新创建的子进程有自己的 <code>stdio</code> 流</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ node pipe.js</span><br><span class="line"></span><br><span class="line"><span class="hljs-number">41948</span> <span class="hljs-number">41949</span></span><br></pre></td></tr></table></figure>
+
+<p>下面我们再来创建一个父进程和子进程之间传递消息的 <code>IPC</code> 通道实现输出信息的示例，通过修改 <code>pipe.js</code> 让子进程的 <code>stdio</code> 和当前进程的 <code>stdio</code> 之间建立管道链接，还可以通过 <code>spawn()</code> 方法的 <code>stdio</code> 选项建立 <code>IPC</code> 机制</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// pipe.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> spawn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).spawn</span><br><span class="line"><span class="hljs-keyword">const</span> child = spawn(<span class="hljs-string">'node'</span>, [<span class="hljs-string">'worker.js'</span>])</span><br><span class="line">child.stdout.pipe(process.stdout)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(process.pid, child.pid)</span><br></pre></td></tr></table></figure>
+
+<p>再次执行 <code>node pipe.js</code>，可以发现 <code>worker.js</code> 的信息也打印了出来</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="hljs-number">42473</span> <span class="hljs-number">42474</span></span><br><span class="line"></span><br><span class="line">I am worker, <span class="hljs-attr">PID</span>:  <span class="hljs-number">42474</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="父进程与子进程是如何通信的？"><a href="#父进程与子进程是如何通信的？" class="headerlink" title="父进程与子进程是如何通信的？"></a>父进程与子进程是如何通信的？</h4><p>父进程在创建子进程之前会先去创建 <code>IPC</code> 通道并一直监听该通道，之后开始创建子进程并通过环境变量（<code>NODE_CHANNEL_FD</code>）的方式将 <code>IPC</code> 频道的文件描述符传递给子进程，子进程启动时根据传递的文件描述符去链接 <code>IPC</code> 通道，从而建立父子进程之间的通信机制</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/29.png" alt></p>
+<h4 id="Node-js-是单线程还是多线程？"><a href="#Node-js-是单线程还是多线程？" class="headerlink" title="Node.js 是单线程还是多线程？"></a>Node.js 是单线程还是多线程？</h4><p><code>JavaScript</code> 是单线程的，但是做为其在服务端运行环境的 <code>Node.js</code> 并非是单线程的，至于 <code>JavaScript</code> 为什么是单线程？这个问题需要从浏览器说起，在浏览器环境中对于 <code>DOM</code> 的操作，不可能存在多个线程来对同一个 <code>DOM</code> 同时操作，那也就意味着对于 <code>DOM</code> 的操作只能是单线程，避免 <code>DOM</code> 渲染冲突，而在浏览器环境中 <code>UI</code> 渲染线程和 <code>JavaScript</code> 执行引擎是互斥的，一方在执行时都会导致另一方被挂起，这是由 <code>JavaScript</code> 引擎所决定的</p>
+<h4 id="如何实现一个简单的命令行交互程序？"><a href="#如何实现一个简单的命令行交互程序？" class="headerlink" title="如何实现一个简单的命令行交互程序？"></a>如何实现一个简单的命令行交互程序？</h4><p>可以采用子进程 <code>child_process</code> 的 <code>spawn</code> 方法，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> spawn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).spawn</span><br><span class="line"><span class="hljs-keyword">const</span> child = spawn(<span class="hljs-string">'echo'</span>, [<span class="hljs-string">'test'</span>])</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将子进程的输出做为当前进程的输入，打印在控制台</span></span><br><span class="line">child.stdout.pipe(process.stdout)</span><br></pre></td></tr></table></figure>
+
+<p>运行</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ node execfile</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// test</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="如何让一个-js-文件在-Linux-下成为一个可执行命令程序"><a href="#如何让一个-js-文件在-Linux-下成为一个可执行命令程序" class="headerlink" title="如何让一个 js 文件在 Linux 下成为一个可执行命令程序?"></a>如何让一个 js 文件在 Linux 下成为一个可执行命令程序?</h4><ul>
+<li>新建 <code>hello.js</code> 文件，头部须加上 <code>#!/usr/bin/env node</code>，表示当前脚本使用 <code>Node.js</code> 进行解析</li>
+<li>赋予文件可执行权限 <code>chmod + x chmod + x /${dir}/hello.js</code>，目录自定义</li>
+<li>在 <code>/usr/local/bin</code> 目录下创建一个软链文件 <code>sudo ln -s /${dir}/hello.js /usr/local/bin/hello</code>，文件名就是我们在终端使用的名字</li>
+<li>终端执行 <code>hello</code> 相当于输入 <code>node hello.js</code></li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env node</span><br><span class="line"></span><br><span class="line">console.log(&apos;hello world!&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>终端测试</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hello</span><br><span class="line"></span><br><span class="line">hello world!</span><br></pre></td></tr></table></figure>
+
+<h4 id="进程的当前工作目录是什么-有什么作用"><a href="#进程的当前工作目录是什么-有什么作用" class="headerlink" title="进程的当前工作目录是什么? 有什么作用?"></a>进程的当前工作目录是什么? 有什么作用?</h4><p>进程的当前工作目录可以通过 <code>process.cwd()</code> 命令获取，默认为当前启动的目录，如果是创建子进程则继承于父进程的目录，可通过 <code>process.chdir()</code> 命令重置，例如通过 <code>spawn</code> 命令创建的子进程可以指定 <code>cwd</code> 选项设置子进程的工作目录，有什么作用？例如通过 <code>fs</code> 模块来读取文件，如果设置为相对路径则相对于当前进程启动的目录进行查找，所以启动目录设置有误的情况下将无法得到正确的结果，还有一种情况程序里引用第三方模块也是根据当前进程启动的目录来进行查找的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 设置当前进程目录</span></span><br><span class="line">process.chdir(<span class="hljs-string">'/Users/may/Documents/test/'</span>) </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 获取当前进程目录</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(process.cwd())</span><br></pre></td></tr></table></figure>
+
+<h4 id="多进程或多个-Web-服务之间的状态共享问题？"><a href="#多进程或多个-Web-服务之间的状态共享问题？" class="headerlink" title="多进程或多个 Web 服务之间的状态共享问题？"></a>多进程或多个 Web 服务之间的状态共享问题？</h4><p>多进程模式下各个进程之间是相互独立的，例如用户登陆之后 <code>Session</code> 的保存，如果保存在服务进程里，那么如果我有 <code>4</code> 个工作进程，每个进程都要保存一份这是没必要的，如果服务重启了数据也会丢失，多个 <code>Web</code> 服务也是一样的，还会出现我在 <code>A</code> 机器上创建了 <code>Session</code>，当负载均衡分发到 <code>B</code> 机器上之后还需要在创建一份，一般的做法是通过 <code>Redis</code> 或者数据库来做数据共享</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.zhihu.com/question/25532384" target="_blank" rel="noopener">线程和进程的区别是什么？</a></li>
+<li><a href="https://javascript.ruanyifeng.com/nodejs/child-process.html#toc3" target="_blank" rel="noopener">Child Process 模块</a></li>
+<li><a href="https://www.cnblogs.com/chyingp/p/node-learning-guide-child_process.html" target="_blank" rel="noopener">进阶：如何玩转子进程（child_process）</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Node-js/">Node.js</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/05/12/Angular/08/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">Angular 中的动态加载</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/04/16/CSS/18/">
+                <span class="level-item">样式的层叠权重值</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '18f137f29b2f7ac44baf3e68de747066',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#Node-js-中的进程">
+        <span class="has-mr-6">1</span>
+        <span>Node.js 中的进程</span>
+        </a></li><li>
+        <a class="is-flex" href="#为什么需要多进程">
+        <span class="has-mr-6">2</span>
+        <span>为什么需要多进程</span>
+        </a></li><li>
+        <a class="is-flex" href="#Node-js-的线程与进程">
+        <span class="has-mr-6">3</span>
+        <span>Node.js 的线程与进程</span>
+        </a></li><li>
+        <a class="is-flex" href="#process">
+        <span class="has-mr-6">4</span>
+        <span>process</span>
+        </a></li><li>
+        <a class="is-flex" href="#进程创建">
+        <span class="has-mr-6">5</span>
+        <span>进程创建</span>
+        </a></li><li>
+        <a class="is-flex" href="#child-process-spawn-command-args-options">
+        <span class="has-mr-6">6</span>
+        <span>child_process.spawn(command[, args][, options])</span>
+        </a></li><li>
+        <a class="is-flex" href="#child-process-exec-command-options-callback">
+        <span class="has-mr-6">7</span>
+        <span>child_process.exec(command[, options][, callback])</span>
+        </a></li><li>
+        <a class="is-flex" href="#child-process-execFile-file-args-options-callback">
+        <span class="has-mr-6">8</span>
+        <span>child_process.execFile(file[, args][, options][, callback])</span>
+        </a></li><li>
+        <a class="is-flex" href="#child-process-fork-modulePath-args-options">
+        <span class="has-mr-6">9</span>
+        <span>child_process.fork(modulePath[, args][, options])</span>
+        </a></li><li>
+        <a class="is-flex" href="#实战">
+        <span class="has-mr-6">10</span>
+        <span>实战</span>
+        </a></li><li>
+        <a class="is-flex" href="#Node-js-多进程架构模型">
+        <span class="has-mr-6">11</span>
+        <span>Node.js 多进程架构模型</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#主进程-master-js">
+        <span class="has-mr-6">11.1</span>
+        <span>主进程 master.js</span>
+        </a></li><li>
+        <a class="is-flex" href="#工作进程">
+        <span class="has-mr-6">11.2</span>
+        <span>工作进程</span>
+        </a></li><li>
+        <a class="is-flex" href="#测试">
+        <span class="has-mr-6">11.3</span>
+        <span>测试</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#守护进程">
+        <span class="has-mr-6">12</span>
+        <span>守护进程</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#创建步骤">
+        <span class="has-mr-6">12.1</span>
+        <span>创建步骤</span>
+        </a></li><li>
+        <a class="is-flex" href="#运行测试">
+        <span class="has-mr-6">12.2</span>
+        <span>运行测试</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#问题汇总">
+        <span class="has-mr-6">13</span>
+        <span>问题汇总</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#什么是进程和线程？两者之间有什么区别？">
+        <span class="has-mr-6">13.1</span>
+        <span>什么是进程和线程？两者之间有什么区别？</span>
+        </a></li><li>
+        <a class="is-flex" href="#什么是孤儿进程？">
+        <span class="has-mr-6">13.2</span>
+        <span>什么是孤儿进程？</span>
+        </a></li><li>
+        <a class="is-flex" href="#创建多进程时，代码里有-app-listen-port-在进行-fork-时，为什么没有报端口被占用？">
+        <span class="has-mr-6">13.3</span>
+        <span>创建多进程时，代码里有 app.listen(port) 在进行 fork 时，为什么没有报端口被占用？</span>
+        </a></li><li>
+        <a class="is-flex" href="#什么是-IPC-通信，如何建立-IPC-通信？什么场景下需要用到-IPC-通信？">
+        <span class="has-mr-6">13.4</span>
+        <span>什么是 IPC 通信，如何建立 IPC 通信？什么场景下需要用到 IPC 通信？</span>
+        </a></li><li>
+        <a class="is-flex" href="#父进程与子进程是如何通信的？">
+        <span class="has-mr-6">13.5</span>
+        <span>父进程与子进程是如何通信的？</span>
+        </a></li><li>
+        <a class="is-flex" href="#Node-js-是单线程还是多线程？">
+        <span class="has-mr-6">13.6</span>
+        <span>Node.js 是单线程还是多线程？</span>
+        </a></li><li>
+        <a class="is-flex" href="#如何实现一个简单的命令行交互程序？">
+        <span class="has-mr-6">13.7</span>
+        <span>如何实现一个简单的命令行交互程序？</span>
+        </a></li><li>
+        <a class="is-flex" href="#如何让一个-js-文件在-Linux-下成为一个可执行命令程序">
+        <span class="has-mr-6">13.8</span>
+        <span>如何让一个 js 文件在 Linux 下成为一个可执行命令程序?</span>
+        </a></li><li>
+        <a class="is-flex" href="#进程的当前工作目录是什么-有什么作用">
+        <span class="has-mr-6">13.9</span>
+        <span>进程的当前工作目录是什么? 有什么作用?</span>
+        </a></li><li>
+        <a class="is-flex" href="#多进程或多个-Web-服务之间的状态共享问题？">
+        <span class="has-mr-6">13.10</span>
+        <span>多进程或多个 Web 服务之间的状态共享问题？</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">14</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Node.js 中的多进程" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Vite 的工程化流程 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="最近在学习 Vue 3 的相关内容，而在 Vue 3 当中则采用了 Vite 来作为构建工具，所以在这里简单的梳理一下 Vite 的相关内容，也算是记录一下">
+<meta name="keywords" content="Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vite 的工程化流程">
+<meta property="og:url" content="http://yoursite.com/2021/03/07/Vue/06/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="最近在学习 Vue 3 的相关内容，而在 Vue 3 当中则采用了 Vite 来作为构建工具，所以在这里简单的梳理一下 Vite 的相关内容，也算是记录一下">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp">
+<meta property="og:updated_time" content="2021-03-29T02:29:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vite 的工程化流程">
+<meta name="twitter:description" content="最近在学习 Vue 3 的相关内容，而在 Vue 3 当中则采用了 Vite 来作为构建工具，所以在这里简单的梳理一下 Vite 的相关内容，也算是记录一下">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Vite 的工程化流程" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2021-03-07</div>
+                <!-- <time class="level-item has-text-grey" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    34 分钟 读完 (大约 5169 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Vite 的工程化流程
+            
+        </h1>
+        <div class="content">
+            <p>最近在学习 <code>Vue 3</code> 的相关内容，而在 <code>Vue 3</code> 当中则采用了 <code>Vite</code> 来作为构建工具，所以在这里简单的梳理一下 <code>Vite</code> 的相关内容，也算是记录一下</p>
+<a id="more"></a>
+
+
+<h2 id="什么是-Vite"><a href="#什么是-Vite" class="headerlink" title="什么是 Vite"></a>什么是 Vite</h2><p><code>Vite</code> 是一款开发构建工具，在开发期，它是利用浏览的 <code>Native ES Modules</code> 特性来导入并且组织代码，生产环境中则是利用 <code>Rollup</code> 作为打包工具，它主要有以下几个特点</p>
+<ul>
+<li>启动速度很快</li>
+<li>热模块替换</li>
+<li>按需编译</li>
+</ul>
+<p>安装和使用的方式十分简单，并不需要过多的配置，安装流程如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g create-vite-app</span><br></pre></td></tr></table></figure>
+
+<p>安装完成以后我们就可以使用它来初始化我们的 <code>Vue 3</code> 项目</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ npm init vite-app &lt;project-name&gt;</span><br><span class="line"></span><br><span class="line">$ cd &lt;project-name&gt;</span><br><span class="line"></span><br><span class="line">$ npm install</span><br><span class="line"></span><br><span class="line">$ npm run dev</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码组织方式"><a href="#代码组织方式" class="headerlink" title="代码组织方式"></a>代码组织方式</h2><p>这里我们来借助上面默认初始化完成以后的项目来进行简单的结构梳理，首先先从入口文件开始看起，也就是我们的 <code>index.html</code>，它在代码当中的引入方式是下面这样的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="hljs-string">"module"</span> src=<span class="hljs-string">"/src/main.js"</span>&gt;<span class="hljs-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这里可以发现，我们引用了 <code>/src/main.js</code> 这个文件，但是是使用了 <code>type=&quot;module&quot;</code> 的方式来进行引用，我们再来看看 <code>main.js</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; createApp &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App.vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span></span><br><span class="line"></span><br><span class="line">createApp(App).mount(<span class="hljs-string">'#app'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>我们先来简单的梳理几个可能会有疑惑的地方，首先就是这里直接采用了裸模块的方式直接进行了引用，也就是 <code>import { createApp } from &#39;vue&#39;</code> 这样的使用方式，我们在上面也提到过，<code>Vite</code> 是利用浏览的 <code>Native ES Modules</code> 特性来导入并且组织代码，但是浏览器是如何知道这个文件具体是在什么位置的呢？</p>
+<p>另外对于 <code>import App from &#39;./App.vue&#39;</code> 这样的相对路径的引入方式我们很熟悉，但是它又是如何解析 <code>App.vue</code> 这样的文件的呢？同理下面的 <code>index.css</code> 也是一样的道理，也许它是一个纯的 <code>CSS</code>，但是如果是使用了预编译器的 <code>Sass</code>，那又该如何对它进行处理呢？</p>
+<p>关于上面的这些疑问，我们可以在项目启动以后，借助 <code>Chrome</code> 浏览的开发者工具当中的 <code>Network</code> 标签来进行分析，我们先来看它的加载过程，这里我们主要关注以下几个文件的加载解析过程，它们按序加载的顺序如下</p>
+<ul>
+<li><code>localhost</code></li>
+<li><code>main.js</code></li>
+<li><code>vue.js</code></li>
+<li><code>App.vue</code></li>
+<li><code>index.css?import</code></li>
+<li><code>HelloWorld.vue</code></li>
+<li><code>App.vue?type=template</code></li>
+</ul>
+<p>一开始首先加载 <code>localhost</code>，也就是请求本地服务器上的 <code>index.html</code>，它发现内部引用了 <code>main.js</code>，所以又发送了另外一条请求去请求该文件，但是我们可以发现，现在返回的 <code>main.js</code> 有了一些变化，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; createApp &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'/@modules/vue.js'</span></span><br><span class="line"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'/src/App.vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'/src/index.css?import'</span></span><br><span class="line"></span><br><span class="line">createApp(App).mount(<span class="hljs-string">'#app'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>我们可以发现，返回的路径在 <code>Vite</code> 的处理下变成了 <code>&#39;/@modules/vue.js&#39;</code>，所以此时浏览器便会再次发送请求，去请求一个相对路径下的 <code>vue.js</code>，所以就会去 <code>node_modules</code> 下寻找 <code>vue</code> 文件夹，接下来就会去访问 <code>vue</code> 文件夹下的 <code>package.json</code>，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// node_modules/vue/package.json</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="hljs-comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-string">"main"</span>: <span class="hljs-string">"index.js"</span>,</span><br><span class="line">  <span class="hljs-string">"module"</span>: <span class="hljs-string">"dist/vue.runtime.esm-bundler.js"</span>,</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>package.json</code> 我们可以知道，所谓的入口文件也就是 <code>vue.runtime.esm-bundler.js</code> 这个文件，从命名上我们也可以看出，就是一个运行时的使用 <code>ES</code> 模块来打包的 <code>vue</code> 版本</p>
+<p>所以我们在调用了 <code>import { createApp } from &#39;/@modules/vue.js&#39;</code> 这行代码以后就相当于在我们的代码当中从 <code>vue</code> 当中导出了 <code>createApp</code> 这个方法，然后就可以在后续过程当中执行 <code>createApp(App).mount(&#39;#app&#39;)</code> 来进行程序的创建了</p>
+<p>接下来我们再来看看 <code>import App from &#39;/src/App.vue&#39;</code> 这一行，因为是相对路径，所以会去请求当前目录下的 <code>App.vue</code>，我们来对比看一下它的先后变化，首先是我们代码当中实现的 <code>App.vue</code>，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;img alt=<span class="hljs-string">"Vue logo"</span> src=<span class="hljs-string">"./assets/logo.png"</span> /&gt;</span><br><span class="line">  &lt;HelloWorld msg=<span class="hljs-string">"Hello Vue 3.0 + Vite"</span> /&gt;</span><br><span class="line">&lt;<span class="hljs-regexp">/template&gt;</span></span><br><span class="line"><span class="hljs-regexp"></span></span><br><span class="line"><span class="hljs-regexp">&lt;script&gt;</span></span><br><span class="line"><span class="hljs-regexp">import HelloWorld from './</span>components/HelloWorld.vue<span class="hljs-string">'</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">export default &#123;</span></span><br><span class="line"><span class="hljs-string">  name: '</span>App<span class="hljs-string">',</span></span><br><span class="line"><span class="hljs-string">  components: &#123;</span></span><br><span class="line"><span class="hljs-string">    HelloWorld</span></span><br><span class="line"><span class="hljs-string">  &#125;</span></span><br><span class="line"><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>而下面则是经过 <code>Vite</code> 处理后返回的 <code>App.vue</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> HelloWorld <span class="hljs-keyword">from</span> <span class="hljs-string">'/src/components/HelloWorld.vue'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> __script = &#123;</span><br><span class="line">  name: <span class="hljs-string">'App'</span>,</span><br><span class="line">  components: &#123;</span><br><span class="line">    HelloWorld</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; render <span class="hljs-keyword">as</span> __render &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'/src/App.vue?type=template'</span></span><br><span class="line">__script.render = __render</span><br><span class="line">__script.__hmrId = <span class="hljs-string">'/src/App.vue'</span></span><br><span class="line"><span class="hljs-keyword">typeof</span> __VUE_HMR_RUNTIME__ !== <span class="hljs-string">'undefined'</span> &amp;&amp; __VUE_HMR_RUNTIME__.createRecord(__script.__hmrId, __script)</span><br><span class="line">__script.__file = <span class="hljs-string">'/path/src/App.vue'</span></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> __script</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，我们之前所写的 <code>&lt;template&gt;&lt;/template&gt;</code>，<code>&lt;script&gt;&lt;/script&gt;</code> 等相关代码全部被经过了一次编译，然后将它们组合，输出最终的代码，而返回的最终代码也就如上所示，简单梳理一下就是</p>
+<ul>
+<li>首先将我们的路径替换成了相对路径 <code>&#39;/src/components/HelloWorld.vue&#39;</code></li>
+<li>之前 <code>export default { }</code> 的部分变成了一个名为 <code>__script</code> 的组件配置对象</li>
+<li>通过请求 <code>App.vue</code> 引入了 <code>render</code> 函数，但是添加了 <code>type=template</code> 的查询参数，这样 <code>Vite</code> 就会对这个请求做特殊处理，也就是解析 <code>&lt;template&gt;&lt;/template&gt;</code> 这个模板，将其变成渲染函数</li>
+<li>得到渲染函数以后，再将其合并到我们之前的组件配置对象当中</li>
+<li>以上就是任务的整个流程，剩余的一些都是一些标识文件，这里我们就不过多探讨了，然后最后将我们的组件配置对象导出</li>
+</ul>
+<p>其实简单总结的话就是『解析当前组件，并且把我们的最终解析结果导出』，所以这样一来 <code>App.vue</code> 就变成了一个组件配置对象返回到了前台，所以我们在使用这个组件配置对象的时候就可以正常的去使用了</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>最后我们来简单的总结一下上面梳理的内容，从开头部分开始说起，关键变化的是 <code>index.html</code> 中的入口文件的导入方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="hljs-string">"module"</span> src=<span class="hljs-string">"/src/main.js"</span>&gt;<span class="hljs-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这样 <code>main.js</code> 中就可以使用 <code>ES6 Module</code> 的方式来组织代码</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; createApp &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App.vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span></span><br></pre></td></tr></table></figure>
+
+<p>浏览器会自动加载这些导入，<code>Vite</code> 会启动一个本地服务器处理这些不同的加载请求</p>
+<ul>
+<li>对于相对地址的导入，要根据后缀名处理文件内容并返回</li>
+<li>而对于裸模块导入要修改它的路径为相对地址并再次请求处理</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; createApp &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'/@modules/vue.js'</span></span><br><span class="line"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'/src/App.vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'/src/index.css?import'</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="资源加载"><a href="#资源加载" class="headerlink" title="资源加载"></a>资源加载</h2><p>下面我们再来看看 <code>Vite</code> 当中的资源加载，也就是图片，<code>CSS</code> 等一些静态资源是如何处理的，这也是工程化当中的一个十分重要的点</p>
+<h4 id="CSS-文件导入"><a href="#CSS-文件导入" class="headerlink" title="CSS 文件导入"></a>CSS 文件导入</h4><p><code>Vite</code> 中可以直接导入 <code>CSS</code> 文件，样式将影响导入的页面，还是以我们的 <code>main.js</code> 为例，它是以全局的方式进行引入的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; createApp &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App.vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span></span><br></pre></td></tr></table></figure>
+
+<p>同 <code>JavaScript</code> 的处理方式类似，<code>Vite</code> 会对这个 <code>CSS</code> 进行开发阶段的预处理，将其转换成 <code>JavaScript</code> 代码，然后热更新到界面当中，但是需要注意的是，最后还是会被打包到 <code>style.css</code> 当中，下面是处理后的 <code>main.js</code> 文件当中的引入方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> <span class="hljs-string">'/src/index.css?import'</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现，针对于 <code>CSS</code> 的处理，添加了 <code>import</code> 的标识，再来看看现在的 <code>index.css</code> 的样子，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; updateStyle &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">"/vite/client"</span></span><br><span class="line"><span class="hljs-keyword">const</span> css = <span class="hljs-string">"#app &#123;\n  font-family: Avenir, Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n  margin-top: 60px;\n&#125;\n"</span></span><br><span class="line">updateStyle(<span class="hljs-string">"\"2418ba23\""</span>, css)</span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> css</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，其实最终的处理是以 <code>JavaScript</code> 的形式传递到前端，下面我们再来看看 <code>CSS Module</code> 的使用方式</p>
+<h4 id="CSS-Module"><a href="#CSS-Module" class="headerlink" title="CSS Module"></a>CSS Module</h4><p>我们除了在模版当中的 <code>style</code> 里直接定义对应 <code>class</code> 的样式以外，还可以使用 <code>Module</code> 的方式，我们通常的使用方式是下面这样的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;img <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"img"</span> alt=<span class="hljs-string">"Vue logo"</span> src=<span class="hljs-string">"./assets/logo.png"</span> /&gt;</span><br><span class="line">&lt;<span class="hljs-regexp">/template&gt;</span></span><br><span class="line"><span class="hljs-regexp"></span></span><br><span class="line"><span class="hljs-regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="hljs-regexp">  .img &#123;</span></span><br><span class="line"><span class="hljs-regexp">    width: 500px;</span></span><br><span class="line"><span class="hljs-regexp">  &#125;</span></span><br><span class="line"><span class="hljs-regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>但是我们可以将其调整为 <code>CSS Module</code> 的形式，这样一来我们的 <code>CSS</code> 在将来编译的时候会将我们的 <code>style</code> 变成计算属性，所以在模板当中使用的时候就不再是使用单纯的 <code>class</code> 了，而是使用 <code>$style</code> 来进行使用，也就是下面这样的使用方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;img :<span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"$style.img"</span> alt=<span class="hljs-string">"Vue logo"</span> src=<span class="hljs-string">"./assets/logo.png"</span> /&gt;</span><br><span class="line">&lt;<span class="hljs-regexp">/template&gt;</span></span><br><span class="line"><span class="hljs-regexp"></span></span><br><span class="line"><span class="hljs-regexp">&lt;style module&gt;</span></span><br><span class="line"><span class="hljs-regexp">  .img &#123;</span></span><br><span class="line"><span class="hljs-regexp">    width: 500px;</span></span><br><span class="line"><span class="hljs-regexp">  &#125;</span></span><br><span class="line"><span class="hljs-regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>运行以后可以发现，结果是和上面是一致的，并且最终生成的样式结果当中会自动帮助我们加上 <code>hash</code>，也就是下面这样的</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"img_7ac74a55"</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">"Vue logo"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"/src/assets/logo.png"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>而这也是模块化带来的好处，因为有 <code>hash</code> 的存在，所以我们也不用担心它未来会重名，而这也是与使用 <code>scoped</code> 的区别</p>
+<p>不过这里需要注意的一点就是，如果我们之前定义的 <code>class</code> 是使用 <code>-</code> 命名的话，则需要将其调整为驼峰命名，另外如果需要在 <code>JavaScript</code> 当中导入 <code>CSS Module</code>，只需要将 <code>CSS</code> 文件命名为 <code>*.module.css</code>，这样一来 <code>Vite</code> 也会自动对其进行模块化的处理</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> style <span class="hljs-keyword">from</span> <span class="hljs-string">'./HelloWorld.module.css'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> &#123;</span><br><span class="line">  emits: [<span class="hljs-string">'close'</span>],</span><br><span class="line">  computed: &#123;</span><br><span class="line">    $style() &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> style</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="PostCSS"><a href="#PostCSS" class="headerlink" title="PostCSS"></a>PostCSS</h4><p><code>Vite</code> 自动会对 <code>*.vue</code> 文件和导入的 <code>.css</code> 文件应用 <code>PostCSS</code> 配置，我们只需要安装必要的插件和添加 <code>postcss.config.js</code> 文件即可</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="hljs-built_in">require</span>(<span class="hljs-string">'autoprefixer'</span>)</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意的一个地方就是，如果需要安装 <code>autoprefixer</code> 这个插件，最好保持和 <code>PostCSS</code> 相同的版本，否则会有不兼容的错误提示</p>
+<h4 id="资源-URL-处理"><a href="#资源-URL-处理" class="headerlink" title="资源 URL 处理"></a>资源 URL 处理</h4><p>我们可以在 <code>*.vue</code> 文件的 <code>&lt;template&gt;</code>，<code>&lt;style&gt;</code> 和纯的 <code>.css</code> 文件当中以相对和绝对路径方式引用静态资源，我们先来看看静态资源如何引用的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 相对路径 --&gt;</span><br><span class="line">&lt;img src=<span class="hljs-string">"./assets/logo.png"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 绝对路径 --&gt;</span><br><span class="line">&lt;img src=<span class="hljs-string">"/src/assets/logo.png"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>另外一个就是 <code>public</code> 目录，<code>public</code> 目录下可以存放未在源码中引用的资源，它们会被留下且文件名不会有哈希处理，这些文件会原封不动的拷贝到发布目录的根目录下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=<span class="hljs-string">"./logo.png"</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>但是需要注意的是，引用放置在 <code>public</code> 下的文件需要使用绝对路径，例如 <code>public/icon.png</code> 应该使用 <code>/icon.png</code> 进行引用</p>
+<h2 id="eslint"><a href="#eslint" class="headerlink" title="eslint"></a>eslint</h2><p>其实在 <code>Vite</code> 当中使用 <code>eslint</code> 并不会对我们进行约束，该怎么配置还是怎样配置，通常我们借助 <code>eslint</code> 规范项目代码，通过 <code>prettier</code> 做代码格式化，所以我们就需要进行两部分配置，而且我们希望两者是相匹配的，因为如果不匹配的话，在我们格式化以后是通过不了 <code>eslint</code> 的检查，这样就会引起很多的麻烦，下面我们来看看如何进行配置，首先在项目当中安装依赖，<code>package.json</code> 如下</p>
+<figure class="highlight json hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="hljs-attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="hljs-attr">"lint"</span>: <span class="hljs-string">"elint \"src/**/*.&#123;js,vue&#125;\""</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="hljs-attr">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="hljs-attr">"@vue/elint-config-prettier"</span>: <span class="hljs-string">"^6.0.0"</span>,</span><br><span class="line">    <span class="hljs-attr">"babel-eslint"</span>: <span class="hljs-string">"^10.1.0"</span>,</span><br><span class="line">    <span class="hljs-attr">"eslint"</span>: <span class="hljs-string">"^6.7.2"</span>,</span><br><span class="line">    <span class="hljs-attr">"eslint-plugin-prettier"</span>: <span class="hljs-string">"^3.1.3"</span>,</span><br><span class="line">    <span class="hljs-attr">"eslint-plugin-vue"</span>: <span class="hljs-string">"^7.0.0-0"</span>,</span><br><span class="line">    <span class="hljs-attr">"prettier"</span>: <span class="hljs-string">"^1.19.1"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来就是进行 <code>lint</code> 的规则配置，主要有两种方式，一种是采用 <code>.eslintrc</code> 的方式，也就是没有后缀的形式，但是这种方式需要写 <code>JSON</code>，它的好处是代码提示很好，并且如果安装了 <code>eslint</code> 扩展可以很好的帮助我们来进行提示有哪些项是可以选择的，可以使用的</p>
+<p>另外一种是采用 <code>.eslintrc.js</code> 的方式，也就是带后缀的方式，它的好处是可以在配置文件当中加上一些动态的配置，比如环境变量等，这里我们采用带有后缀的方式，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">module</span>.exports = &#123;</span><br><span class="line">  root: <span class="hljs-literal">true</span>,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: <span class="hljs-literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="hljs-comment">// 引入三个扩展，一个是 vue3 核心的 lint 规则，exlint 的建议规则 和 prettier 建议的规则</span></span><br><span class="line">  extends: [<span class="hljs-string">'plugin: vue/vue3-essential'</span>, <span class="hljs-string">'eslint: recommended'</span>, <span class="hljs-string">' @vue/prettier'</span>],</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    parser: <span class="hljs-string">'babel-eslint'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  rules: &#123;</span><br><span class="line">    <span class="hljs-string">'no-console'</span>: process.env.NODE_ENV === <span class="hljs-string">'production'</span> ? <span class="hljs-string">'warn'</span> : <span class="hljs-string">'off'</span>,</span><br><span class="line">    <span class="hljs-string">'no-debugger'</span>: process.env.NODE_ENV === <span class="hljs-string">'production'</span> ? <span class="hljs-string">'warn'</span> : <span class="hljs-string">'off'</span>,</span><br><span class="line">    <span class="hljs-string">'prettier/prettier'</span>: [</span><br><span class="line">      <span class="hljs-string">'warn'</span>,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="hljs-comment">// 一些冲突项可以自定义设定</span></span><br><span class="line">        <span class="hljs-comment">// singleQuote: true,</span></span><br><span class="line">        <span class="hljs-comment">// semi: false,</span></span><br><span class="line">        trailingComma: <span class="hljs-string">'es5 '</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外如果有必要我们还可以配置 <code>prettier.config.js</code> 来修改 <code>prettier</code> 的默认格式化规则，因为开发工具的不一致可能导致格式化后的结果不一致，所以我们将其配置成一致的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">module</span>.exports = &#123;</span><br><span class="line">  printWidth: <span class="hljs-number">80</span>,             <span class="hljs-comment">// 毎行代长度（默认 80）</span></span><br><span class="line">  tabWidth: <span class="hljs-number">2</span>,                <span class="hljs-comment">// 每个 tab 相当于多少个空格（默认 2）</span></span><br><span class="line">  useTabs: <span class="hljs-literal">false</span>,             <span class="hljs-comment">// 是否使用 tab 进行缩进（默认 false）</span></span><br><span class="line">  singleQuote: <span class="hljs-literal">true</span>,          <span class="hljs-comment">// 使用单引号（默认 false）</span></span><br><span class="line">  semi: <span class="hljs-literal">true</span>,                 <span class="hljs-comment">// 声明结尾使用分号（默认 true）</span></span><br><span class="line">  trailingComma: <span class="hljs-string">'es5'</span>,       <span class="hljs-comment">// 多行使用拖尾逗号（默认 none），es5 表示只针对对象或数组才使用</span></span><br><span class="line">  bracketSpacing: <span class="hljs-literal">true</span>,       <span class="hljs-comment">// 对象字面量的大阔好间使用空格（默认 true）</span></span><br><span class="line">  jsxBracketSameLine: <span class="hljs-literal">false</span>,  <span class="hljs-comment">// 多行 jsx 中的 &gt; 放置在最后一行的结尾，而不是另起一行（默认 false）</span></span><br><span class="line">  arrowParens: <span class="hljs-string">'avoid'</span>,       <span class="hljs-comment">// 只有一个参数的箭头函数的参数是否带圆括号（默认 avoid）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>当我们当项目规模变大，或者我们在写一些通用组件的时候，我们肯定需要实现一些测试，避免一些新的调整影响到了之前的代码，下面我们就来看看如何在 <code>Vite</code> 项目当中配置测试</p>
+<p>这里我们采用的是 <code>jest</code> 测试框架和针对于组件测试的 <code>@vue/test-utils</code>，我们先来看看需要安装哪些依赖，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="hljs-string">"jest"</span>: <span class="hljs-string">"^24.0.0"</span>,                  <span class="hljs-comment">// 包括测试运行库和断言库</span></span><br><span class="line">  <span class="hljs-string">"vue-jest"</span>: <span class="hljs-string">"^5.0.0-alpha.3"</span>,       <span class="hljs-comment">// 测试组件</span></span><br><span class="line">  <span class="hljs-string">"babel-jest"</span>: <span class="hljs-string">"^26.1.0"</span>,            <span class="hljs-comment">// 语法转换</span></span><br><span class="line">  <span class="hljs-string">"@babel/preset-env"</span>: <span class="hljs-string">"^7.10.4"</span>,     <span class="hljs-comment">// 配合 babel 转换</span></span><br><span class="line">  <span class="hljs-string">"@vue/test-utils"</span>: <span class="hljs-string">"^2.0.0-beta.9"</span>  <span class="hljs-comment">// 测试套件</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>依赖安装完成以后我们还需要配置 <code>babel.config.js</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">module</span>.exports = &#123;</span><br><span class="line">  presets: [</span><br><span class="line">    [</span><br><span class="line">      <span class="hljs-string">'@babel/preset-env'</span>, &#123;</span><br><span class="line">        targets: &#123;</span><br><span class="line">          node: <span class="hljs-string">'current'</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后再来配置 <code>jest.config.js</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">module</span>.exports = &#123;</span><br><span class="line">  testEnvironment: <span class="hljs-string">'jsdom'</span>,</span><br><span class="line">  <span class="hljs-comment">// 转换</span></span><br><span class="line">  transform: &#123;</span><br><span class="line">    <span class="hljs-string">'^.+\\.vue$'</span>: <span class="hljs-string">'vue-jest'</span>,</span><br><span class="line">    <span class="hljs-string">'^.+\\js$'</span>: <span class="hljs-string">'babel-jest'</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  moduleFileExtensions: [<span class="hljs-string">'vue'</span>, <span class="hljs-string">'js'</span>, <span class="hljs-string">'json'</span>, <span class="hljs-string">'jsx'</span>, <span class="hljs-string">'ts'</span>, <span class="hljs-string">'tsx'</span>, <span class="hljs-string">'node'</span>],</span><br><span class="line">  testMatch: [<span class="hljs-string">'**/tests/**/*.spec.js'</span>, <span class="hljs-string">'**/__tests__/**/* .spec.js'</span>],</span><br><span class="line">  moduleNameMapper: &#123;</span><br><span class="line">    <span class="hljs-string">'^main(.*)$'</span>: <span class="hljs-string">'&lt;rootDir&gt;/src$1'</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动脚本为</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// runInBand 代表按照序列的方式来执行</span></span><br><span class="line"><span class="hljs-string">"test"</span>: <span class="hljs-string">"jest --runInBand"</span></span><br></pre></td></tr></table></figure>
+
+<p>最后就是我们的测试代码，因为我们在上面配置了测试目录，所以我们直接将其放置在 <code>tests/example.spec.js</code> 目录下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> HelloWorld <span class="hljs-keyword">from</span> <span class="hljs-string">'main/components/HelloWorld.vue'</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; shallowMount &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'vue/test-utils'</span></span><br><span class="line"></span><br><span class="line">describe(<span class="hljs-string">'aaa'</span>, () =&gt; &#123;</span><br><span class="line">  test(<span class="hljs-string">'should'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> wrapper = shallowMount(HelloWorld, &#123;</span><br><span class="line">      props: &#123;</span><br><span class="line">        msg: <span class="hljs-string">'hello, vue3'</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;)</span><br><span class="line">    expect(wrapper.text()).toMatch(<span class="hljs-string">'hello, vue3'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>另外需要注意的就是我们还需要在 <code>lint</code> 配置当中添加 <code>jest</code> 环境</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">module</span>. exports = &#123;</span><br><span class="line">  env: &#123;</span><br><span class="line">    jest: <span class="hljs-literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成以后就可以来执行我们的测试代码了</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run test</span><br></pre></td></tr></table></figure>
+
+<p>但是这样我们每次都需要手动执行命令来进行测试，所以我们可以将 <code>lint</code>，<code>test</code> 和 <code>git</code> 挂钩起来，让其每次在提交代码之前自动执行测试，首先我们需要来安装两个插件</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install lint-staged yorkie -D</span><br></pre></td></tr></table></figure>
+
+<p>接着需要在 <code>package.json</code> 当中添加配置</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// yorkie 的配置项，监控我们的提交</span></span><br><span class="line"><span class="hljs-comment">// commit 之前执行 lint-staged，也就是代码检查</span></span><br><span class="line"><span class="hljs-comment">// push 之前去执行我们的测试</span></span><br><span class="line"><span class="hljs-string">"gitHooks"</span>: &#123;</span><br><span class="line">  <span class="hljs-string">"pre-commit"</span>: <span class="hljs-string">"lint-staged"</span>,</span><br><span class="line">  <span class="hljs-string">"pre-push"</span>: <span class="hljs-string">"npm run test"</span></span><br><span class="line">&#125;,</span><br><span class="line"><span class="hljs-string">"lint-staged"</span>: &#123;</span><br><span class="line">  <span class="hljs-string">"*.&#123;js, vue&#125;"</span>: <span class="hljs-string">"eslint"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，在我们提交代码之前就会自动的执行检查与测试，只有全部通过以后才会正常的提交</p>
+<h2 id="TypeScript-的整合"><a href="#TypeScript-的整合" class="headerlink" title="TypeScript 的整合"></a>TypeScript 的整合</h2><p>其实在 <code>Vite</code> 当中我们是可以直接导入 <code>.ts</code> 的文件来进行使用的，即直接在模版文件当中通过添加 <code>&lt;script lang=&quot;ts&quot;&gt;</code> 来进行使用，如下</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span></span><br><span class="line">      <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">"item in list"</span> <span class="hljs-attr">:key</span>=<span class="hljs-string">"item.id"</span>&gt;</span>&#123;&#123; item.name &#125;&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"ts"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-javascript"><span class="hljs-keyword">import</span> &#123; defineComponent, ref &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'vue'</span></span></span><br><span class="line"></span><br><span class="line">interface Course &#123;</span><br><span class="line">  id: number,</span><br><span class="line">  name: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> defineComponent(&#123;</span></span><br><span class="line">  setup() &#123;</span><br><span class="line"><span class="hljs-javascript">    <span class="hljs-keyword">const</span> list = ref&lt;Course[]&gt;([])</span></span><br><span class="line"><span class="hljs-javascript">    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span></span><br><span class="line">      list.value.push(&#123;</span><br><span class="line">        id: 1,</span><br><span class="line"><span class="hljs-javascript">        name: <span class="hljs-string">'hello'</span></span></span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;, 1000);</span><br><span class="line"><span class="hljs-javascript">    <span class="hljs-keyword">return</span> &#123; list &#125;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>另外在我们使用过程当中，最好指定一下 <code>TypeScript</code> 的版本号</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="hljs-string">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="hljs-string">"typescript"</span>: <span class="hljs-string">"^3.9.7"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在加上 <code>TypeScript</code> 的相关配置即可</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="hljs-string">"compilerOptions"</span>: &#123;</span><br><span class="line">    <span class="hljs-string">"target"</span>: <span class="hljs-string">"esnext "</span>,</span><br><span class="line">    <span class="hljs-string">"module"</span>: <span class="hljs-string">"esnext"</span>,</span><br><span class="line">    <span class="hljs-string">"moduleResolution"</span>: <span class="hljs-string">"node"</span>,</span><br><span class="line">    <span class="hljs-string">"isolatedModules"</span>: <span class="hljs-literal">true</span>,</span><br><span class="line">    <span class="hljs-string">"strict"</span>: <span class="hljs-literal">true</span>,</span><br><span class="line">    <span class="hljs-string">"noUnusedLocals"</span>: <span class="hljs-literal">true</span>,</span><br><span class="line">    <span class="hljs-string">"noUnusedParameters"</span>: <span class="hljs-literal">true</span>,</span><br><span class="line">    <span class="hljs-string">"experimentalDecorators"</span>: <span class="hljs-literal">true</span>,</span><br><span class="line">    <span class="hljs-string">"lib"</span>: [<span class="hljs-string">"dom"</span>, <span class="hljs-string">"esnext"</span>]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="hljs-string">"exclude"</span>: [<span class="hljs-string">"node_modules"</span>, <span class="hljs-string">"dist"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="项目配置"><a href="#项目配置" class="headerlink" title="项目配置"></a>项目配置</h2><p>对于使用 <code>Vite</code> 构建的项目，我们只需要在项目的根目录下添加 <code>vite.config.js</code> 文件，即可针对项目进行深度配置，下面我们就来看看如何使用</p>
+<h4 id="定义别名"><a href="#定义别名" class="headerlink" title="定义别名"></a>定义别名</h4><p>我们通常在导入组件的时候，可能会像下面这样使用</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> HelloWorld <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/HelloWorld.vue'</span></span><br></pre></td></tr></table></figure>
+
+<p>但在这样操作可能会出现大量相对路径，非常的不优雅和容易出错，所以我们可以通过导入别名的方式来进行简化，首先我们先来配置我们的 <code>vite.config.js</code>，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">module</span>.exports = &#123;</span><br><span class="line">  alias: &#123;</span><br><span class="line">    <span class="hljs-comment">// 路径映射必须以 / 开头和结尾</span></span><br><span class="line">    <span class="hljs-string">"/comps/"</span>: path.resolve(__dirname, <span class="hljs-string">"src/components"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如上面的配置就表示我们给 <code>src/components</code> 进行别名定义，这样一来我们在导入组件的时候就可以直接使用别名当中定义的方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 配置之前</span></span><br><span class="line"><span class="hljs-keyword">import</span> HelloWorld <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/HelloWorld.vue'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 配置之后</span></span><br><span class="line"><span class="hljs-keyword">import</span> HelloWorld <span class="hljs-keyword">from</span> <span class="hljs-string">'/comps/HelloWorld.vue'</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="代理配置"><a href="#代理配置" class="headerlink" title="代理配置"></a>代理配置</h4><p>下面我们再来看看代理服务器的配置，这个也是使用较多的一个配置，配置如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">proxy: &#123;</span><br><span class="line">  <span class="hljs-string">'/api'</span>: &#123;</span><br><span class="line">    target: <span class="hljs-string">'http://paoxy.com'</span>,</span><br><span class="line">    changeOrigin: <span class="hljs-literal">true</span>,</span><br><span class="line">    <span class="hljs-comment">// 使用对象方式进行配置也可</span></span><br><span class="line">    rewrite: <span class="hljs-function"><span class="hljs-params">path</span> =&gt;</span> path.replace(<span class="hljs-regexp">/^\/api/</span>, <span class="hljs-string">''</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用也很简单</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fetch(<span class="hljs-string">'/api/users'</span>)</span><br><span class="line">  .then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> res.json())</span><br><span class="line">  .then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(data))</span><br></pre></td></tr></table></figure>
+
+<h4 id="数据配置"><a href="#数据配置" class="headerlink" title="数据配置"></a>数据配置</h4><p>我们通常在开发过程当中会使用 <code>mock</code> 来进行数据模拟，下面我们来看看如何配置，首先安装依赖</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm i mockjs -S</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 因为需要安装环境变量，所以我们加上 cross-env 这个库</span></span><br><span class="line">npm i vite-plugin-mock cross-env -D</span><br></pre></td></tr></table></figure>
+
+<p>依赖安装完成以后，我们就可以在我们的 <code>vite.config.js</code> 当中来进行插件配置</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> &#123; createMockServer &#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vite-plugin-mock'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    createMockServer(&#123;</span><br><span class="line">      <span class="hljs-comment">// 由于该库默认支持 TS，所以项目不是使用 TS 开发的话就将其关掉</span></span><br><span class="line">      <span class="hljs-comment">// 如果项目使用 TS 开发则无需配置这项</span></span><br><span class="line">      supportTs: <span class="hljs-literal">false</span></span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在 <code>package.json</code> 当中进行环境变量的配置，这个算是一个小坑，需要注意</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="hljs-string">"dev"</span>: <span class="hljs-string">"cross-env NODE_ENV=development vite"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>最后就可以来定义我们的 <code>mock</code> 数据了</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// mock/test.js</span></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> [</span><br><span class="line">  &#123;</span><br><span class="line">    url: <span class="hljs-string">'/api/users'</span>,</span><br><span class="line">    method: <span class="hljs-string">'GET'</span>,</span><br><span class="line">    response: <span class="hljs-function"><span class="hljs-params">req</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> &#123;</span><br><span class="line">        code: <span class="hljs-number">0</span>,</span><br><span class="line">        data: [</span><br><span class="line">          &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">'zhangsan'</span> &#125;,</span><br><span class="line">          &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">'lisi'</span> &#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    url: <span class="hljs-string">'/api/post'</span>,</span><br><span class="line">    method: <span class="hljs-string">'POST'</span>,</span><br><span class="line">    timeout: <span class="hljs-number">2000</span>,</span><br><span class="line">    response: &#123;</span><br><span class="line">      code: <span class="hljs-number">0</span>,</span><br><span class="line">      data: &#123;</span><br><span class="line">        name: <span class="hljs-string">'zhangsan'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>然后重启我们的服务，这时就可以在控制台当中看到以下信息</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[vite: mock-server]: request invoke: <span class="hljs-regexp">/api/u</span>sers</span><br></pre></td></tr></table></figure>
+
+<p>说明此时已经检测到了我们的 <code>mock</code> 数据，这时我们就可以在浏览器当中来验证我们的数据了</p>
+<h4 id="模式和环境变量"><a href="#模式和环境变量" class="headerlink" title="模式和环境变量"></a>模式和环境变量</h4><p>我们在使用模式做多环境配置的时候，<code>vite serve</code> 的模式默认是 <code>development</code>，而 <code>vite build</code> 的时候则是 <code>production</code>，所以我们可以针对开发环境来创建对应的配置文件，我们可以在根目录当中创建一个名为 <code>.emv.development</code> 的文件，其中包括的内容如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 需要注意的是，需要在前面添加 VITE_ 才可以在代码中去使用这个变量</span></span><br><span class="line">VITE_TOKEN = <span class="hljs-keyword">this</span> is token</span><br></pre></td></tr></table></figure>
+
+<p>这样在代码中我们就可以来使用它了，测试如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">import</span>.meta.env.VITE_TOKEN)</span><br></pre></td></tr></table></figure>
+
+<p>类似这样的方式我们还可以去配置 <code>.emv.production</code> 文件，这时候两种不同的配置就可以分别在这两种环境下生效</p>
+<h2 id="打包和部署"><a href="#打包和部署" class="headerlink" title="打包和部署"></a>打包和部署</h2><p>打包的话很简单，直接执行如下命令即可</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+
+<p>这里我们主要来看看部署方面的内容，当然我们可以使用类似 <code>FTP</code>，<code>SSH</code> 等工具直接连接到我们的服务器，然后将打包后的 <code>dist</code> 文件传上去即可，但是这里我们来看看如何使用自动化处理流程来避免前面的那些繁琐的操作，这里我们主要采用的是 <code>GitHub</code> 的 <code>Actions</code> 来实现 <code>CI/CD</code> 的过程</p>
+<p><code>GitHub Actions</code> 可以让我们在 <code>GitHub</code> 仓库中直接创建自定义的软件开发生命周期工作流程，如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/vue/06-01.png" alt></p>
+<p>待续</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Vue/">Vue</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2021/03/28/React/20/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">自定义 Hook</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2021/01/10/JavaScript/59/">
+                <span class="level-item">在 React 当中使用 TypeScript</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '12d772bff2d84260c5b83062f23f0573',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#什么是-Vite">
+        <span class="has-mr-6">1</span>
+        <span>什么是 Vite</span>
+        </a></li><li>
+        <a class="is-flex" href="#代码组织方式">
+        <span class="has-mr-6">2</span>
+        <span>代码组织方式</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#小结">
+        <span class="has-mr-6">2.1</span>
+        <span>小结</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#资源加载">
+        <span class="has-mr-6">3</span>
+        <span>资源加载</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#CSS-文件导入">
+        <span class="has-mr-6">3.1</span>
+        <span>CSS 文件导入</span>
+        </a></li><li>
+        <a class="is-flex" href="#CSS-Module">
+        <span class="has-mr-6">3.2</span>
+        <span>CSS Module</span>
+        </a></li><li>
+        <a class="is-flex" href="#PostCSS">
+        <span class="has-mr-6">3.3</span>
+        <span>PostCSS</span>
+        </a></li><li>
+        <a class="is-flex" href="#资源-URL-处理">
+        <span class="has-mr-6">3.4</span>
+        <span>资源 URL 处理</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#eslint">
+        <span class="has-mr-6">4</span>
+        <span>eslint</span>
+        </a></li><li>
+        <a class="is-flex" href="#测试">
+        <span class="has-mr-6">5</span>
+        <span>测试</span>
+        </a></li><li>
+        <a class="is-flex" href="#TypeScript-的整合">
+        <span class="has-mr-6">6</span>
+        <span>TypeScript 的整合</span>
+        </a></li><li>
+        <a class="is-flex" href="#项目配置">
+        <span class="has-mr-6">7</span>
+        <span>项目配置</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#定义别名">
+        <span class="has-mr-6">7.1</span>
+        <span>定义别名</span>
+        </a></li><li>
+        <a class="is-flex" href="#代理配置">
+        <span class="has-mr-6">7.2</span>
+        <span>代理配置</span>
+        </a></li><li>
+        <a class="is-flex" href="#数据配置">
+        <span class="has-mr-6">7.3</span>
+        <span>数据配置</span>
+        </a></li><li>
+        <a class="is-flex" href="#模式和环境变量">
+        <span class="has-mr-6">7.4</span>
+        <span>模式和环境变量</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#打包和部署">
+        <span class="has-mr-6">8</span>
+        <span>打包和部署</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Vite 的工程化流程" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

@@ -1,0 +1,2385 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>HTTP 查漏补缺 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="本章记录的是一些 HTTP 相关内容的补充，偏向于查漏补缺，主要是一些平常遇到或是看到过的知识点，面试题之类的，在这里简单的整理汇总一下，一方面补充些专业知识，另一方面也是方便以后查询或是复习，更多相关内容可以参考 前端知识体系整理">
+<meta name="keywords" content="HTTP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP 查漏补缺">
+<meta property="og:url" content="http://yoursite.com/2020/09/19/HTTP/13/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="本章记录的是一些 HTTP 相关内容的补充，偏向于查漏补缺，主要是一些平常遇到或是看到过的知识点，面试题之类的，在这里简单的整理汇总一下，一方面补充些专业知识，另一方面也是方便以后查询或是复习，更多相关内容可以参考 前端知识体系整理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/13.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP 查漏补缺">
+<meta name="twitter:description" content="本章记录的是一些 HTTP 相关内容的补充，偏向于查漏补缺，主要是一些平常遇到或是看到过的知识点，面试题之类的，在这里简单的整理汇总一下，一方面补充些专业知识，另一方面也是方便以后查询或是复习，更多相关内容可以参考 前端知识体系整理">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/13.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="HTTP 查漏补缺" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/13.webp" alt="HTTP 查漏补缺">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2020-09-19</div>
+                <!-- <time class="level-item has-text-grey" datetime="2020-09-18T16:00:00.000Z">2020-09-19</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/HTTP/">HTTP</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    2 小时 读完 (大约 19729 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                HTTP 查漏补缺
+            
+        </h1>
+        <div class="content">
+            <p>本章记录的是一些 <code>HTTP</code> 相关内容的补充，偏向于查漏补缺，主要是一些平常遇到或是看到过的知识点，面试题之类的，在这里简单的整理汇总一下，一方面补充些专业知识，另一方面也是方便以后查询或是复习，更多相关内容可以参考 <a href="https://heptaluan.github.io/target/" target="_blank" rel="noopener">前端知识体系整理</a></p>
+<a id="more"></a>
+
+
+<h2 id="HTTP-协议优缺点"><a href="#HTTP-协议优缺点" class="headerlink" title="HTTP 协议优缺点"></a>HTTP 协议优缺点</h2><ul>
+<li><code>HTTP</code> 特点<ul>
+<li>灵活可扩展，一个是语法上只规定了基本格式，空格分隔单词，换行分隔字段等，另外一个就是传输形式上不仅可以传输文本，还可以传输图片，视频等任意数据</li>
+<li>请求/响应 模式，通常而言，就是一方发送消息，另外一方要接受消息，或者是做出相应等</li>
+<li>可靠传输，<code>HTTP</code> 是基于 <code>TCP/IP</code>，<code>TCP</code> 提供可靠的字节流服务，<code>IP</code> 协议的作用是把各种数据传送给对方</li>
+</ul>
+</li>
+<li><code>HTTP</code> 缺点<ul>
+<li>无连接，限制每次连接只处理一个请求，服务器处理完客户的请求，并收到客户的应答后，即断开连接</li>
+<li>无状态，对于事务处理没有记忆能力，即服务器不知道客户端是什么状态</li>
+<li>明文传输，协议里的报文不使用二进制数据，而是文本形式，这让 <code>HTTP</code> 的报文信息暴露给了外界，给攻击者带来了便利</li>
+<li>队头阻塞，当 <code>HTTP</code> 开启长连接时，共用一个 <code>TCP</code> 连接，当某个请求时间过长时，其他的请求只能处于阻塞状态，这就是队头阻塞问题</li>
+</ul>
+</li>
+</ul>
+<h2 id="HTTP-协议各版本差异"><a href="#HTTP-协议各版本差异" class="headerlink" title="HTTP 协议各版本差异"></a>HTTP 协议各版本差异</h2><ul>
+<li><code>HTTP/0.9</code><ul>
+<li><code>1991</code> 年发布的原型版本，功能简陋，只有一个命令 <code>GET</code>，只支持纯文本内容</li>
+</ul>
+</li>
+<li><code>HTTP/1.0</code><ul>
+<li>任何格式的内容都可以发送，另外还引入了 <code>POST</code> 命令和 <code>HEAD</code> 命令</li>
+<li><code>HTTP</code> 请求和回应的格式改变，除了数据部分，每次通信都必须包括头信息，用来描述一些元数据</li>
+<li>只使用请求头中的 <code>If-Modified-Since</code> 和 <code>Expires</code> 字段作为缓存失效的标准</li>
+<li>不支持断点续传，也就是说，每次都会传送全部的页面和数据</li>
+<li>通常每台计算机只能绑定一个 <code>IP</code>，所以请求消息中的 <code>URL</code> 并没有传递主机名</li>
+</ul>
+</li>
+<li><code>HTTP/1.1</code><ul>
+<li>引入了持久连接<ul>
+<li><code>TCP</code> 连接默认不关闭，可以被多个请求复用，不用声明 <code>Connection: keep-alive</code>，长连接的连接时长可以通过请求头中的 <code>keep-alive</code> 来设置</li>
+</ul>
+</li>
+<li>引入了管线机制（<code>Pipelining</code>）<ul>
+<li>在同一个 <code>TCP</code> 连接里，客户端可以同时发送多个请求</li>
+</ul>
+</li>
+<li>新增缓存控制标头<ul>
+<li>添加了 <code>E-tag</code>，<code>If-Unmodified-Since</code>，<code>If-Match</code>，<code>If-None-Match</code> 等缓存控制标头来控制缓存失效</li>
+</ul>
+</li>
+<li>支持断点续传<ul>
+<li>通过使用请求头中的 <code>Range</code> 来实现</li>
+</ul>
+</li>
+<li>使用了虚拟网络<ul>
+<li>在一台物理服务器上可以存在多个虚拟主机，并且它们共享一个 <code>IP</code> 地址</li>
+</ul>
+</li>
+<li>新增方法 <code>PUT</code>、<code>PATCH</code>、<code>OPTIONS</code>、<code>DELETE</code></li>
+</ul>
+</li>
+<li><code>HTTP/2</code><ul>
+<li>二进制分帧<ul>
+<li>采用二进制格式，这样报文格式就被拆分为一个个乱序的二进制帧，用 <code>Headers</code> 帧存放头部字段，<code>Data</code> 帧存放请求体数据等，因为不需要排队等待，一定程度上解决了队头阻塞问题</li>
+</ul>
+</li>
+<li>头部压缩<ul>
+<li><code>HTTP/1.1</code> 版本会出现 <code>User-Agent/Cookie/Accept/Server/Range</code> 等字段可能会占用几百甚至几千字节，而 <code>Body</code> 却经常只有几十字节，导致头部偏重，<code>HTTP/2</code> 使用 <code>HPACK</code> 算法进行压缩</li>
+</ul>
+</li>
+<li>多路复用<ul>
+<li>复用 <code>TCP</code> 连接，在一个连接里，客户端和浏览器都可以同时发送多个请求或回应，且不用按顺序一一对应，一定程度上解决了队头阻塞的问题</li>
+</ul>
+</li>
+<li>服务器推送<ul>
+<li>允许服务器未经请求，主动向客户端发送资源，即服务器推送</li>
+</ul>
+</li>
+<li>请求优先级<ul>
+<li>可以设置数据帧的优先级，让服务端先处理重要资源，优化用户体验</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>HTTP/3</code><ul>
+<li><code>QUIC</code> 协议<ul>
+<li>运行在 <code>QUIC</code> 之上的 <code>HTTP</code> 协议被称为 <code>HTTP/3</code>，<code>QUIC</code> 协议基于 <code>UDP</code> 实现，同时也整合了 <code>TCP</code>、<code>TLS</code> 和 <code>HTTP/2</code> 的优点，并加以优化</li>
+</ul>
+</li>
+<li>零 <code>RTT</code> 建立连接<ul>
+<li>首次连接只需要 <code>1 RTT</code>，后面的连接更是只需 <code>0 RTT</code>，意味着客户端发给服务端的第一个包就带有请求数据</li>
+</ul>
+</li>
+<li>连接迁移<ul>
+<li><code>QUIC</code> 连接不以四元组（源 <code>IP</code>、源端口、目的 <code>IP</code>、目的端口）作为标识，而是使用一个 <code>64</code> 位的随机数，这个随机数被称为 <code>Connection ID</code>，即使 <code>IP</code> 或者端口发生变化，只要 <code>Connection ID</code> 没有变化，那么连接依然可以维持</li>
+</ul>
+</li>
+<li>多路复用<ul>
+<li><code>QUIC</code> 的传输单元是 <code>Packet</code>，加密单元也是 <code>Packet</code>，整个加密、传输、解密都基于 <code>Packet</code>，这样就能避免 <code>TLS</code> 的队头阻塞问题</li>
+<li><code>QUIC</code> 基于 <code>UDP</code>，<code>UDP</code> 的数据包在接收端没有处理顺序，即使中间丢失一个包，也不会阻塞整条连接，其他的资源会被正常处理</li>
+</ul>
+</li>
+<li>改进的拥塞控制<ul>
+<li>热插拔，<code>TCP</code> 中如果要修改拥塞控制策略，需要在系统层面进行操作，<code>QUIC</code> 修改拥塞控制策略只需要在应用层操作，并且 <code>QUIC</code> 会根据不同的网络环境、用户来动态选择拥塞控制算法</li>
+<li>前向纠错 <code>FEC</code>，使用前向纠错（<code>FEC</code>，<code>Forward Error Correction</code>）技术增加协议的容错性，一段数据被切分为 <code>10</code> 个包后，依次对每个包进行异或运算，运算结果会作为 <code>FEC</code> 包与数据包一起被传输，如果不幸在传输过程中有一个数据包丢失，那么就可以根据剩余 <code>9</code> 个包以及 <code>FEC</code> 包推算出丢失的那个包的数据</li>
+<li>单调递增的 <code>Packet Number</code>，与 <code>TCP</code> 的 <code>Sequence Number</code> 不同的是，<code>Packet Number</code> 严格单调递增，如果 <code>Packet N</code> 丢失了，那么重传时 <code>Packet</code> 的标识不会是 <code>N</code>，而是比 <code>N</code> 大的数字，比如 <code>N + M</code>，这样发送方接收到确认消息时就能方便地知道 <code>ACK</code> 对应的是原始请求还是重传请求</li>
+<li>更多的 <code>ACK</code> 块，<code>QUIC</code> 最多可以捎带 <code>256</code> 个 <code>ACK block</code>，在丢包率比较严重的网络下，更多的 <code>ACK block</code> 可以减少重传量，提升网络效率</li>
+</ul>
+</li>
+<li>流量控制<ul>
+<li><code>TCP</code> 会对每个 <code>TCP</code> 连接进行流量控制，而 <code>QUIC</code> 只需要建立一条连接，在这条连接上同时传输多条 <code>Stream</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="队头阻塞问题"><a href="#队头阻塞问题" class="headerlink" title="队头阻塞问题"></a>队头阻塞问题</h2><p>关于队头阻塞问题，其实在整理 <code>HTTP/1.1</code>，<code>HTTP/2</code> 和 <code>HTTP/3</code> 相关内容的时候都有所涉及，但是可能是东一点西一点分散在各处，所以在这里就简单的汇总和梳理一下</p>
+<h4 id="什么是队头阻塞？"><a href="#什么是队头阻塞？" class="headerlink" title="什么是队头阻塞？"></a>什么是队头阻塞？</h4><p>对于每一个 <code>HTTP</code> 请求而言，这些任务是会被放入一个任务队列中串行执行的，一旦队首任务请求太慢时，就会阻塞后面的请求处理，这就是 <code>HTTP</code> 队头阻塞问题，队头阻塞会导致带宽无法被充分利用，以及后续健康请求被阻塞，假设有五个请求同时发出，如下图</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-01.png" alt></p>
+<p>在第一个请求没有收到回复之前，后续从应用层发出的请求只能排队，请求 <code>2，3，4，5</code> 只能等待请求 <code>1</code> 的响应回来之后才能逐个发出，网络通畅的时候性能影响不大，一旦请求 <code>1</code> 因为什么原因没有抵达服务器，或者响应因为网络阻塞没有及时返回，影响的就是所有后续请求</p>
+<h4 id="如何解决"><a href="#如何解决" class="headerlink" title="如何解决"></a>如何解决</h4><p>在 <code>HTTP/1.1</code> 当中，为了解决队头阻塞带来的延迟，协议设计者设计了一种新的 <code>HTTP</code> 管线化机制（<code>pipelining</code>），管线化的流程图可以用下图表示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-04.png" alt></p>
+<p>和之前相比最大的差别是，请求 <code>2，3，4，5</code> 不需要等待请求 <code>1</code> 的响应返回之后才发出，而是几乎在同一时间就把请求发向了服务器，<code>2，3，4，5</code> 及所有后续共用该连接的请求节约了等待的时间，极大的降低了整体延迟，下图可以清晰的看出这种新机制对延迟的改变</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-05.png" alt></p>
+<p>不过管线化并不是完美的，它也存在不少缺陷</p>
+<ul>
+<li>管线化只能适用于 <code>HTTP/1.1</code> ，一般来说，支持 <code>HTTP/1.1</code> 的服务端都要求支持管线化</li>
+<li>只有幂等的请求（<code>GET</code>，<code>HEAD</code>）能使用管线化，非幂等请求比如 <code>POST</code> 不能使用，因为请求之间可能会存在先后依赖关系</li>
+<li>队头阻塞并没有完全得到解决，服务端的响应还是要求依次返回，遵循 <code>FIFO</code>（<code>first in first out</code>）原则，也就是说如果请求 <code>1</code> 的响应没有回来，<code>2，3，4，5</code> 的响应也不会被送回来</li>
+<li>绝大部分的 <code>HTTP</code> 代理服务器不支持管线化</li>
+</ul>
+<p>正是因为有这么多的问题，各大浏览器厂商要么是根本就不支持管线化，要么就是默认关掉了管线化机制，而且启用的条件十分苛刻，可以参考 <code>Chrome</code> 对于管线化的 <a href="https://www.chromium.org/developers/design-documents/network-stack/http-pipelining" target="_blank" rel="noopener">问题描述</a></p>
+<p>接下来，在 <code>HTTP/2</code> 当中提出了多路复用（<code>multiplexing</code>）的解决方案（源自 <code>SPDY</code>），多路复用允许同时通过单一的 <code>HTTP/2</code> 连接发起多重的 请求/响应 消息，众所周知在 <code>HTTP/1.1</code> 协议中，浏览器客户端在同一时间，针对同一域名下的请求有一定数量限制，超过限制数目的请求会被阻塞，也就是如果想并发多个请求，必须使用多个 <code>TCP</code> 链接</p>
+<p>这也是为何一些站点会有多个静态资源 <code>CDN</code> 域名的原因之一，目的就是变相的解决浏览器针对同一域名的请求限制阻塞问题，而 <code>HTTP/2</code> 的多路复用（<code>Multiplexing</code>）则允许同时通过单一的 <code>HTTP/2</code> 连接发起多重的 请求/响应 消息</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/11-15.png" alt></p>
+<p>因此 <code>HTTP/2</code> 可以很容易的去实现多流并行而不用依赖建立多个 <code>TCP</code> 连接，<code>HTTP/2</code> 把 <code>HTTP</code> 协议通信的基本单位缩小为一个一个的帧，这些帧对应着逻辑流中的消息，并行地在同一个 <code>TCP</code> 连接上双向交换消息</p>
+<p><code>HTTP/2</code> 虽然可以解决请求这个粒度的阻塞，但 <code>HTTP/2</code> 的基础 <code>TCP</code> 协议本身却也存在着队头阻塞的问题，<code>HTTP/2</code> 的每个请求都会被拆分成多个 <code>Frame</code>，不同请求的 <code>Frame</code> 组合成 <code>Stream</code>，<code>Stream</code> 是 <code>TCP</code> 上的逻辑传输单元，这样 <code>HTTP/2</code> 就达到了一条连接同时发送多条请求的目标，这就是多路复用的原理</p>
+<p>我们看一个例子，在一条 <code>TCP</code> 连接上同时发送 <code>4</code> 个 <code>Stream</code>，其中 <code>Stream1</code> 已正确送达，<code>Stream2</code> 中的第 <code>3</code> 个 <code>Frame</code> 丢失，<code>TCP</code> 处理数据时有严格的前后顺序，先发送的 <code>Frame</code> 要先被处理，这样就会要求发送方重新发送第 <code>3</code> 个 <code>Frame</code>，<code>Stream3</code> 和 <code>Stream4</code> 虽然已到达但却不能被处理，那么这时整条连接都被阻塞</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/12-09.png" alt></p>
+<p>不仅如此，由于 <code>HTTP/2</code> 必须使用 <code>HTTPS</code>，而 <code>HTTPS</code> 使用的 <code>TLS</code> 协议也存在队头阻塞问题，<code>TLS</code> 基于 <code>Record</code> 组织数据，将一堆数据放在一起（即一个 <code>Record</code>）加密，加密完后又拆分成多个 <code>TCP</code> 包传输，一般每个 <code>Record</code> 有 <code>16K</code> 左右，包含 <code>12</code> 个 <code>TCP</code> 包，这样如果 <code>12</code> 个 <code>TCP</code> 包中有任何一个包丢失，那么整个 <code>Record</code> 都无法解密</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/12-10.png" alt></p>
+<p>队头阻塞会导致 <code>HTTP/2</code> 在更容易丢包的弱网络环境下比 <code>HTTP/1.1</code> 更慢，所以就有了 <code>HTTP/3</code> 当中的 <code>QUIC</code> 协议，那么 <code>QUIC</code> 是如何解决队头阻塞问题的呢？主要有两点</p>
+<ul>
+<li><code>QUIC</code> 的传输单元是 <code>Packet</code>，加密单元也是 <code>Packet</code>，整个加密、传输、解密都基于 <code>Packet</code>，这样就能避免 <code>TLS</code> 的队头阻塞问题</li>
+<li><code>QUIC</code> 基于 <code>UDP</code>，<code>UDP</code> 的数据包在接收端没有处理顺序，即使中间丢失一个包，也不会阻塞整条连接，其他的资源会被正常处理</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/12-11.png" alt></p>
+<h2 id="HTTP-数据传输"><a href="#HTTP-数据传输" class="headerlink" title="HTTP 数据传输"></a>HTTP 数据传输</h2><p>这里主要分为定长数据与不定长数据的处理，我们一个一个来看</p>
+<h4 id="定长数据"><a href="#定长数据" class="headerlink" title="定长数据"></a>定长数据</h4><p>对于定长的数据包而言，发送端在发送数据的过程中，需要设置 <code>Content-Length</code>，来指明发送数据的长度，当然如果采用 <code>Gzip</code> 压缩的话，<code>Content-Length</code> 设置的就是压缩后的传输长度，另外</p>
+<ul>
+<li><code>Content-Length</code> 如果存在并且有效的话，则必须和消息内容的传输长度完全一致，也就是说，如果过短就会截断，过长的话，就会导致超时</li>
+<li>如果采用短链接的话，直接可以通过服务器关闭连接来确定消息的传输长度</li>
+<li>那么在 <code>HTTP/1.0</code> 之前的版本中，<code>Content-Length</code> 字段可有可无，因为一旦服务器关闭连接，我们就可以获取到传输数据的长度了</li>
+<li>在 <code>HTTP/1.1</code> 版本中，如果是 <code>keep-alive</code> 的话，<code>chunked</code> 优先级高于 <code>Content-Length</code>，若是非 <code>keep-alive</code>，则跟前面情况一样，<code>Content-Length</code> 可有可无</li>
+</ul>
+<p>下面我们来看看如何设置 <code>Content-Length</code>，代码如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>).createServer()</span><br><span class="line"></span><br><span class="line">server.on(<span class="hljs-string">'request'</span>, (req, res) =&gt; &#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (req.url === <span class="hljs-string">'/index'</span>) &#123;</span><br><span class="line">    <span class="hljs-comment">// 设置数据类型    </span></span><br><span class="line">    res.setHeader(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'text/plain'</span>)</span><br><span class="line">    res.setHeader(<span class="hljs-string">'Content-Length'</span>, <span class="hljs-number">10</span>)</span><br><span class="line">    res.write(<span class="hljs-string">`使用 Content-Length 设置传输数据形式`</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="hljs-number">3000</span>, _ =&gt; &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`app is running at port 3000`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="不定长数据"><a href="#不定长数据" class="headerlink" title="不定长数据"></a>不定长数据</h4><p>现在采用最多的就是 <code>HTTP/1.1</code> 版本来完成传输数据，在保存 <code>keep-alive</code> 状态下，当数据是不定长的时候，我们需要设置新的头部字段 <code>Transfer-Encoding: chunked</code>，通过 <code>chunked</code> 机制，可以完成对不定长数据的处理，但是也有需要注意的地方</p>
+<ul>
+<li>如果头部信息中有 <code>Transfer-Encoding</code>，优先采用 <code>Transfer-Encoding</code> 里面的方法来找到对应的长度</li>
+<li>如果设置了 <code>Transfer-Encoding</code>，那么 <code>Content-Length</code> 将被忽视</li>
+<li>使用长连接的话，会持续的推送动态内容</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>).createServer()</span><br><span class="line"></span><br><span class="line">server.on(<span class="hljs-string">'request'</span>, (req, res) =&gt; &#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (req.url === <span class="hljs-string">'/index'</span>) &#123;</span><br><span class="line">    <span class="hljs-comment">// 设置数据类型    </span></span><br><span class="line">    res.setHeader(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'text/html; charset=utf8'</span>)</span><br><span class="line">    res.setHeader(<span class="hljs-string">'Content-Length'</span>, <span class="hljs-number">10</span>)</span><br><span class="line">    res.setHeader(<span class="hljs-string">'Transfer-Encoding'</span>, <span class="hljs-string">'chunked'</span>)</span><br><span class="line">    res.write(<span class="hljs-string">`使用 Content-Length 设置传输数据形式`</span>)</span><br><span class="line">    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">      res.write(<span class="hljs-string">`第一次的数据`</span>)</span><br><span class="line">    &#125;, <span class="hljs-number">1000</span>)</span><br><span class="line">    res.write(<span class="hljs-string">`----`</span>)</span><br><span class="line">    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">      res.write(<span class="hljs-string">`第二次的数据`</span>)</span><br><span class="line">      res.end()</span><br><span class="line">    &#125;, <span class="hljs-number">3000</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="hljs-number">3000</span>, _ =&gt; &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`app is running at port 3000`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="SSL-连接断开后如何恢复"><a href="#SSL-连接断开后如何恢复" class="headerlink" title="SSL 连接断开后如何恢复"></a>SSL 连接断开后如何恢复</h2><p>一共有两种方法来恢复断开的 <code>SSL</code> 连接，一种是使用 <code>Session ID</code>，一种是 <code>Session Ticket</code></p>
+<h4 id="通过-Session-ID"><a href="#通过-Session-ID" class="headerlink" title="通过 Session ID"></a>通过 Session ID</h4><p>使用 <code>Session ID</code> 的方式，每一次的会话都有一个编号，当对话中断后，下一次重新连接时，只要客户端给出这个编号，服务器如果有这个编号的记录，那么双方就可以继续使用以前的秘钥，而不用重新生成一把，目前所有的浏览器都支持这一种方法，但是这种方法有一个缺点是，<code>Session ID</code> 只能够存在一台服务器上，如果我们的请求通过负载平衡被转移到了其他的服务器上，那么就无法恢复对话</p>
+<h4 id="通过-Session-Ticket"><a href="#通过-Session-Ticket" class="headerlink" title="通过 Session Ticket"></a>通过 Session Ticket</h4><p>另一种方式是 <code>Session Ticket</code> 的方式，<code>Session Ticket</code> 是服务器在上一次对话中发送给客户的，这个 <code>Ticket</code> 是加密的，只有服务器能够解密，里面包含了本次会话的信息，比如对话秘钥和加密方法等，这样不管我们的请求是否转移到其他的服务器上，当服务器将 <code>Ticket</code> 解密以后，就能够获取上次对话的信息，就不用重新生成对话秘钥了</p>
+<h2 id="短轮询、长轮询和-WebSocket-间的区别"><a href="#短轮询、长轮询和-WebSocket-间的区别" class="headerlink" title="短轮询、长轮询和 WebSocket 间的区别"></a>短轮询、长轮询和 WebSocket 间的区别</h2><ul>
+<li>短轮询<ul>
+<li>短轮询的基本思路是，浏览器每隔一段时间向浏览器发送 <code>HTTP</code> 请求，服务器端在收到请求后，不论是否有数据更新，都直接进行响应，这种方式实现的即时通信，本质上还是浏览器发送请求，服务器接受请求的一个过程，通过让客户端不断的进行请求，使得客户端能够模拟实时地收到服务器端的数据的变化</li>
+<li>优缺点<ul>
+<li>优点是比较简单，易于理解</li>
+<li>缺点是这种方式由于需要不断的建立 <code>HTTP</code> 连接，严重浪费了服务器端和客户端的资源，当用户增加时，服务器端的压力就会变大，这是很不合理的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>长轮询<ul>
+<li>长轮询的基本思路，首先由客户端向服务器发起请求，当服务器收到客户端发来的请求后，服务器端不会直接进行响应，而是先将这个请求挂起，然后判断服务器端数据是否有更新，如果有更新，则进行响应，如果一直没有数据，则到达一定的时间限制才返回，客户端 <code>JavaScript</code> 响应处理函数会在处理完服务器返回的信息后，再次发出请求，重新建立连接</li>
+<li>优缺点<ul>
+<li>长轮询和短轮询比起来，它的优点是明显减少了很多不必要的 <code>HTTP</code> 请求次数，相比之下节约了资源</li>
+<li>长轮询的缺点在于，连接挂起也会导致资源的浪费</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>WebSocket</code><ul>
+<li><code>WebSocket</code> 是 <code>HTML5</code> 定义的一个新协议，与传统的 <code>HTTP</code> 协议不同，该协议允许由服务器主动的向客户端推送信息</li>
+<li>优缺点<ul>
+<li>优点是 <code>WebSocket</code> 是一个全双工的协议，也就是通信双方是平等的，可以相互发送消息</li>
+<li>缺点在于如果需要使用 <code>WebSocket</code> 协议，服务器端的配置比较复杂</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>至于什么是单工、半双工、全双工，区别如下表所示</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>能力</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单工</td>
+<td>信息单向传送</td>
+</tr>
+<tr>
+<td>半双工</td>
+<td>信息能双向传送，但不能同时双向传送</td>
+</tr>
+<tr>
+<td>全双工</td>
+<td>信息能够同时双向传送</td>
+</tr>
+</tbody></table>
+<h2 id="正向代理和反向代理"><a href="#正向代理和反向代理" class="headerlink" title="正向代理和反向代理"></a>正向代理和反向代理</h2><ul>
+<li>正向代理，我们常说的代理也就是指正向代理，正向代理的过程，它隐藏了真实的请求客户端，服务端不知道真实的客户端是谁，客户端请求的服务都被代理服务器代替来请求</li>
+<li>反向代理，这种代理模式下，它隐藏了真实的服务端，当我们向一个网站发起请求的时候，背后可能有成千上万台服务器为我们服务，具体是哪一台，我们不清楚，我们只需要知道反向代理服务器是谁就行，而且反向代理服务器会帮我们把请求转发到真实的服务器那里去，一般而言反向代理服务器一般用来实现负载平衡</li>
+</ul>
+<h2 id="负载平衡的两种实现方式"><a href="#负载平衡的两种实现方式" class="headerlink" title="负载平衡的两种实现方式"></a>负载平衡的两种实现方式</h2><ul>
+<li>一种是使用反向代理的方式，用户的请求都发送到反向代理服务上，然后由反向代理服务器来转发请求到真实的服务器上，以此来实现集群的负载平衡</li>
+<li>另一种是 <code>DNS</code> 的方式，<code>DNS</code> 可以用于在冗余的服务器上实现负载平衡，因为现在一般的大型网站使用多台服务器提供服务，因此一个域名可能会对应多个服务器地址，当用户向网站域名请求的时候，<code>DNS</code> 服务器返回这个域名所对应的服务器 <code>IP</code> 地址的集合，但在每个回答中，会循环这些 <code>IP</code> 地址的顺序，用户一般会选择排在前面的地址发送请求，以此将用户的请求均衡的分配到各个不同的服务器上，这样来实现负载均衡</li>
+</ul>
+<p>但是 <code>DNS</code> 的方式有一个缺点就是，由于 <code>DNS</code> 服务器中存在缓存，所以有可能一个服务器出现故障后，域名解析仍然返回的是那个 <code>IP</code> 地址，就会造成访问的问题</p>
+<h2 id="HTTP-缓存策略"><a href="#HTTP-缓存策略" class="headerlink" title="HTTP 缓存策略"></a>HTTP 缓存策略</h2><p>关于缓存策略，我们之前在 <a href="https://heptaluan.github.io/2019/11/12/HTTP/04/" target="_blank" rel="noopener">浏览器缓存机制</a> 一节当中已经详细整理过，这里我们在简单梳理一下，总的分为两种策略，即强缓存和协商缓存，下面我们一个一个来看</p>
+<h4 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h4><p>简单总结一下</p>
+<ul>
+<li>强缓存有两个相关字段，<code>Expires</code> 和 <code>Cache-Control</code></li>
+<li>分为两种情况，一种是发送 <code>HTTP</code> 请求，一种不需要发送</li>
+<li>首先检查强缓存，这个阶段不需要发送 <code>HTTP</code> 请求，通过查找不同的字段来进行，不同的 <code>HTTP</code> 版本所以不同</li>
+<li><code>HTTP/1.0</code> 版本，使用的是 <code>Expires</code>，<code>HTTP/1.1</code> 使用的是 <code>Cache-Control</code></li>
+</ul>
+<h6 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h6><p><code>Expires</code> 即过期时间，时间是相对于服务器的时间而言的，存在于服务端返回的响应头中，在这个过期时间之前可以直接从缓存里面获取数据，无需再次请求，比如下面这样</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Expires: Mon, <span class="hljs-number">29</span> Jun <span class="hljs-number">2019</span> <span class="hljs-number">11</span>:<span class="hljs-number">10</span>:<span class="hljs-number">23</span> GMT</span><br></pre></td></tr></table></figure>
+
+<p>表示该资源在 <code>2019</code> 年 <code>7</code> 月 <code>29</code> 日 <code>11:10:23</code> 过期，过期时就会重新向服务器发起请求，但是这种方式是存在一些问题的，比如服务器的时间和浏览器的时间可能并不一致，所以 <code>HTTP/1.1</code> 提出新的字段代替它</p>
+<h6 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h6><p><code>HTTP/1.1</code> 版本中，使用的就是该字段，这个字段采用的时间是过期时长，对应的是 <code>max-age</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control: max-age = <span class="hljs-number">6000</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代表该资源返回后 <code>6000</code> 秒，可以直接使用缓存，还有其他一些相关指令，使用方式可以参考上文链接，这里需要注意的几点</p>
+<ul>
+<li>当 <code>Expires</code> 和 <code>Cache-Control</code> 同时存在时，优先考虑 <code>Cache-Control</code></li>
+<li>当缓存资源失效了，也就是没有命中强缓存，接下来就进入协商缓存</li>
+</ul>
+<h4 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h4><p>强缓存失效后，浏览器在请求头中携带响应的缓存 <code>Tag</code> 来向服务器发送请求，服务器根据对应的 <code>Tag</code>，来决定是否使用缓存</p>
+<p>缓存分为两种，<code>Last-Modified</code> 和 <code>ETag</code>，两者各有优势，并不存在谁对谁有绝对的优势，这点与上面所讲的强缓存当中的两个 <code>Tag</code> 有所不同</p>
+<h6 id="Last-Modified"><a href="#Last-Modified" class="headerlink" title="Last-Modified"></a>Last-Modified</h6><p>这个字段表示的是最后修改时间，在浏览器第一次给服务器发送请求后，服务器会在响应头中加上这个字段，浏览器接收到后，如果再次请求，会在请求头中携带 <code>If-Modified-Since</code> 字段，这个字段的值也就是服务器传来的最后修改时间，服务器拿到请求头中的 <code>If-Modified-Since</code> 的字段后，其实会和这个服务器中该资源的最后修改时间对比</p>
+<ul>
+<li>如果请求头中的这个值小于最后修改时间，说明是时候更新了，返回新的资源，跟常规的 <code>HTTP</code> 请求响应的流程一样</li>
+<li>否则返回 <code>304</code>，告诉浏览器直接使用缓存</li>
+</ul>
+<h6 id="ETag"><a href="#ETag" class="headerlink" title="ETag"></a>ETag</h6><p><code>ETag</code> 是服务器根据当前文件的内容，对文件生成唯一的标识，比如 <code>MD5</code> 算法，只要里面的内容有改动，这个值就会修改，服务器通过把响应头把该字段给浏览器，浏览器接收到 <code>ETag</code> 值，会在下次请求的时候，将这个值作为 <code>If-None-Match</code> 这个字段的内容，发给服务器</p>
+<p>服务器接收到 <code>If-None-Match</code> 后，会跟服务器上该资源的 <code>ETag</code> 进行比对</p>
+<ul>
+<li>如果两者一样的话，直接返回 <code>304</code>，告诉浏览器直接使用缓存</li>
+<li>如果不一样的话，说明内容更新了，返回新的资源，跟常规的 <code>HTTP</code> 请求响应的流程一样</li>
+</ul>
+<h6 id="两者对比"><a href="#两者对比" class="headerlink" title="两者对比"></a>两者对比</h6><ul>
+<li>性能上，<code>Last-Modified</code> 优于 <code>ETag</code>，<code>Last-Modified</code> 记录的是时间点，而 <code>Etag</code> 需要根据文件的 <code>MD5</code> 算法生成对应的 <code>Hash</code> 值</li>
+<li>精度上，<code>ETag</code> 优于 <code>Last-Modified</code>，<code>ETag</code> 按照内容给资源带上标识，能准确感知资源变化，<code>Last-Modified</code> 在某些场景并不能准确感知变化，比如<ul>
+<li>编辑了资源文件，但是文件内容并没有更改，这样也会造成缓存失效</li>
+<li><code>Last-Modified</code> 能够感知的单位时间是秒，如果文件在 <code>1</code> 秒内改变了多次，那么这时候的 <code>Last-Modified</code> 并没有体现出修改了</li>
+</ul>
+</li>
+</ul>
+<p>最后，如果两种方式都支持的话，服务器会优先考虑 <code>ETag</code></p>
+<h4 id="缓存位置"><a href="#缓存位置" class="headerlink" title="缓存位置"></a>缓存位置</h4><p>下面我们来看看，如果考虑使用缓存的话，那么缓存的位置在哪里呢？其实浏览器缓存的位置的话，可以分为四种，优先级从高到低排列分别</p>
+<ul>
+<li><code>Service Worker</code></li>
+<li><code>Memory Cache</code></li>
+<li><code>Disk Cache</code></li>
+<li><code>Push Cache</code></li>
+</ul>
+<h6 id="Service-Worker"><a href="#Service-Worker" class="headerlink" title="Service Worker"></a>Service Worker</h6><p><code>Service Worker</code> 的缓存与浏览器其他内建的缓存机制不同，它可以让我们自由控制缓存哪些文件、如何匹配缓存、如何读取缓存，并且缓存是持续性的</p>
+<p><code>PWA</code> 的实现也是和这个有关，它借鉴了 <code>Web Worker</code> 思路，由于它脱离了浏览器的窗体，因此无法直接访问 <code>DOM</code>，它能完成的功能比如离线缓存、消息推送和网络代理，其中离线缓存就是 <code>Service Worker Cache</code></p>
+<h6 id="Memory-Cache"><a href="#Memory-Cache" class="headerlink" title="Memory Cache"></a>Memory Cache</h6><p>指的是内存缓存，从效率上讲它是最快的，从存活时间来讲又是最短的，当渲染进程结束后，内存缓存也就不存在了</p>
+<h6 id="Disk-Cache"><a href="#Disk-Cache" class="headerlink" title="Disk Cache"></a>Disk Cache</h6><p>存储在磁盘中的缓存，从存取效率上讲是比内存缓存慢的，优势在于存储容量和存储时长，与 <code>Memory Cache</code> 对比的话，主要的策略如下</p>
+<ul>
+<li>内容使用率高的话，文件优先进入磁盘</li>
+<li>比较大的 <code>JavaScript</code>，<code>CSS</code> 文件会直接放入磁盘，反之放入内存</li>
+</ul>
+<h6 id="Push-Cache"><a href="#Push-Cache" class="headerlink" title="Push Cache"></a>Push Cache</h6><p><code>Push Cache</code>（推送缓存）是 <code>HTTP/2</code> 中的内容，当以上三种缓存都没有命中时，它才会被使用，它只在会话（<code>Session</code>）中存在，一旦会话结束就被释放，并且缓存时间也很短暂，在 <code>Chrome</code> 浏览器中只有五分钟左右</p>
+<p>更多 <code>Push Cache</code> 更多内容可以参考 <a href="https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/" target="_blank" rel="noopener">HTTP/2 push is tougher than I thought</a></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>首先检查 <code>Cache-Control</code>，看强缓存是否可用如果可用的话，直接使用</li>
+<li>否则进入协商缓存，发送 <code>HTTP</code> 请求，服务器通过请求头中的 <code>If-Modified-Since</code> 或者 <code>If-None-Match</code> 字段检查资源是否更新资源更新，返回资源和 <code>200</code> 状态码</li>
+<li>否则返回 <code>304</code>，直接告诉浏览器直接从缓存中去资源</li>
+</ul>
+<h2 id="TCP-如何保证可靠传输"><a href="#TCP-如何保证可靠传输" class="headerlink" title="TCP 如何保证可靠传输"></a>TCP 如何保证可靠传输</h2><p><code>TCP</code> 协议保证数据传输可靠性的方式主要有以下几种方式</p>
+<ul>
+<li>校验和，<code>TCP</code> 在发送报文之前，发送方要计算校验和，收到数据后，接收方也要计算校验和，如果校验和不相等则丢弃</li>
+<li>序列号与确认应答<ul>
+<li>序列号，<code>TCP</code> 传输时将每个字节的数据都进行了编号，这就是序列号</li>
+<li>确认应答，<code>TCP</code> 传输的过程中，每次接收方收到数据后，都会对传输方进行确认应答，也就是发送 <code>ACK</code> 报文，这个 <code>ACK</code> 报文当中带有对应的确认序列号，告诉发送方，接收到了哪些数据，下一次的数据从哪里发</li>
+<li>序列号的作用不仅仅是应答的作用，有了序列号能够将接收到的数据根据序列号排序，并且去掉重复序列号的数据，这也是 <code>TCP</code> 传输可靠性的保证之一</li>
+</ul>
+</li>
+<li>超时重传，在 <code>TCP</code> 传输过程中，我们在发送一部分数据后，都会等待对方的 <code>ACK</code> 确认报文，如果中间出现差错，没有收到 <code>ACK</code> 报文，这时候需要启动超时重传机制，这种超时重传机制保证了 <code>TCP</code> 在网络延迟或者报文丢失下的可靠传输，超时的原因主要有以下两点<ul>
+<li>接收方没有收到 <code>TCP</code> 报文段，网络延迟或者丢包</li>
+<li>发送方没有收到 <code>ACK</code> 报文段，网络延迟或者 <code>ACK</code> 报文丢失</li>
+</ul>
+</li>
+<li>连接管理，连接管理就是三次握手与四次挥手的过程</li>
+<li>流量控制，流量控制的目的是让接收方来得及接收数据，这样避免了数据丢包以及网络拥塞等情况</li>
+<li>拥塞控制，拥塞控制就是防止过多的数据注入到网络中，这样使网络中的路由器或者链路不至于过载（四个核心算法，慢启动、拥塞避免、快速重传和快速恢复）</li>
+</ul>
+<h2 id="TCP-和-UDP-的区别"><a href="#TCP-和-UDP-的区别" class="headerlink" title="TCP 和 UDP 的区别"></a>TCP 和 UDP 的区别</h2><p><code>UDP</code> 协议的特点有以下这些</p>
+<ul>
+<li>面向无连接<ul>
+<li>首先 <code>UDP</code> 是不需要和 <code>TCP</code> 一样在发送数据前进行三次握手建立连接的，想发数据就可以开始发送了，并且也只是数据报文的搬运工，不会对数据报文进行任何拆分和拼接操作，具体来说就是</li>
+<li>在发送端，应用层将数据传递给传输层的 <code>UDP</code> 协议，<code>UDP</code> 只会给数据增加一个 <code>UDP</code> 头标识下是 <code>UDP</code> 协议，然后就传递给网络层了</li>
+<li>在接收端，网络层将数据传递给传输层，<code>UDP</code> 只去除 <code>IP</code> 报文头就传递给应用层，不会任何拼接操作</li>
+</ul>
+</li>
+<li>有单播，多播，广播的功能<ul>
+<li><code>UDP</code> 不止支持一对一的传输方式，同样支持一对多，多对多，多对一的方式，也就是说 <code>UDP</code> 提供了单播，多播，广播的功能</li>
+</ul>
+</li>
+<li><code>UDP</code> 是面向报文的<ul>
+<li>发送方的 <code>UDP</code> 对应用程序交下来的报文，在添加首部后就向下交付 <code>IP</code> 层，<code>UDP</code> 对应用层交下来的报文，既不合并，也不拆分，而是保留这些报文的边界，因此，应用程序必须选择合适大小的报文</li>
+</ul>
+</li>
+<li>不可靠性<ul>
+<li>首先不可靠性体现在无连接上，通信都不需要建立连接，想发就发，这样的情况肯定不可靠，并且收到什么数据就传递什么数据，并且也不会备份数据，发送数据也不会关心对方是否已经正确接收到数据了</li>
+<li>再者网络环境时好时坏，但是 <code>UDP</code> 因为没有拥塞控制，一直会以恒定的速度发送数据，即使网络条件不好，也不会对发送速率进行调整，这样实现的弊端就是在网络条件不好的情况下可能会导致丢包，但是优点也很明显，在某些实时性要求高的场景（比如电话会议）就需要使用 <code>UDP</code> 而不是 <code>TCP</code></li>
+</ul>
+</li>
+<li>头部开销小，传输数据报文时是很高效的<ul>
+<li><code>UDP</code> 头部包含了以下几个数据<ul>
+<li>两个十六位的端口号，分别为源端口（可选字段）和目标端口</li>
+<li>整个数据报文的长度</li>
+<li>整个数据报文的检验和（<code>IPv4</code> 可选 字段），该字段用于发现头部信息和数据中的错误</li>
+</ul>
+</li>
+<li>因此 <code>UDP</code> 的头部开销小，只有八字节，相比 <code>TCP</code> 的至少二十字节要少得多，在传输数据报文时是很高效的</li>
+</ul>
+</li>
+</ul>
+<p><code>TCP</code> 协议的特点有以下这些</p>
+<ul>
+<li>面向连接<ul>
+<li>面向连接，是指发送数据之前必须在两端建立连接，建立连接的方法是三次握手，这样能建立可靠的连接，建立连接，是为数据的可靠传输打下了基础</li>
+</ul>
+</li>
+<li>仅支持单播传输<ul>
+<li>每条 <code>TCP</code> 传输连接只能有两个端点，只能进行点对点的数据传输，不支持多播和广播传输方式</li>
+</ul>
+</li>
+<li>面向字节流<ul>
+<li><code>TCP</code> 不像 <code>UDP</code> 一样那样一个个报文独立地传输，而是在不保留报文边界的情况下以字节流方式进行传输</li>
+</ul>
+</li>
+<li>可靠传输<ul>
+<li>对于可靠传输，判断丢包，误码靠的是 <code>TCP</code> 的段编号以及确认号，<code>TCP</code> 为了保证报文传输的可靠，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收，然后接收端实体对已成功收到的字节发回一个相应的确认（<code>ACK</code>），如果发送端实体在合理的往返时延（<code>RTT</code>）内未收到确认，那么对应的数据（假设丢失了）将会被重传</li>
+</ul>
+</li>
+<li>提供拥塞控制<ul>
+<li>当网络出现拥塞的时候，<code>TCP</code> 能够减小向网络注入数据的速率和数量，缓解拥塞</li>
+</ul>
+</li>
+<li><code>TCP</code> 提供全双工通信<ul>
+<li><code>TCP</code> 允许通信双方的应用程序在任何时候都能发送数据，因为 <code>TCP</code> 连接的两端都设有缓存，用来临时存放双向通信的数据，当然 <code>TCP</code> 可以立即发送一个数据段，也可以缓存一段时间以便一次发送更多的数据段（最大的数据段大小取决于 <code>MSS</code>）</li>
+</ul>
+</li>
+</ul>
+<p>这里我们简单介绍一下 <code>MSS</code>，其实简单来说，就是一个网络包的最大长度，计算每个网络包能容纳的数据长度，协议栈会根据一个叫作 <code>MTU</code> 的参数来进行判断，<code>MTU</code> 表示一个网络包的最大长度，在以太网中一般是 <code>1500</code> 字节</p>
+<p><code>MTU</code> 是包含头部的总长度，因此需要从 <code>MTU</code> 减去头部的长度，然后得到的长度就是一个网络包中所能容纳的最大数据长度，这一长度叫作 <code>MSS</code></p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/10-21.png" alt></p>
+<p>下面我们再来看看 <code>TCP</code> 和 <code>UDP</code> 两者的区别，如下表</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>UDP</th>
+<th>TCP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否连接</td>
+<td>无连接</td>
+<td>面向连接</td>
+</tr>
+<tr>
+<td>是否可靠</td>
+<td>不可靠传输，不使用流量控制和拥塞控制</td>
+<td>可靠传输，使用流量控制和拥塞控制</td>
+</tr>
+<tr>
+<td>连接对象个数</td>
+<td>支持一对一，一对多，多对一和多对多交互通信</td>
+<td>只能是一对一通信</td>
+</tr>
+<tr>
+<td>传输方式</td>
+<td>面向报文</td>
+<td>面向字节流</td>
+</tr>
+<tr>
+<td>首部开销</td>
+<td>首部开销小，仅 <code>8</code> 字节</td>
+<td>首部最小 <code>20</code> 字节，最大 <code>60</code> 字节</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>适用于实时应用（<code>IP</code> 电话、视频会议、直播等）</td>
+<td>适用于要求可靠传输的应用，例如文件传输</td>
+</tr>
+</tbody></table>
+<p>简单总结就是</p>
+<ul>
+<li><code>TCP</code> 向上层提供面向连接的可靠服务，<code>UDP</code> 向上层提供无连接不可靠服务</li>
+<li>虽然 <code>UDP</code> 并没有 <code>TCP</code> 传输来的准确，但是也能在很多实时性要求高的地方有所作为</li>
+<li>对数据准确性要求高，速度可以相对较慢的，可以选用 <code>TCP</code> </li>
+</ul>
+<p>我们在上面也介绍了负责域名解析的 <code>DNS</code> 服务，那么 <code>DNS</code> 为什么使用 <code>UDP</code> 协议作为传输层协议而不是 <code>TCP</code> 呢？其实简单来说，<code>DNS</code> 使用 <code>UDP</code> 协议作为传输层协议的主要原因是为了避免使用 <code>TCP</code> 协议时造成的连接时延</p>
+<ul>
+<li>为了得到一个域名的 <code>IP</code> 地址，往往会向多个域名服务器查询，如果使用 <code>TCP</code> 协议，那么每次请求都会存在连接时延，这样使 <code>DNS</code> 服务变得很慢</li>
+<li>大多数的地址查询请求，都是浏览器请求页面时发出的，这样会造成网页的等待时间过长</li>
+</ul>
+<p>下表是使用 <code>UDP</code> 和 <code>TCP</code> 协议的各种应用和应用层协议</p>
+<table>
+<thead>
+<tr>
+<th>应用</th>
+<th>应用层协议</th>
+<th>运输层协议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>名字转换</td>
+<td><code>DNS</code>（域名系统）</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td>文件传送</td>
+<td><code>TFTP</code>（简单文件传送协议）</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td>路由选择协议</td>
+<td><code>RIP</code>（路由信息协议）</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td><code>IP</code> 地址配置</td>
+<td><code>DHCP</code>（动态主机配置协议）</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td>网络管理</td>
+<td><code>SNMP</code>（简单网络管理协议）</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td>远程文件服务器</td>
+<td><code>NFS</code>（网络文件系统）</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td><code>IP</code> 电话</td>
+<td>专用协议</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td>流式多媒体通信</td>
+<td>专用协议</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td>多播</td>
+<td><code>IGMP</code>（网际组管理协议）</td>
+<td><code>UDP</code></td>
+</tr>
+<tr>
+<td>电子邮件</td>
+<td><code>SMTP</code>（简单邮件传送协议）</td>
+<td><code>TCP</code></td>
+</tr>
+<tr>
+<td>远程终端接入</td>
+<td><code>TELNET</code>（远程终端协议）</td>
+<td><code>TCP</code></td>
+</tr>
+<tr>
+<td>万维网</td>
+<td><code>HTTP</code>（超文本传送协议）</td>
+<td><code>TCP</code></td>
+</tr>
+<tr>
+<td>文件传送</td>
+<td><code>FTP</code>（文件传送协议）</td>
+<td><code>TCP</code></td>
+</tr>
+</tbody></table>
+<h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><p><code>TCP</code> 建立连接的过程叫做握手，握手需要在客户和服务器之间交换三个 <code>TCP</code> 报文段，也叫三报文握手，之所以会有三次握手的过程，是因为需要确认双方的两样能力，即『发送的能力』和『接收的能力』</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-01.png" alt></p>
+<ul>
+<li><code>A</code> 主动打开连接，<code>B</code> 被动打开连接，<code>B</code> 先进入收听状态（<code>LISTEN</code>），<code>A</code> 打算建立 <code>TCP</code> 连接时，先向 <code>B</code> 发送连接请求报文段，其中同步位 <code>SYN = 1</code>，初始序号 <code>seq = x</code>，这个报文段不能携带数据，但是要消耗一个序号，接着 <code>A</code> 进入同步已发送状态</li>
+<li><code>B</code> 收到请求报文段，如果同意建立连接，则向 <code>A</code> 发送 <code>ACK</code> 确认报文段，其中同步位 <code>SYN = 1</code>，确认号 <code>ACK = 1</code>，初始序号 <code>seq = y</code>，确认号 <code>ack = x + 1</code>（请求报文段消耗了一个序号），这个 <code>ACK</code> 报文段也不能携带数据，但是要消耗一个序号，与此同时 <code>B</code> 进入到同步收到的状态</li>
+<li><code>A</code> 收到 <code>B</code> 的确认报文后，还要给 <code>B</code> 发送确认报文，其中 <code>ACK = 1</code>， <code>seq = x + 1</code>（上一个报文段的 <code>ack</code>），<code>ack = y + 1</code>（上一个报文段的 <code>seq + 1</code>，因为消耗了一个序号），这个 <code>ACK</code> 报文段可以携带数据，但是如果不携带数据则不会消耗序号，下一次 <code>A</code> 给 <code>B</code> 发送报文段的初始序号 <code>seq = 1</code>，此时 <code>A</code> 进入已建立连接的状态，<code>B</code> 收到确认后也进入已建立连接的状态</li>
+</ul>
+<p>从上图可以看出，<code>SYN</code> 是需要消耗一个序列号的，下次发送对应的 <code>ACK</code> 序列号要加 <code>1</code>，那么为什么会这样呢？这里只需要记住一个规则</p>
+<blockquote>
+<p>凡是需要对端确认的，一定消耗 <code>TCP</code> 报文的序列号（<code>SYN</code> 需要对端的确认，而 <code>ACK</code> 并不需要，因此 <code>SYN</code> 消耗一个序列号而 <code>ACK</code> 不需要）</p>
+</blockquote>
+<h4 id="为什么不是两次握手"><a href="#为什么不是两次握手" class="headerlink" title="为什么不是两次握手"></a>为什么不是两次握手</h4><p>其实也就是为什么需要最后一次确认？</p>
+<p>其实简单来说，这是防止已失效的连接请求报文段突然又传送到了 <code>B</code> 而引发错误，但是有可能出现异常情况，即 <code>A</code> 发送的连接请求并没有丢失，而是滞留了在网络中，如果在传输数据完成之后，这个请求又发到 <code>B</code> ，<code>B</code> 误以为 <code>A</code> 还要发送数据，因此发送确认报文，但是 <code>A</code> 没有运输需求，因此不予理睬，如果没有最后一次确认，<code>B</code> 一直等待 <code>A</code> 的确认，这样会造成的浪费</p>
+<p>采用三报文握手，如果 <code>B</code> 没有收到 <code>A</code> 的确认，则可以知道 <code>A</code> 没有建立连接的需求，就可以避免上述这种情况</p>
+<blockquote>
+<p>所谓的失效的连接请求就是 <code>A</code> 第一次先发送了一个请求，但是丢失了，于是 <code>A</code> 再发送一个连接请求，重新建立连接，发送数据并释放连接</p>
+</blockquote>
+<h4 id="为什么不是四次握手"><a href="#为什么不是四次握手" class="headerlink" title="为什么不是四次握手"></a>为什么不是四次握手</h4><p>三次握手的目的是确认双方『发送』和『接收』的能力，当然四次握手也是可以的，甚至 <code>100</code> 次都可以，但为了解决问题，三次就已经足够了，再多用处就不大了</p>
+<h4 id="三次握手过程中可以携带数据么"><a href="#三次握手过程中可以携带数据么" class="headerlink" title="三次握手过程中可以携带数据么"></a>三次握手过程中可以携带数据么</h4><p>第三次握手的时候，可以携带，前两次握手不能携带数据</p>
+<ul>
+<li>如果前两次握手能够携带数据，那么一旦有人想攻击服务器，那么他只需要在第一次握手中的 <code>SYN</code> 报文中放大量数据，那么服务器势必会消耗更多的时间和内存空间去处理这些数据，增大了服务器被攻击的风险</li>
+<li>第三次握手的时候，客户端已经处于 <code>ESTABLISHED</code> 状态，并且已经能够确认服务器的接收、发送能力正常，这个时候相对安全了，可以携带数据</li>
+</ul>
+<h4 id="如果同时打开会怎样"><a href="#如果同时打开会怎样" class="headerlink" title="如果同时打开会怎样"></a>如果同时打开会怎样</h4><p>如果双方同时发 <code>SYN</code> 报文，这是一个可能会发生的情况，状态变迁如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-03.png" alt></p>
+<p>在发送方给接收方发 <code>SYN</code> 报文的同时，接收方也给发送方发 <code>SYN</code> 报文，此时发完 <code>SYN</code>，两者的状态都变为 <code>SYN-SENT</code>，在各自收到对方的 <code>SYN</code> 后，两者状态都变为 <code>SYN-REVD</code></p>
+<p>接着会回复对应的 <code>ACK + SYN</code>，这个报文在对方接收之后，两者状态一起变为 <code>ESTABLISHED</code>，这就是同时打开情况下的状态变迁</p>
+<h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><p>所谓的四次挥手其实也就是 <code>TCP</code> 的连接释放的过程</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-02.png" alt></p>
+<ul>
+<li><code>A</code> 和 <code>B</code> 目前都处于已建立连接的状态，<code>A</code> 的应用进程向其 <code>TCP</code> 发出连接释放报文段，并停止发送数据，主动关闭 <code>TCP</code> 连接，此时 <code>FIN = 1</code>，<code>seq = u</code>，<code>u</code> 等于前面已发送的最后一个字节的序号加 <code>1</code>，这时 <code>A</code> 进入到 <code>FIN-WAIT-1</code>（终止等待 <code>1</code>）状态，等待 <code>B</code> 的确认，<code>FIN</code> 报文段即使不携带数据，也要消耗一个序号</li>
+<li><code>B</code> 收到释放连接后立即发出确认，此时，<code>ACK = 1</code>，确认号是 <code>ack = u + 1</code>（前面的 <code>seq + 1</code>，因为消耗了一个序号），序号 <code>seq = v</code>，<code>v</code> 等于 <code>B</code> 前面所有已传送数据的最后一个字节的序号加 <code>1</code>，<code>B</code> 进入到 <code>CLOSE-WAIT</code>（关闭等待）状态，<code>TCP</code> 服务器进程向 <code>B</code> 的高层应用进程告知，此时 <code>A</code> 到 <code>B</code> 的连接已经释放，<code>TCP</code> 连接处于半关闭状态，但是，<code>B</code> 到 <code>A</code> 这个方向的连接尚未关闭</li>
+<li><code>A</code> 收到 <code>B</code> 的确认后，就进入到 <code>FIN-WAIT-2</code>（终止等待 <code>2</code>）的状态，等待 <code>B</code> 发送连接释放报文段</li>
+<li>若 <code>B</code> 已经没有数据需要发送，则应用进程通知 <code>TCP</code> 释放连接，这时 <code>B</code> 发送的报文段 <code>FIN = 1</code>，<code>ACK = 1</code>，<code>seq = w</code>（可能后面又发送了一些数据），<code>ack = u + 1</code>，并且这个报文消耗一个序号，<code>B</code> 进入到 <code>LAST-ACK</code>（最后确认）的状态，等待 <code>A</code> 的确认</li>
+<li><code>A</code> 收到 <code>B</code> 的确认后，必须对此发送确认报文，该报文中 <code>ACK = 1</code>，<code>seq = u + 1</code>，<code>ack = w + 1</code>，然后进入到 <code>TIME-WAIT</code>（时间等待）状态</li>
+</ul>
+<blockquote>
+<p>但是需要注意的是，此时 <code>TCP</code> 连接并没有完全释放，必须经过时间等待计时器设置的时间 <code>2MSL</code> 之后，<code>A</code> 才进入 <code>CLOSED</code> 状态，时间 <code>MSL</code> 叫做最大报文段寿命</p>
+</blockquote>
+<p>那么问题来了，为什么要等待 <code>2MSL</code> 的时间呢？主要原因有两点</p>
+<ul>
+<li>保证 <code>A</code> 最后发送的 <code>ACK</code> 报文段能够到达 <code>B</code>，因为这个报文可能丢失，因此 <code>B</code> 会重传最后一个确认报文段，<code>A</code> 再重新发送确认报文，并且重启计时器，直到 <code>A</code> ，<code>B</code> 都能正常进入到 <code>CLOSED</code> 状态</li>
+<li>防止上面提到的已失效的连接请求报文，这段时间内，这些连接请求报文就可能在网络中消失</li>
+</ul>
+<p>简单来说就是</p>
+<ul>
+<li><code>1</code> 个 <code>MSL</code> 确保四次挥手中主动关闭方最后的 <code>ACK</code> 报文最终能达到对端</li>
+<li><code>1</code> 个 <code>MSL</code> 确保对端没有收到 <code>ACK</code> 重传的 <code>FIN</code> 报文可以到达</li>
+</ul>
+<p>这就是等待 <code>2MSL</code> 的意义，此外 <code>B</code> 要比 <code>A</code> 先进入 <code>CLOSED</code> 状态</p>
+<h4 id="为什么是四次挥手而不是三次"><a href="#为什么是四次挥手而不是三次" class="headerlink" title="为什么是四次挥手而不是三次"></a>为什么是四次挥手而不是三次</h4><p>因为服务端在接收到 <code>FIN</code>，往往不会立即返回 <code>FIN</code>，必须等到服务端所有的报文都发送完毕了，才能发 <code>FIN</code>，因此先发一个 <code>ACK</code> 表示已经收到客户端的 <code>FIN</code>，延迟一段时间才发 <code>FIN</code>，这就造成了四次挥手，那么如果是三次挥手会有什么问题？</p>
+<p>如果是三次挥手，这就等于说服务端将 <code>ACK</code> 和 <code>FIN</code> 的发送合并为一次挥手，这个时候长时间的延迟可能会导致客户端误以为 <code>FIN</code> 没有到达客户端，从而让客户端不断的重发 <code>FIN</code></p>
+<h4 id="同时关闭会怎样"><a href="#同时关闭会怎样" class="headerlink" title="同时关闭会怎样"></a>同时关闭会怎样</h4><p>如果客户端和服务端同时发送 <code>FIN</code>，状态如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-04.png" alt></p>
+<h2 id="半连接队列与-SYN-Flood-攻击"><a href="#半连接队列与-SYN-Flood-攻击" class="headerlink" title="半连接队列与 SYN Flood 攻击"></a>半连接队列与 SYN Flood 攻击</h2><p>三次握手前，服务端的状态从 <code>CLOSED</code> 变为 <code>LISTEN</code>，同时在内部创建了两个队列『半连接队列』和『全连接队列』，即 <code>SYN</code> 队列和 <code>ACCEPT</code>（<code>Accept Queue</code>） 队列</p>
+<ul>
+<li>半连接队列，当客户端发送 <code>SYN</code> 到服务端，服务端收到以后回复 <code>ACK</code> 和 <code>SYN</code>，状态由 <code>LISTEN</code> 变为 <code>SYN_RCVD</code>，此时这个连接就被推入了 <code>SYN</code> 队列，也就是半连接队列</li>
+<li>全连接队列，当客户端返回 <code>ACK</code>，服务端接收后，三次握手完成，这个时候连接等待被具体的应用取走，在被取走之前，它会被推入另外一个 <code>TCP</code> 维护的队列，也就是全连接队列</li>
+</ul>
+<h4 id="SYN-Flood-攻击原理"><a href="#SYN-Flood-攻击原理" class="headerlink" title="SYN Flood 攻击原理"></a>SYN Flood 攻击原理</h4><p><code>SYN Flood</code> 属于典型的 <code>DoS/DDoS</code> 攻击，其攻击的原理很简单，就是用客户端在短时间内伪造大量不存在的 <code>IP</code> 地址，并向服务端疯狂发送 <code>SYN</code>，对于服务端而言，会产生两个危险的后果</p>
+<ul>
+<li>处理大量的 <code>SYN</code> 包并返回对应 <code>ACK</code>，势必有大量连接处于 <code>SYN_RCVD</code> 状态，从而占满整个半连接队列，无法处理正常的请求</li>
+<li>由于是不存在的 <code>IP</code>，服务端长时间收不到客户端的 <code>ACK</code>，会导致服务端不断重发数据，直到耗尽服务端的资源</li>
+</ul>
+<h4 id="如何应对-SYN-Flood-攻击"><a href="#如何应对-SYN-Flood-攻击" class="headerlink" title="如何应对 SYN Flood 攻击"></a>如何应对 SYN Flood 攻击</h4><ul>
+<li>增加 <code>SYN</code> 连接，也就是增加半连接队列的容量</li>
+<li>减少 <code>SYN</code> + <code>ACK</code> 重试次数，避免大量的超时重发</li>
+<li>利用 <code>SYN Cookie</code> 技术，在服务端接收到 <code>SYN</code> 后不立即分配连接资源，而是根据这个 <code>SYN</code> 计算出一个 <code>Cookie</code>，连同第二次握手回复给客户端，在客户端回复 <code>ACK</code> 的时候带上这个 <code>Cookie</code> 值，服务端验证 <code>Cookie</code> 合法之后才分配连接资源</li>
+</ul>
+<h2 id="报文头部的字段"><a href="#报文头部的字段" class="headerlink" title="报文头部的字段"></a>报文头部的字段</h2><p>主要分为 <code>IP</code> 数据报格式、<code>UDP</code> 数据报格式、<code>TCP</code> 报文段格式和以太网 <code>MAC</code> 帧格式</p>
+<h4 id="IP-数据报格式"><a href="#IP-数据报格式" class="headerlink" title="IP 数据报格式"></a>IP 数据报格式</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/14-01.png" alt></p>
+<p><code>IP</code> 数据报首部可以分为固定长度（<code>20</code> 字节）和可选长度，固定长度是所有 <code>IP</code> 数据报所必须的，固定部分个字段的意义如下</p>
+<ul>
+<li>版本，占 <code>4</code> 位，指 <code>IP</code> 协议的版本，通信双方的协议版本必须一致</li>
+<li>首部长度，占 <code>4</code> 位，可表示的最大十进制数是<code>15</code>（<code>1111</code>），它的单位是 <code>4</code> 字节（也就是 <code>32</code> 位），因此首部长度最小值为 <code>5</code>（固定长度部分），可选长度最长为 <code>40</code> 字节</li>
+<li>区分服务，占 <code>8</code> 位，用来获得更好的服务</li>
+<li>总长度，占 <code>16</code> 位，首部和数据部分的总长度，单位为字节，因此 <code>IP</code> 数据报的最大长度为 <code>2^16 - 1</code></li>
+<li>标识，占 <code>16</code> 位，当数据报的长度超过网络的最大传送单元使，就给该数据报的所有分片赋值相同的标识，相同的标识字段的值使分片后的各数据报片能正确的重装成原来的数据报</li>
+<li>标志，占 <code>3位</code>，但是只有两位具有意义<ul>
+<li>标记字段中的最低位记为 <code>MF</code>，<code>MF = 1</code> 表示后面还有分片，<code>MF = 0</code> 表示这是最后一个分片</li>
+<li>标志字段中间的一位记为 <code>DF</code>，意思是能否分片，只有 <code>DF = 0</code> 时才能分片</li>
+</ul>
+</li>
+<li>片偏移，占 <code>13</code> 位，较长的分组在分片后，某片在原分组中的相对位置，也就是说，数据片相对于初始位置的距离，单位是 <code>8</code> 字节，因此除去最后一个数据片，每个数据片的长度都是 <code>8</code> 字节的倍数</li>
+<li>生存时间，占 <code>8位</code>，<code>TTL</code>（<code>Time To Live</code>），单位为跳数，跳数表明该数据报至多能在互联网中经过多少个路由器，每经过一个路由器就减 <code>1</code></li>
+<li>协议，占 <code>8位</code>，协议字段指出该数据报携带的数据是使用哪种协议，以便使目的主机的 <code>IP</code> 层知道应将数据部分上交给哪个协议进行处理</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>协议名</th>
+<th><code>ICMP</code></th>
+<th><code>IGMP</code></th>
+<th><code>IP</code></th>
+<th><code>TCP</code></th>
+<th><code>EGP</code></th>
+<th><code>IGP</code></th>
+<th><code>UDP</code></th>
+<th><code>IPv6</code></th>
+<th><code>ESP</code></th>
+<th><code>OSPF</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>协议字段值</td>
+<td><code>1</code></td>
+<td><code>2</code></td>
+<td><code>4</code></td>
+<td><code>6</code></td>
+<td><code>8</code></td>
+<td><code>9</code></td>
+<td><code>17</code></td>
+<td><code>41</code></td>
+<td><code>50</code></td>
+<td><code>89</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li>源地址，占 <code>32</code> 位</li>
+<li>目的地址，占 <code>32</code> 位</li>
+<li>首部校验和，占 <code>16</code> 位，这个字段只检验数据报的首部，但是不包括数据部分<ul>
+<li>在发送方，先把数据报划分为许多 <code>16</code> 位的字的序列，并把校验和字段置为 <code>0</code></li>
+<li>用反码算术运算（从低位到高位计算，<code>0 + 0</code> 等于 <code>0</code>，<code>0 + 1</code> 等于 <code>1</code>，<code>1 + 1</code> 等于 <code>0</code>，但是要进 <code>1</code>）把所有的 <code>16</code> 位字相加后，将得到的反码写入校验和字段</li>
+<li>接收方接收到数据报之后，将首部的所有 <code>16</code> 位字再使用反码运算相加一次，将得到的和取反码，即得出接收方的检验和的计算结果，如果结果全为 <code>0</code>，则代表首部未发生变化，保留该数据报，反之则丢弃</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/14-02.png" alt></p>
+<h4 id="UDP-数据报格式"><a href="#UDP-数据报格式" class="headerlink" title="UDP 数据报格式"></a>UDP 数据报格式</h4><p><code>UDP</code> 用户数据报分为 = 首部字段 （<code>8</code>个字节，<code>4</code>个字段，每个字段 <code>2</code> 个字节）+ 数字字段，首部字段分为</p>
+<ul>
+<li>源端口，源端口号，在需要对方回信的时候选用，不需要填 <code>0</code></li>
+<li>目的端口，目的端口号，必填</li>
+<li>长度，<code>UDP</code> 用户数据报的长度，最小为 <code>8</code></li>
+<li>检验和，检测 <code>UDP</code> 用户数据报传输过程中是否有错，有错就丢弃</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/14-03.png" alt></p>
+<h3 id="TCP-报文段格式"><a href="#TCP-报文段格式" class="headerlink" title="TCP 报文段格式"></a>TCP 报文段格式</h3><p><code>TCP</code> 虽然是面向字节流的，但是 <code>TCP</code> 传输的数据单元却是报文段，一个报文段可以分为首部和数据两部分，<code>TCP</code> 报文段的首部的前 <code>20</code> 个字节是固定的，后面的 <code>4n</code> 字节是需要增加的选项，因此 <code>TCP</code> 首部的最小长度是 <code>20</code> 字节</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/14-04.png" alt></p>
+<p>首部部分字段的意义如下</p>
+<ul>
+<li>源端口和目的端口，各占 <code>2</code> 个字节，分别写入源端口号和目的端口号，<code>TCP</code> 的分用功能也是通过端口号实现的<ul>
+<li>那么如何标识唯一一个连接呢？答案是 <code>TCP</code> 连接的四元组，源 <code>IP</code>、源端口、目标 <code>IP</code> 和目标端口，但是 <code>TCP</code> 报文当中为何没有源 <code>IP</code> 和目标 <code>IP</code> 呢？这是因为在 <code>IP</code> 层就已经处理了 <code>IP</code>，<code>TCP</code> 只需要记录两者的端口即可</li>
+</ul>
+</li>
+<li>序号，占 <code>4</code> 字节，在 <code>TCP</code> 连接中传送的字节流中的每一个字节都按照顺序编号，首部中的序号字段值则代表本报文段所发送的数据的第一个字节的序号，作用有两个<ul>
+<li>在 <code>SYN</code> 报文中交换彼此的初始序列号</li>
+<li>保证数据包按正确的顺序组装</li>
+</ul>
+</li>
+<li>确认号，占 <code>4</code> 字节，代表期望收到对方下一个报文段的第一个数据字节的序号，需要注意若确认号 <code>= N</code>，则表明到序号 <code>N - 1</code> 为止的所有数据都已正确收到</li>
+<li>数据偏移，占 <code>4</code> 位，他指出 <code>TCP</code> 报文段的数据起始处距离 <code>TCP</code> 报文段的起始处有多远，一般情况下为 <code>20</code> 字节，但是首部中还有不确定的选项字段，它的单位是 <code>4</code> 字节，而它的最大值是 <code>15</code>，因此数据偏移最大值为 <code>60</code> 字节，也就是说选项不能超过 <code>40</code> 字节</li>
+<li>保留，占 <code>6</code> 位，以防后续使用</li>
+</ul>
+<p>下面是 <code>6</code> 个控制位（标记位），每个占一位</p>
+<ul>
+<li>紧急 <code>URG</code>，当 <code>URG = 1</code> 时，表明紧急字段有效，它告诉系统此报文中有紧急数据，应该尽快传送</li>
+<li>确认 <code>ACK</code>，仅当 <code>ACK = 1</code> 时确认号字段才有效</li>
+<li>推送 <code>PSH</code>，当两个应用进程进行交互式的通信时，有时一端的应用进程希望在键入一个命令后立即就能收到对方的相应，这时设置 <code>PSH = 1</code></li>
+<li>复位 <code>RST</code>，当 <code>RST = 1</code> 时，表明 <code>TCP</code> 连接中出现严重错误，必须释放连接，再重新建立运输连接，<code>RST = 1</code> 还可以用来拒绝一个非法的报文段或拒绝打开一个连接</li>
+<li>同步 <code>SYN</code>，在建立连接时用来同步序号，当 <code>SYN = 1</code> ，<code>ACK = 0</code> 时代表是连接请求报文段，若对方同意建立连接，则应在相应报文段中使 <code>SYN = 1</code> ，<code>ACK = 1</code> ，也就是说，<code>SYN = 1</code> 代表连接请求或者连接接受报文</li>
+<li>终止 <code>FIN</code>，用于释放一个连接，当 <code>FIN = 1</code> 时，代表此报文段的发送方的数据已发送完毕，并且请求释放运输连接</li>
+</ul>
+<p>控制位至此结束</p>
+<ul>
+<li>窗口，占 <code>2</code> 字节，窗口值告诉对方，从本报文段中的确认号算起，接收方目前允许对方发送的数据量（以字节为单位），之所以设置这个限制，是因为接收方的数据缓存空间是有限的，总之窗口值作为接收方让发送方设置其窗口大小的依据</li>
+<li>检验和，占 <code>2</code> 字节，检验的范围包括首部字段和数据字段，和 <code>UDP</code> 检验的方法一样，只不过把伪首部第四个字段的 <code>17</code> 改成 <code>6</code></li>
+<li>紧急指针，占 <code>2</code> 字节，只有在紧急 <code>URG = 1</code> 时才有效，它指出本报文段中的紧急数据的字节数</li>
+<li>选项，长度可变，最大 <code>40</code> 字节，注意，<code>TCP</code> 最初只规定了一种选项，即最大报文长度 <code>MSS</code>，<code>MSS</code> 是每一个 <code>TCP</code> 报文段中的数据字段的最大长度，而并不是整个 <code>TCP</code> 报文段的长度</li>
+</ul>
+<p>这里补充一些 <code>ISN</code> 相关内容，即 <code>Initial Sequence Number</code>（初始序列号）</p>
+<p>在三次握手的过程当中，双方会用过 <code>SYN</code> 报文来交换彼此的 <code>ISN</code>，<code>ISN</code> 并不是一个固定的值，而是每 <code>4ms</code> 加一，溢出则回到 <code>0</code>，这个算法使得猜测 <code>ISN</code> 变得很困难，那么为什么要这么做呢？</p>
+<p>如果 <code>ISN</code> 被攻击者预测到，要知道源 <code>IP</code> 和源端口号都是很容易伪造的，当攻击者猜测 <code>ISN</code> 之后，直接伪造一个 <code>RST</code> 后，就可以强制连接关闭的，这是非常危险的，而动态增长的 <code>ISN</code> 大大提高了猜测 <code>ISN</code> 的难度</p>
+<h4 id="以太网-MAC-帧格式"><a href="#以太网-MAC-帧格式" class="headerlink" title="以太网 MAC 帧格式"></a>以太网 MAC 帧格式</h4><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/14-05.png" alt></p>
+<p>以太网 <code>MAC</code> 帧较为简单，由五个字段组成，前两个字段分别为 <code>6</code> 字节长的目的地址和源地址，第三个字段是 <code>2</code> 字节的类型字段，用来标志上一层使用的是什么协议，以便把收到的 <code>MAC</code> 帧的数据上交给上一层的这个协议，第四个字段是数据字段，其长度为 <code>46 ~ 1500</code> 字节（<code>46</code> 字节是因为最小长度 <code>64</code> 字节减去 <code>18</code> 字节的首部和尾部），最后一个字段是 <code>4</code> 字节的帧检测序列 <code>FCS</code>（使用 <code>CRC</code> 检测）</p>
+<h2 id="TFO-原理"><a href="#TFO-原理" class="headerlink" title="TFO 原理"></a>TFO 原理</h2><p><code>TFO</code> 即 <code>TCP</code> 快速打开（<code>TCP Fast Open</code>），是对计算机网络中传输控制协议（<code>TCP</code>）连接的一种简化握手手续的拓展，用于提高两端点间连接的打开速度，在上面 <code>SYN Flood</code> 部分当中我们曾提到 <code>SYN Cookie</code>，这个 <code>Cookie</code> 可不是浏览器的 <code>Cookie</code>，用它同样可以实现 <code>TFO</code>，下面我们就来看看 <code>TFO</code> 的流程</p>
+<h4 id="首轮三次握手"><a href="#首轮三次握手" class="headerlink" title="首轮三次握手"></a>首轮三次握手</h4><p>首先客户端发送 <code>SYN</code> 给服务端，服务端接收到，但是需要注意，现在服务端不是立刻回复 <code>SYN + ACK</code>，而是通过计算得到一个 <code>SYN Cookie</code>，将这个 <code>Cookie</code> 放到 <code>TCP</code> 报文的 <code>Fast Open</code> 选项中，然后才给客户端返回，客户端拿到这个 <code>Cookie</code> 的值缓存下来，后面正常完成三次握手</p>
+<p>首轮三次握手就是这样的流程，但是后面的三次握手则不一样</p>
+<h4 id="后面的三次握手"><a href="#后面的三次握手" class="headerlink" title="后面的三次握手"></a>后面的三次握手</h4><p>在后面的三次握手中，客户端会将之前缓存的 <code>Cookie</code>、<code>SYN</code> 和 <code>HTTP</code> 请求发送给服务端，服务端验证了 <code>Cookie</code> 的合法性，如果不合法直接丢弃，如果是合法的，那么就正常返回 <code>SYN + ACK</code></p>
+<p>重点来了，现在服务端能向客户端发 <code>HTTP</code> 响应了，这是最显著的改变，三次握手还没建立，仅仅验证了 <code>Cookie</code> 的合法性，就可以返回 <code>HTTP</code> 响应了，当然客户端的 <code>ACK</code> 还得正常传过来，流程如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-05.png" alt></p>
+<p>注意，客户端最后握手的 <code>ACK</code> 不一定要等到服务端的 <code>HTTP</code> 响应到达才发送，两个过程没有任何关系</p>
+<h4 id="TFO-的优势"><a href="#TFO-的优势" class="headerlink" title="TFO 的优势"></a>TFO 的优势</h4><p><code>TFO</code> 的优势并不在与首轮三次握手，而在于后面的握手，在拿到客户端的 <code>Cookie</code> 并验证通过以后，可以直接返回 <code>HTTP</code> 响应，充分利用了 <code>1</code> 个 <code>RTT</code> 的时间提前进行数据传输，积累起来还是一个比较大的优势</p>
+<h2 id="TCP-的超时重传时间是如何计算的"><a href="#TCP-的超时重传时间是如何计算的" class="headerlink" title="TCP 的超时重传时间是如何计算的"></a>TCP 的超时重传时间是如何计算的</h2><p><code>TCP</code> 具有超时重传机制，即间隔一段时间没有等到数据包的回复时，重传这个数据包，这个重传间隔也叫做超时重传时间（<code>Retransmission TimeOut</code>，简称 <code>RTO</code>），那么这个重传间隔是如何来计算的呢？主要有两种方式，一个是经典方法，一个是标准方法</p>
+<h4 id="经典方法"><a href="#经典方法" class="headerlink" title="经典方法"></a>经典方法</h4><p>经典方法引入了一个新的概念 <code>SRTT</code>（<code>Smoothed round trip time</code>，即平滑往返时间），没产生一次新的 <code>RTT</code>，就根据一定的算法对 <code>SRTT</code> 进行更新，具体而言计算方式如下（<code>SRTT</code> 初始值为 <code>0</code>）</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SRTT =  (α * SRTT) + ((<span class="hljs-number">1</span> - α) * RTT)</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>α</code> 是平滑因子，建议值是 <code>0.8</code>，范围是 <code>0.8 ~ 0.9</code>，拿到 <code>SRTT</code> 我们就可以计算 <code>RTO</code> 的值了</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO = min(ubound, max(lbound, β * SRTT))</span><br></pre></td></tr></table></figure>
+
+<p><code>β</code> 是加权因子，一般为 <code>1.3 ~ 2.0</code>，<code>lbound</code> 是下界，<code>ubound</code> 是上界，其实这个算法过程还是很简单的，但是也存在一定的局限，就是在 <code>RTT</code> 稳定的地方表现还可以，而在 <code>RTT</code> 变化较大的地方就不行了，因为平滑因子 <code>α</code> 的范围是 <code>0.8 ~ 0.9</code>，<code>RTT</code> 对于 <code>RTO</code> 的影响太小</p>
+<h4 id="标准方法"><a href="#标准方法" class="headerlink" title="标准方法"></a>标准方法</h4><p>为了解决经典方法对于 <code>RTT</code> 变化不敏感的问题，后面又引出了标准方法，也叫 <code>Jacobson/Karels</code> 算法，一共有三步</p>
+<ul>
+<li>第一步，计算 <code>SRTT</code>，公式如下</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SRTT = (<span class="hljs-number">1</span> - α) * SRTT + α * RTT</span><br></pre></td></tr></table></figure>
+
+<p>注意这个时候的 <code>α</code> 跟经典方法中的 <code>α</code> 取值不一样了，建议值是 <code>1/8</code>，也就是 <code>0.125</code></p>
+<ul>
+<li>第二步，计算 <code>RTTVAR</code>（<code>round-trip time variation</code>）这个中间变量</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTTVAR = (<span class="hljs-number">1</span> - β) * RTTVAR + β * (|RTT - SRTT|)</span><br></pre></td></tr></table></figure>
+
+<p><code>β</code> 建议值为 <code>0.25</code>，这个值是这个算法中出彩的地方，也就是说，它记录了最新的 <code>RTT</code> 与当前 <code>SRTT</code> 之间的差值，给我们在后续感知到 <code>RTT</code> 的变化提供了抓手</p>
+<ul>
+<li>第三步，计算最终的 <code>RTO</code></li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO = µ * SRTT + ∂ * RTTVAR</span><br></pre></td></tr></table></figure>
+
+<p><code>µ</code> 建议值取 <code>1</code>，<code>∂</code> 建议值取 <code>4</code>，这个公式在 <code>SRTT</code> 的基础上加上了最新 <code>RTT</code> 与它的偏移，从而很好的感知了 <code>RTT</code> 的变化，这种算法下 <code>RTO</code> 与 <code>RTT</code> 变化的差值关系更加密切</p>
+<h2 id="TCP-的流量控制是如何实现的"><a href="#TCP-的流量控制是如何实现的" class="headerlink" title="TCP 的流量控制是如何实现的"></a>TCP 的流量控制是如何实现的</h2><p>我们之前在 <a href="https://heptaluan.github.io/2020/09/01/HTTP/10/" target="_blank" rel="noopener">HTTP 协议</a> 和 <a href="https://heptaluan.github.io/2020/09/20/HTTP/14/" target="_blank" rel="noopener">TCP/IP 协议</a> 的章节当中简单介绍过 <code>TCP</code> 的流量控制，在这里就汇总整理一下，但是需要注意的是，<code>HTTP/3</code> 当中 <code>QUIC</code> 实现的流量控制与 <code>TCP</code> 当中有所区别，这里我们主要介绍的是 <code>TCP</code> 当中的流量控制，所以关于 <code>HTTP/3</code> 当中 <code>QUIC</code> 的实现方法就不详细展开了，详细可见 <a href="https://heptaluan.github.io/2020/09/12/HTTP/12/#流量控制" target="_blank" rel="noopener">HTTP/3 流量控制</a></p>
+<p>对于发送端和接收端而言，<code>TCP</code> 需要把发送的数据放到发送缓存区，将接收的数据放到接收缓存区，而流量控制索要做的事情，就是在通过接收缓存区的大小，控制发送端的发送，如果对方的接收缓存区满了，就不能再继续发送了，所以要具体理解流量控制，我们要从滑动窗口的概念开始了解</p>
+<h4 id="TCP-滑动窗口"><a href="#TCP-滑动窗口" class="headerlink" title="TCP 滑动窗口"></a>TCP 滑动窗口</h4><p><code>TCP</code> 滑动窗口分为两种，发送窗口和接收窗口，发送端的滑动窗口结构如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-06.png" alt></p>
+<p>其中包含四大部分</p>
+<ul>
+<li>已发送且已确认</li>
+<li>已发送但未确认</li>
+<li>未发送但可以发送</li>
+<li>未发送也不可以发送</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-07.png" alt></p>
+<p>发送窗口就是图中被框住的范围，<code>SND</code> 即 <code>send</code>，<code>WND</code> 即 <code>window</code>，<code>UNA</code> 即 <code>unacknowledged</code>，表示未被确认，<code>NXT</code> 即 <code>next</code>，表示下一个发送的位置，接收端的窗口结构如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/13-08.png" alt></p>
+<p><code>REV</code> 即 <code>receive</code>，<code>NXT</code> 表示下一个接收的位置，<code>WND</code> 表示接收窗口大小</p>
+<h4 id="流量控制过程"><a href="#流量控制过程" class="headerlink" title="流量控制过程"></a>流量控制过程</h4><p>这里我们用一个简单的例子来模拟一下流量控制的过程</p>
+<ul>
+<li>首先双方三次握手，初始化各自的窗口大小，均为 <code>200</code> 个字节</li>
+<li>假如当前发送端给接收端发送 <code>100</code> 个字节，那么此时对于发送端而言，<code>SND.NXT</code> 当然要右移 <code>100</code> 个字节，也就是说当前的可用窗口减少了 <code>100</code> 个字节</li>
+<li>现在这 <code>100</code> 个到达了接收端，被放到接收端的缓冲队列中，不过此时由于大量负载的原因，接收端处理不了这么多字节，只能处理 <code>40</code> 个字节，剩下的 <code>60</code> 个字节被留在了缓冲队列中</li>
+<li>此时接收端的情况是处理能力不够用，所以此时接收端的接收窗口应该缩小，具体来说缩小 <code>60</code> 个字节，由 <code>200</code> 个字节变成了 <code>140</code> 字节，因为缓冲队列还有 <code>60</code> 个字节没被应用拿走</li>
+</ul>
+<p>因此，接收端会在 <code>ACK</code> 的报文首部带上缩小后的滑动窗口 <code>140</code> 字节，发送端对应地调整发送窗口的大小为 <code>140</code> 个字节，此时对于发送端而言，已经发送且确认的部分增加 <code>40</code> 字节，也就是 <code>SND.UNA</code> 右移 <code>40</code> 个字节，同时发送窗口缩小为 <code>140</code> 个字节</p>
+<p>这也就是流量控制的过程，尽管回合再多，整个控制的过程和原理是一样的</p>
+<h2 id="TCP-的拥塞控制"><a href="#TCP-的拥塞控制" class="headerlink" title="TCP 的拥塞控制"></a>TCP 的拥塞控制</h2><p>和上面流量控制部分类似，这里我们主要介绍的是 <code>TCP</code> 当中的拥塞控制，关于 <code>HTTP/3</code> 当中拥塞控制的热插拔和前向纠错等相关内容可见 <a href="https://heptaluan.github.io/2020/09/12/HTTP/12/#拥塞控制" target="_blank" rel="noopener">HTTP/3 拥塞控制</a></p>
+<p>上一节所说的流量控制发生在发送端跟接收端之间，并没有考虑到整个网络环境的影响，如果说当前网络特别差，特别容易丢包，那么发送端就应该注意一些了，而这也正是拥塞控制需要处理的问题，对于拥塞控制来说，<code>TCP</code> 每条连接都需要维护两个核心状态</p>
+<ul>
+<li>拥塞窗口（<code>Congestion Window</code>，<code>cwnd</code>）</li>
+<li>慢启动阈值（<code>Slow Start Threshold</code>，<code>ssthresh</code>）</li>
+</ul>
+<p>涉及到的算法有这几个</p>
+<ul>
+<li>慢启动</li>
+<li>拥塞避免</li>
+<li>快速重传</li>
+<li>快速恢复</li>
+</ul>
+<p>接下来，我们就来一一来梳理这些状态和算法，首先从拥塞窗口说起</p>
+<h4 id="拥塞窗口"><a href="#拥塞窗口" class="headerlink" title="拥塞窗口"></a>拥塞窗口</h4><p>拥塞窗口是指目前自己还能传输的数据量大小，那么之前介绍了接收窗口的概念，两者有什么区别呢？</p>
+<ul>
+<li>接收窗口（<code>rwnd</code>）是接收端给的限制</li>
+<li>拥塞窗口（<code>cwnd</code>）是发送端的限制</li>
+</ul>
+<p>限制谁呢？其实是限制的是发送窗口的大小，在有了这两个窗口以后，我们来看看如何来计算发送窗口？</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">发送窗口大小 = min(rwnd, cwnd)</span><br></pre></td></tr></table></figure>
+
+<p>简单来说就是取两者的较小值，而拥塞控制，就是来控制 <code>cwnd</code> 变化的</p>
+<h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p>刚开始进入传输数据的时候，我们是不知道现在的网络情况到底是稳定还是拥堵的，如果发包太急，那么可能会疯狂丢包，造成雪崩式的网络灾难，因此拥塞控制首先就是要采用一种保守的算法来慢慢地适应整个网络，这种算法叫慢启动，运作过程如下</p>
+<ul>
+<li>首先，三次握手，双方宣告自己的接收窗口大小</li>
+<li>双方初始化自己的拥塞窗口（<code>cwnd</code>）大小</li>
+<li>在开始传输的一段时间，发送端每收到一个 <code>ACK</code>，拥塞窗口大小加 <code>1</code>，也就是说每经过一个 <code>RTT</code>，<code>cwnd</code> 翻倍，如果说初始窗口为 <code>10</code>，那么第一轮 <code>10</code> 个报文传完且发送端收到 <code>ACK</code> 后，<code>cwnd</code> 变为 <code>20</code>，第二轮变为 <code>40</code>，第三轮变为 <code>80</code>，依次类推</li>
+</ul>
+<p>当然不会无止境地翻倍下去，它的阈值叫做慢启动阈值，超出阈值则会导致网络拥塞，那么当 <code>cwnd</code> 到达这个阈值之后，如何来控制 <code>cwnd</code> 的大小呢？而这就是拥塞避免做的事情了</p>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>其实简单来说，原理就是在到达某个限制（慢启动阈值）之后，指数增长变为线性增长，比如原来每收到一个 <code>ACK</code>，<code>cwnd</code> 加 <code>1</code>，现在到达阈值后，<code>cwnd</code> 只增加 <code>1 / cwnd</code>，所以一轮 <code>RTT</code> 下来，收到 <code>cwnd</code> 个 <code>ACK</code>，那最后拥塞窗口的大小 <code>cwnd</code> 总共才增加 <code>1</code></p>
+<p>也就是说，以前一个 <code>RTT</code> 下来，<code>cwnd</code> 翻倍，现在 <code>cwnd</code> 只是增加 <code>1</code> 而已，当然慢启动和拥塞避免是一起作用的，是一体的</p>
+<h4 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h4><p>在 <code>TCP</code> 传输的过程中，如果发生了丢包，即接收端发现数据段不是按序到达的时候，接收端的处理是重复发送之前的 <code>ACK</code>，比如第 <code>5</code> 个包丢了，即使第 <code>6</code>、<code>7</code> 个包到达的接收端，接收端也一律返回第 <code>4</code> 个包的 <code>ACK</code>，当发送端收到 <code>3</code> 个重复的 <code>ACK</code> 时，意识到丢包了，于是马上进行重传，不用等到一个 <code>RTO</code>（<code>Retransmission Timeout</code>，重传超时） 的时间到了才重传，这就是快速重传，它解决的是是否需要重传的问题</p>
+<h4 id="选择性重传"><a href="#选择性重传" class="headerlink" title="选择性重传"></a>选择性重传</h4><p>既然要重传，那么是只重传第 <code>5</code> 个包还是第 <code>5</code>、<code>6</code>、<code>7</code> 个包都重传呢？当然如果第 <code>6</code>、<code>7</code> 个都已经到达了的话，则会记录一下哪些包到了，哪些没到，针对性地重传</p>
+<p>在收到发送端的报文后，接收端回复一个 <code>ACK</code> 报文，那么在这个报文首部的可选项中，就可以加上 <code>SACK</code> 这个属性，通过 <code>left edge</code> 和 <code>right edge</code> 告知发送端已经收到了哪些区间的数据报，因此，即使第 <code>5</code> 个包丢包了，当收到第 <code>6</code>、<code>7</code> 个包之后，接收端依然会告诉发送端，这两个包到了，剩下第 <code>5</code> 个包没到，就重传这个包，这个过程也叫做选择性重传（<code>Selective Acknowledgment</code>，<code>SACK</code>），它解决的是如何重传的问题</p>
+<h4 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h4><p>当然，发送端收到三次重复 <code>ACK</code>之后，发现丢包，觉得现在的网络已经有些拥塞了，自己会进入快速恢复阶段，在这个阶段，发送端如下改变</p>
+<ul>
+<li>拥塞阈值降低为 <code>cwnd</code> 的一半</li>
+<li><code>cwnd</code> 的大小变为拥塞阈值</li>
+<li><code>cwnd</code> 线性增加</li>
+</ul>
+<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p><code>TCP</code> 拥塞控制由 <code>4</code> 个核心算法组成，即『慢启动』、『拥塞避免』、『快速重传』和『快速恢复』</p>
+<ul>
+<li>慢启动，发送方向接收方发送 <code>1</code> 个单位的数据，收到对方确认后会发送 <code>2</code> 个单位的数据，然后依次是 <code>4</code> 个、<code>8</code> 个呈指数级增长，这个过程就是在不断试探网络的拥塞程度，超出阈值则会导致网络拥塞</li>
+<li>拥塞避免，指数增长不可能是无限的，到达某个限制（慢启动阈值）之后，指数增长变为线性增长</li>
+<li>快速重传，发送方每一次发送时都会设置一个超时计时器，超时后即认为丢失，需要重发</li>
+<li>快速恢复，在上面快速重传的基础上，发送方重新发送数据时，也会启动一个超时定时器，如果收到确认消息则进入拥塞避免阶段，如果仍然超时，则回到慢启动阶段</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/http/12-12.png" alt></p>
+<h2 id="Nagle-算法和延迟确认"><a href="#Nagle-算法和延迟确认" class="headerlink" title="Nagle 算法和延迟确认"></a>Nagle 算法和延迟确认</h2><p>这里首先需要明确的是，前者意味着延迟发，后者意味着延迟接收，如果两者一起使用会造成更大的延迟，产生性能问题，所以需要小心</p>
+<h4 id="Nagle-算法"><a href="#Nagle-算法" class="headerlink" title="Nagle 算法"></a>Nagle 算法</h4><p>试想一个场景，发送端不停地给接收端发很小的包，一次只发 <code>1</code> 个字节，那么发 <code>1</code> 千个字节需要发 <code>1000</code> 次，这种频繁的发送是存在问题的，不光是传输的时延消耗，发送和确认本身也是需要耗时的，频繁的发送接收带来了巨大的时延，而避免小包的频繁发送，这就是 <code>Nagle</code> 算法要做的事情，<code>Nagle</code> 算法的规则如下</p>
+<ul>
+<li>当第一次发送数据时不用等待，就算是 <code>1byte</code> 的小包也立即发送</li>
+<li>后面发送满足下面条件之一就可以发了<ul>
+<li>数据包大小达到最大段大小（<code>Max Segment Size</code>，即 <code>MSS</code>）</li>
+<li>之前所有包的 <code>ACK</code> 都已接收到</li>
+</ul>
+</li>
+</ul>
+<h4 id="延迟确认"><a href="#延迟确认" class="headerlink" title="延迟确认"></a>延迟确认</h4><p>试想这样一个场景，当我们收到了发送端的一个包，然后在极短的时间内又接收到了第二个包，那我是一个个地回复，还是稍微等一下，把两个包的 <code>ACK</code> 合并后一起回复呢？</p>
+<p>延迟确认（<code>delayed ack</code>）所做的事情，就是后者，稍稍延迟，然后合并 <code>ACK</code>，最后才回复给发送端，<code>TCP</code> 要求这个延迟的时延必须小于 <code>500ms</code>，一般操作系统实现都不会超过 <code>200ms</code>，不过需要主要的是，有一些场景是不能延迟确认的，收到了就要马上回复</p>
+<ul>
+<li>接收到了大于一个 <code>frame</code> 的报文，且需要调整窗口大小</li>
+<li><code>TCP</code> 处于 <code>quickack</code> 模式（通过 <code>tcp_in_quickack_mode</code> 设置）</li>
+<li>发现了乱序包</li>
+</ul>
+<h2 id="TCP-的-keep-alive"><a href="#TCP-的-keep-alive" class="headerlink" title="TCP 的 keep-alive"></a>TCP 的 keep-alive</h2><p>大家都听说过 <code>HTTP</code> 的 <code>keep-alive</code>，不过 <code>TCP</code> 层面也是有 <code>keep-alive</code> 机制，而且跟应用层不太一样，试想一个场景，当有一方因为网络故障或者宕机导致连接失效，由于 <code>TCP</code> 并不是一个轮询的协议，在下一个数据包到达之前，对端对连接失效的情况是一无所知的，这个时候就出现了 <code>keep-alive</code>，它的作用就是探测对端的连接有没有失效，在 <code>Linux</code> 下，可以这样查看相关的配置</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo sysctl -a | grep keepalive</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 每隔 7200 s 检测一次</span></span><br><span class="line">net.ipv4.tcp_keepalive_time = <span class="hljs-number">7200</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 一次最多重传 9 个包</span></span><br><span class="line">net.ipv4.tcp_keepalive_probes = <span class="hljs-number">9</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 每个包的间隔重传间隔 75 s</span></span><br><span class="line">net.ipv4.tcp_keepalive_intvl = <span class="hljs-number">75</span></span><br></pre></td></tr></table></figure>
+
+<p>不过，现状是大部分的应用并没有默认开启 <code>TCP</code> 的 <code>keep-alive</code> 选项，这是因为如果我们站在应用的角度来看的话，会发现这是一个比较尴尬的设计，原因主要有下面两点</p>
+<ul>
+<li><code>7200s</code> 也就是两个小时检测一次，时间太长</li>
+<li>时间再短一些，也难以体现其设计的初衷，即检测长时间的死连接</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://juejin.im/book/6844733788681928712" target="_blank" rel="noopener">深入理解 TCP 协议</a></li>
+<li><a href="https://time.geekbang.org/column/article/7398" target="_blank" rel="noopener">趣谈网络协议</a></li>
+<li><a href="https://time.geekbang.org/course/intro/175" target="_blank" rel="noopener">Web 协议详解与抓包实战</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/HTTP/">HTTP</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/09/20/HTTP/14/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">TCP/IP 协议</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/09/12/HTTP/12/">
+                <span class="level-item">HTTP/3</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '4d8be6eeca924f0e30dd68bfded199ed',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#HTTP-协议优缺点">
+        <span class="has-mr-6">1</span>
+        <span>HTTP 协议优缺点</span>
+        </a></li><li>
+        <a class="is-flex" href="#HTTP-协议各版本差异">
+        <span class="has-mr-6">2</span>
+        <span>HTTP 协议各版本差异</span>
+        </a></li><li>
+        <a class="is-flex" href="#队头阻塞问题">
+        <span class="has-mr-6">3</span>
+        <span>队头阻塞问题</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#什么是队头阻塞？">
+        <span class="has-mr-6">3.1.1</span>
+        <span>什么是队头阻塞？</span>
+        </a></li><li>
+        <a class="is-flex" href="#如何解决">
+        <span class="has-mr-6">3.1.2</span>
+        <span>如何解决</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#HTTP-数据传输">
+        <span class="has-mr-6">4</span>
+        <span>HTTP 数据传输</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#定长数据">
+        <span class="has-mr-6">4.1.1</span>
+        <span>定长数据</span>
+        </a></li><li>
+        <a class="is-flex" href="#不定长数据">
+        <span class="has-mr-6">4.1.2</span>
+        <span>不定长数据</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#SSL-连接断开后如何恢复">
+        <span class="has-mr-6">5</span>
+        <span>SSL 连接断开后如何恢复</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#通过-Session-ID">
+        <span class="has-mr-6">5.1.1</span>
+        <span>通过 Session ID</span>
+        </a></li><li>
+        <a class="is-flex" href="#通过-Session-Ticket">
+        <span class="has-mr-6">5.1.2</span>
+        <span>通过 Session Ticket</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#短轮询、长轮询和-WebSocket-间的区别">
+        <span class="has-mr-6">6</span>
+        <span>短轮询、长轮询和 WebSocket 间的区别</span>
+        </a></li><li>
+        <a class="is-flex" href="#正向代理和反向代理">
+        <span class="has-mr-6">7</span>
+        <span>正向代理和反向代理</span>
+        </a></li><li>
+        <a class="is-flex" href="#负载平衡的两种实现方式">
+        <span class="has-mr-6">8</span>
+        <span>负载平衡的两种实现方式</span>
+        </a></li><li>
+        <a class="is-flex" href="#HTTP-缓存策略">
+        <span class="has-mr-6">9</span>
+        <span>HTTP 缓存策略</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#强缓存">
+        <span class="has-mr-6">9.1.1</span>
+        <span>强缓存</span>
+        </a></li><li>
+        <a class="is-flex" href="#协商缓存">
+        <span class="has-mr-6">9.1.2</span>
+        <span>协商缓存</span>
+        </a></li><li>
+        <a class="is-flex" href="#缓存位置">
+        <span class="has-mr-6">9.1.3</span>
+        <span>缓存位置</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结">
+        <span class="has-mr-6">9.1.4</span>
+        <span>总结</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#TCP-如何保证可靠传输">
+        <span class="has-mr-6">10</span>
+        <span>TCP 如何保证可靠传输</span>
+        </a></li><li>
+        <a class="is-flex" href="#TCP-和-UDP-的区别">
+        <span class="has-mr-6">11</span>
+        <span>TCP 和 UDP 的区别</span>
+        </a></li><li>
+        <a class="is-flex" href="#三次握手">
+        <span class="has-mr-6">12</span>
+        <span>三次握手</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#为什么不是两次握手">
+        <span class="has-mr-6">12.1.1</span>
+        <span>为什么不是两次握手</span>
+        </a></li><li>
+        <a class="is-flex" href="#为什么不是四次握手">
+        <span class="has-mr-6">12.1.2</span>
+        <span>为什么不是四次握手</span>
+        </a></li><li>
+        <a class="is-flex" href="#三次握手过程中可以携带数据么">
+        <span class="has-mr-6">12.1.3</span>
+        <span>三次握手过程中可以携带数据么</span>
+        </a></li><li>
+        <a class="is-flex" href="#如果同时打开会怎样">
+        <span class="has-mr-6">12.1.4</span>
+        <span>如果同时打开会怎样</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#四次挥手">
+        <span class="has-mr-6">13</span>
+        <span>四次挥手</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#为什么是四次挥手而不是三次">
+        <span class="has-mr-6">13.1.1</span>
+        <span>为什么是四次挥手而不是三次</span>
+        </a></li><li>
+        <a class="is-flex" href="#同时关闭会怎样">
+        <span class="has-mr-6">13.1.2</span>
+        <span>同时关闭会怎样</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#半连接队列与-SYN-Flood-攻击">
+        <span class="has-mr-6">14</span>
+        <span>半连接队列与 SYN Flood 攻击</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#SYN-Flood-攻击原理">
+        <span class="has-mr-6">14.1.1</span>
+        <span>SYN Flood 攻击原理</span>
+        </a></li><li>
+        <a class="is-flex" href="#如何应对-SYN-Flood-攻击">
+        <span class="has-mr-6">14.1.2</span>
+        <span>如何应对 SYN Flood 攻击</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#报文头部的字段">
+        <span class="has-mr-6">15</span>
+        <span>报文头部的字段</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#IP-数据报格式">
+        <span class="has-mr-6">15.1.1</span>
+        <span>IP 数据报格式</span>
+        </a></li><li>
+        <a class="is-flex" href="#UDP-数据报格式">
+        <span class="has-mr-6">15.1.2</span>
+        <span>UDP 数据报格式</span>
+        </a></li></ul><li>
+        <a class="is-flex" href="#TCP-报文段格式">
+        <span class="has-mr-6">15.2</span>
+        <span>TCP 报文段格式</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#以太网-MAC-帧格式">
+        <span class="has-mr-6">15.2.1</span>
+        <span>以太网 MAC 帧格式</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#TFO-原理">
+        <span class="has-mr-6">16</span>
+        <span>TFO 原理</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#首轮三次握手">
+        <span class="has-mr-6">16.1.1</span>
+        <span>首轮三次握手</span>
+        </a></li><li>
+        <a class="is-flex" href="#后面的三次握手">
+        <span class="has-mr-6">16.1.2</span>
+        <span>后面的三次握手</span>
+        </a></li><li>
+        <a class="is-flex" href="#TFO-的优势">
+        <span class="has-mr-6">16.1.3</span>
+        <span>TFO 的优势</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#TCP-的超时重传时间是如何计算的">
+        <span class="has-mr-6">17</span>
+        <span>TCP 的超时重传时间是如何计算的</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#经典方法">
+        <span class="has-mr-6">17.1.1</span>
+        <span>经典方法</span>
+        </a></li><li>
+        <a class="is-flex" href="#标准方法">
+        <span class="has-mr-6">17.1.2</span>
+        <span>标准方法</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#TCP-的流量控制是如何实现的">
+        <span class="has-mr-6">18</span>
+        <span>TCP 的流量控制是如何实现的</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#TCP-滑动窗口">
+        <span class="has-mr-6">18.1.1</span>
+        <span>TCP 滑动窗口</span>
+        </a></li><li>
+        <a class="is-flex" href="#流量控制过程">
+        <span class="has-mr-6">18.1.2</span>
+        <span>流量控制过程</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#TCP-的拥塞控制">
+        <span class="has-mr-6">19</span>
+        <span>TCP 的拥塞控制</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#拥塞窗口">
+        <span class="has-mr-6">19.1.1</span>
+        <span>拥塞窗口</span>
+        </a></li><li>
+        <a class="is-flex" href="#慢启动">
+        <span class="has-mr-6">19.1.2</span>
+        <span>慢启动</span>
+        </a></li><li>
+        <a class="is-flex" href="#拥塞避免">
+        <span class="has-mr-6">19.1.3</span>
+        <span>拥塞避免</span>
+        </a></li><li>
+        <a class="is-flex" href="#快速重传">
+        <span class="has-mr-6">19.1.4</span>
+        <span>快速重传</span>
+        </a></li><li>
+        <a class="is-flex" href="#选择性重传">
+        <span class="has-mr-6">19.1.5</span>
+        <span>选择性重传</span>
+        </a></li><li>
+        <a class="is-flex" href="#快速恢复">
+        <span class="has-mr-6">19.1.6</span>
+        <span>快速恢复</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结-1">
+        <span class="has-mr-6">19.1.7</span>
+        <span>总结</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#Nagle-算法和延迟确认">
+        <span class="has-mr-6">20</span>
+        <span>Nagle 算法和延迟确认</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#Nagle-算法">
+        <span class="has-mr-6">20.1.1</span>
+        <span>Nagle 算法</span>
+        </a></li><li>
+        <a class="is-flex" href="#延迟确认">
+        <span class="has-mr-6">20.1.2</span>
+        <span>延迟确认</span>
+        </a></li></ul></ul></li><li>
+        <a class="is-flex" href="#TCP-的-keep-alive">
+        <span class="has-mr-6">21</span>
+        <span>TCP 的 keep-alive</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">22</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="HTTP 查漏补缺" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

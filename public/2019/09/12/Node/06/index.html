@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Node.js 中的 EventEmitter 模块 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="本章我们继续来看 Node.js 当中的 EventEmitter 模块，在 Node.js 当中许多对象都会分发事件，比如一个 net.Server 对象会在每次有新连接时触发一个事件，一个 fs.readStream 对象会在文件被打开的时候触发一个事件，然而所有这些产生事件的对象都是 events.EventEmitter 的实例 本文主要分为以下几个部分，首先先介绍一下 EventEmit">
+<meta name="keywords" content="Node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js 中的 EventEmitter 模块">
+<meta property="og:url" content="http://yoursite.com/2019/09/12/Node/06/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="本章我们继续来看 Node.js 当中的 EventEmitter 模块，在 Node.js 当中许多对象都会分发事件，比如一个 net.Server 对象会在每次有新连接时触发一个事件，一个 fs.readStream 对象会在文件被打开的时候触发一个事件，然而所有这些产生事件的对象都是 events.EventEmitter 的实例 本文主要分为以下几个部分，首先先介绍一下 EventEmit">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js 中的 EventEmitter 模块">
+<meta name="twitter:description" content="本章我们继续来看 Node.js 当中的 EventEmitter 模块，在 Node.js 当中许多对象都会分发事件，比如一个 net.Server 对象会在每次有新连接时触发一个事件，一个 fs.readStream 对象会在文件被打开的时候触发一个事件，然而所有这些产生事件的对象都是 events.EventEmitter 的实例 本文主要分为以下几个部分，首先先介绍一下 EventEmit">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Node.js 中的 EventEmitter 模块" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Node.js 中的 EventEmitter 模块">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2019-09-12</div>
+                <!-- <time class="level-item has-text-grey" datetime="2019-09-11T16:00:00.000Z">2019-09-12</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    44 分钟 读完 (大约 6629 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Node.js 中的 EventEmitter 模块
+            
+        </h1>
+        <div class="content">
+            <p>本章我们继续来看 <code>Node.js</code> 当中的 <code>EventEmitter</code> 模块，在 <code>Node.js</code> 当中许多对象都会分发事件，比如一个 <a href="http://nodejs.cn/api/net.html#net_class_net_server" target="_blank" rel="noopener">net.Server</a> 对象会在每次有新连接时触发一个事件，一个 <a href="http://nodejs.cn/api/fs.html#fs_class_fs_readstream" target="_blank" rel="noopener">fs.readStream</a> 对象会在文件被打开的时候触发一个事件，然而所有这些产生事件的对象都是 <code>events.EventEmitter</code> 的实例</p>
+<p>本文主要分为以下几个部分，首先先介绍一下 <code>EventEmitter</code> 类，然后简单的过一遍源码，最后在自己动手来实现一个简单的 <code>EventEmitter</code> 模块，下面就让我们一步一步来实现吧</p>
+<a id="more"></a>
+
+<h2 id="EventEmitter-类"><a href="#EventEmitter-类" class="headerlink" title="EventEmitter 类"></a>EventEmitter 类</h2><p><code>events</code> 模块只提供了一个对象 <code>events.EventEmitter</code>，其核心就是事件触发与事件监听器功能的封装，可以通过 <code>require(&#39;events&#39;)</code> 来访问该模块，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 引入 events 模块</span></span><br><span class="line"><span class="hljs-keyword">var</span> events = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建 eventEmitter 对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> eventEmitter = <span class="hljs-keyword">new</span> events.EventEmitter()</span><br></pre></td></tr></table></figure>
+
+<p><code>EventEmitter</code> 对象如果在实例化时发生错误，会触发 <code>error</code> 事件，</p>
+<blockquote>
+<p>关于 <code>EventEmitter</code> 里面的 <code>error</code> 事件有一点需要注意的地方，<code>EventEmitter</code> 即使绑定了 <code>error</code> 事件也是不会输出的，而是会在控制台打印该异常的堆栈信息，并结束进程</p>
+</blockquote>
+<p>如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eventEmitter.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error:'</span>, err)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>经过测试可以发现，绑定 <code>error</code> 事件只能自己触发，比如使用 <code>eventEmitter.emit(&#39;error&#39;)</code>，当没有错误时，会在控制台打印 <code>Error：undefined</code>，而当有错误时不会打印而是直接打印该异常的堆栈信息，并结束进程</p>
+<blockquote>
+<p>如果想要获取异常只能通过 <code>try catch</code>，更多关于 <code>EventEmitter</code> 模块的异常处理可见 <a href="#EventEmitter-模块的异常处理">EventEmitter 模块的异常处理</a></p>
+</blockquote>
+<p>当添加新的监听器时，<code>newListener</code> 事件会触发，当监听器被移除时，<code>removeListener</code> 事件被触发（这两个是 <code>Node.js</code> 的 <code>EventEmitter</code> 模块自带的特殊事件）</p>
+<p>以上就是 <code>EventEmitter</code> 的简单使用方式，但是在深入了解 <code>EventEmitter</code> 之前，我们先来了解一些前置知识</p>
+<h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><p>源码部分主要参考的是 <a href="https://github.com/semlinker/node-deep/blob/master/event/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0%20Node.js%20EventEmitter.md" target="_blank" rel="noopener">深入 EventEmitter</a></p>
+<blockquote>
+<p>观察者模式是 <a href="https://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_(%E8%AE%A1%E7%AE%97%E6%9C%BA)" target="_blank" rel="noopener">软件设计模式</a> 的一种，在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知，这通常透过呼叫各观察者所提供的方法来实现，此种模式通常被用来实时事件处理系统 —— <a href="https://zh.wikipedia.org/wiki/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">维基百科</a></p>
+</blockquote>
+<p><code>EventEmitter</code> 本质上是一个观察者模式的实现，所谓观察者模式，它定义了一种一对多的关系，让多个观察者对象同时监听某一个主题对象，这个主题对象的状态发生变化时就会通知所有的观察者对象，使得它们能够自动更新自己，我们可以使用日常生活中，期刊订阅的例子来形象地解释一下上面的概念，期刊订阅包含两个主要的角色，期刊出版方和订阅者，它们之间的关系如下</p>
+<ul>
+<li>期刊出版方，负责期刊的出版和发行工作</li>
+<li>订阅者，只需执行订阅操作，新版的期刊发布后，就会主动收到通知，如果取消订阅，以后就不会再收到通知</li>
+</ul>
+<p>在观察者模式中也有两个主要角色，观察者和被观察者，它们之间的关系图如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/15.png" alt></p>
+<p>观察者模式的优点是支持简单的广播通信，自动通知所有已经订阅过的对象，并且目标对象与观察者之间的抽象耦合关系能够单独扩展以及重用，但是一个被观察者对象有很多的直接和间接的观察者的话，将所有的观察者都通知到会花费很多时间，如果在观察者和观察目标之间有循环依赖的话，观察目标会触发它们之间进行循环调用，可能导致系统崩溃</p>
+<p>下面我们来看一个观察者模式的应用，最为常见的例子就是为 <code>DOM</code> 对象添加事件监听，如下</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"btn"</span>&gt;</span>确认<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clickHandler</span>(<span class="hljs-params">event</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'按钮已点击!'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'btn'</span>).addEventListener(<span class="hljs-string">'click'</span>, clickHandler)</span><br></pre></td></tr></table></figure>
+
+<p>当按钮在点击当同时会触发我们事先绑定好的事件 <code>clickHandler</code>，会在控制台打印出 <code>按钮已点击!</code> 字样</p>
+<h2 id="发布-订阅模式"><a href="#发布-订阅模式" class="headerlink" title="发布/订阅模式"></a>发布/订阅模式</h2><blockquote>
+<p>在 <a href="https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84" target="_blank" rel="noopener">软件架构</a> 中，发布/订阅模式是一种 <a href="https://zh.wikipedia.org/wiki/%E6%B6%88%E6%81%AF" target="_blank" rel="noopener">消息</a><a href="https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BC%8F" target="_blank" rel="noopener">范式</a>，消息的发送者（称为发布者）不会将消息直接发送给特定的接收者（称为订阅者），而是将发布的消息分为不同的类别，无需了解哪些订阅者（如果有的话）可能存在，同样的，订阅者可以表达对一个或多个类别的兴趣，只接收感兴趣的消息，无需了解哪些发布者（如果有的话）存在，—— <a href="https://zh.wikipedia.org/wiki/%E5%8F%91%E5%B8%83/%E8%AE%A2%E9%98%85" target="_blank" rel="noopener">维基百科</a></p>
+</blockquote>
+<p>发布/订阅模式与观察者模式非常类似，它们最大的区别是</p>
+<ul>
+<li>发布者和订阅者不知道对方的存在</li>
+<li>它们之间需要一个第三方组件，叫做信息中介，它将订阅者和发布者串联起来，它过滤和分配所有输入的消息</li>
+<li>发布/订阅模式用来处理不同系统组件的信息交流，即使这些组件不知道对方的存在</li>
+</ul>
+<p>那么信息中介是如何过滤消息呢？在发布/订阅模型中，订阅者通常接收所有发布的消息的一个子集，选择接受和处理的消息的过程被称作过滤，有两种常用的过滤形式，基于主题的和基于内容的</p>
+<ul>
+<li>在『基于主题』的系统中，消息被发布到主题或命名通道上，订阅者将收到其订阅的主题上的所有消息，并且所有订阅同一主题的订阅者将接收到同样的消息，发布者负责定义订阅者所订阅的消息类别</li>
+<li>在『基于内容』的系统中，订阅者定义其感兴趣的消息的条件，只有当消息的属性或内容满足订阅者定义的条件时，消息才会被投递到该订阅者，订阅者需要负责对消息进行分类</li>
+</ul>
+<p>一些系统支持两者的混合，即发布者发布消息到主题上，而订阅者将基于内容的订阅注册到一个或多个主题上，基于主题的通信基础结构图如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/16.png" alt></p>
+<p>最后我们再来总结一下观察者模式与发布/订阅模式之间的区别</p>
+<h2 id="观察者模式-VS-发布-订阅模式"><a href="#观察者模式-VS-发布-订阅模式" class="headerlink" title="观察者模式 VS 发布/订阅模式"></a>观察者模式 VS 发布/订阅模式</h2><p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/17.png" alt></p>
+<p>根据图片可知，两者的区别如下</p>
+<ul>
+<li>在观察者模式中，观察者知道 <code>Subject</code> 的存在，<code>Subject</code> 一直保持对观察者进行记录，然而，在发布/订阅模式中，发布者和订阅者不知道对方的存在，它们只有通过信息中介进行通信</li>
+<li>在发布订阅模式中，组件是松散耦合的，正好和观察者模式相反</li>
+<li>观察者模式大多数时候是同步的，比如当事件触发 <code>Subject</code> 就会去调用观察者的方法，而发布/订阅模式大多数时候是异步的（使用消息队列）</li>
+</ul>
+<p>在大致了解了以上内容之后，下面我们就来正式的看一看 <code>Node.js</code> 当中的 <code>EventEmitter</code> 模块</p>
+<h2 id="EventEmitter-模块"><a href="#EventEmitter-模块" class="headerlink" title="EventEmitter 模块"></a>EventEmitter 模块</h2><p>在 <code>Node.js</code> 当中，大多数的核心 <code>API</code> 都采用惯用的异步事件驱动架构，所有能触发事件的对象都是 <code>EventEmitter</code> 类的实例，这些对象开放了一个 <code>eventEmitter.on()</code> 函数，允许将一个或多个函数绑定到会被对象触发的命名事件上，当 <code>EventEmitter</code> 对象触发一个事件时，所有绑定在该事件上的函数都被同步地调用， 监听器的返回值会被丢弃，本文主要介绍以下几个核心方法</p>
+<ul>
+<li><code>on(event, listener)</code><ul>
+<li>为指定事件添加一个监听器到监听器数组的尾部（还有一个 <code>addListener</code> 方法，本质与 <code>on</code> 是一致的，见下方）</li>
+</ul>
+</li>
+<li><code>emit(event, [arg1], [arg2], [...])</code><ul>
+<li>按监听器的顺序执行执行每个监听器，如果事件有注册监听返回 <code>true</code>，否则返回 <code>false</code></li>
+</ul>
+</li>
+<li><code>once(event, listener)</code><ul>
+<li>为指定事件注册一个单次监听器，即监听器最多只会触发一次，触发后立刻解除该监听器</li>
+</ul>
+</li>
+<li><code>removeListener(event, listener)</code><ul>
+<li>移除指定事件的某个监听器，监听器必须是该事件已经注册过的监听器，它接受两个参数，第一个是事件名称，第二个是回调函数名称</li>
+</ul>
+</li>
+</ul>
+<h2 id="EventEmitter-基本使用"><a href="#EventEmitter-基本使用" class="headerlink" title="EventEmitter 基本使用"></a>EventEmitter 基本使用</h2><p>我们首先先来看一个最基本的 <code>EventEmitter</code> 功能，包含了一个观察者和一个被监听的对象，对应的实现就是 <code>EventEmitter</code> 中的 <code>on</code> 和 <code>emit</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> EventEmitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyEmitter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">EventEmitter</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> myEmitter = <span class="hljs-keyword">new</span> MyEmitter()</span><br><span class="line"></span><br><span class="line">myEmitter.on(<span class="hljs-string">'event'</span>, () =&gt; &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'触发了一个事件！'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">myEmitter.emit(<span class="hljs-string">'event'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>我们自定义 <code>MyEmitter</code> 类，该类继承于 <code>EventEmitter</code> 类，接着我们通过使用 <code>new</code> 关键字创建了 <code>myEmitter</code> 实例，然后使用 <code>on()</code> 方法监听 <code>event</code> 事件，最后利用 <code>emit()</code> 方法触发 <code>event</code> 事件</p>
+<h2 id="EventEmitter-构造函数"><a href="#EventEmitter-构造函数" class="headerlink" title="EventEmitter 构造函数"></a>EventEmitter 构造函数</h2><p>源码可见 <a href="https://github.com/nodejs/node/blob/master/lib/events.js#L43" target="_blank" rel="noopener">EventEmitter.init.call(this)</a>，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">EventEmitter</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  EventEmitter.init.call(<span class="hljs-keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">EventEmitter.usingDomains = <span class="hljs-literal">false</span></span><br><span class="line"></span><br><span class="line">EventEmitter.prototype._events = <span class="hljs-literal">undefined</span>        <span class="hljs-comment">// 事件对象（保存指定的事件类型与对应的监听器）</span></span><br><span class="line">EventEmitter.prototype._eventsCount = <span class="hljs-number">0</span>           <span class="hljs-comment">// 事件数</span></span><br><span class="line">EventEmitter.prototype._maxListeners = <span class="hljs-literal">undefined</span>  <span class="hljs-comment">// 最大的监听器数</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>EventEmitter</code> 构造函数内部，会调用 <code>EventEmitter.init</code> 方法执行初始化操作，<code>EventEmitter.init</code> 的具体实现如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.init = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._events === <span class="hljs-literal">undefined</span> || <span class="hljs-keyword">this</span>._events === <span class="hljs-built_in">Object</span>.getPrototypeOf(<span class="hljs-keyword">this</span>)._events) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>._events = <span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>)</span><br><span class="line">    <span class="hljs-keyword">this</span>._eventsCount = <span class="hljs-number">0</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">this</span>._maxListeners = <span class="hljs-keyword">this</span>._maxListeners || <span class="hljs-literal">undefined</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>EventEmitter.init</code> 内部，会根据条件执行初始化操作，这里有一个比较重要的操作 <code>this._events = Object.create(null)</code>，那么问题来了，为什么要使用 <code>Object.create(null)</code> 来初始化一个新对象而不用更简洁的 <code>{}</code> 呢？简单来说，两者的区别可见下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/18.png" alt></p>
+<p>对比可以发现，使用 <code>create</code> 创建的对象，没有任何属性，可以把它当作一个非常纯净的 <code>map</code> 来使用，可以自己定义 <code>hasOwnProperty</code>、<code>toString</code> 方法而不必担心会将原型链上的同名方法覆盖掉</p>
+<h2 id="on"><a href="#on" class="headerlink" title="on()"></a>on()</h2><p>源码可见 <a href="https://github.com/nodejs/node/blob/master/lib/events.js#L283" target="_blank" rel="noopener">EventEmitter.prototype.addListener</a>，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.prototype.addListener = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addListener</span>(<span class="hljs-params">type, listener</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> _addListener(<span class="hljs-keyword">this</span>, type, listener, <span class="hljs-literal">false</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">EventEmitter.prototype.on = EventEmitter.prototype.addListener</span><br></pre></td></tr></table></figure>
+
+<p>通过源码可以发现，其实 <code>EventEmitter</code> 实例上的 <code>addListener</code> 和 <code>on</code> 方法均是调用的 <code>_addListener()</code> 方法，下面我们就来看看 <a href="https://github.com/nodejs/node/blob/master/lib/events.js#L221" target="_blank" rel="noopener">_addListener</a> 的具体实现（这里只截取了一些主要实现部分）</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 接收四个参数，依次为</span></span><br><span class="line"><span class="hljs-comment">// target    EventEmitter 实例</span></span><br><span class="line"><span class="hljs-comment">// type      事件类型</span></span><br><span class="line"><span class="hljs-comment">// listener  事件监听器</span></span><br><span class="line"><span class="hljs-comment">// prepend   是否添加在前面</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_addListener</span>(<span class="hljs-params">target, type, listener, prepend</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> m</span><br><span class="line">  <span class="hljs-keyword">var</span> events</span><br><span class="line">  <span class="hljs-keyword">var</span> existing</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 这个方式是用于检查监听器是否为函数，如果不是就抛出一个错误</span></span><br><span class="line">  checkListener(listener)</span><br><span class="line"></span><br><span class="line">  events = target._events</span><br><span class="line">  <span class="hljs-comment">// 如果未定义，则使用 Object.create(null) 创建一个纯粹的空对象</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (events === <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">    events = target._events = <span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>)</span><br><span class="line">    target._eventsCount = <span class="hljs-number">0</span></span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-comment">// To avoid recursion in the case that type === "newListener"! Before</span></span><br><span class="line">    <span class="hljs-comment">// adding it to the listeners, first emit "newListener".</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (events.newListener !== <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">      target.emit(<span class="hljs-string">'newListener'</span>, type,</span><br><span class="line">        listener.listener ? listener.listener : listener)</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// Re-assign `events` because a newListener handler could have caused the</span></span><br><span class="line">      <span class="hljs-comment">// this._events to be assigned to a new object</span></span><br><span class="line">      events = target._events</span><br><span class="line">    &#125;</span><br><span class="line">    existing = events[type]</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> (existing === <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">    <span class="hljs-comment">// Optimize the case of one listener. Don't need the extra array object.</span></span><br><span class="line">    events[type] = listener</span><br><span class="line">    ++target._eventsCount</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> existing === <span class="hljs-string">'function'</span>) &#123;</span><br><span class="line">      <span class="hljs-comment">// Adding the second element, need to change to array.</span></span><br><span class="line">      existing = events[type] =</span><br><span class="line">        prepend ? [listener, existing] : [existing, listener]</span><br><span class="line">      <span class="hljs-comment">// If we've already got an array, just append.</span></span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (prepend) &#123;</span><br><span class="line">      existing.unshift(listener)</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      existing.push(listener)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// Check for listener leak</span></span><br><span class="line">    m = _getMaxListeners(target)</span><br><span class="line">    <span class="hljs-keyword">if</span> (m &gt; <span class="hljs-number">0</span> &amp;&amp; existing.length &gt; m &amp;&amp; !existing.warned) &#123;</span><br><span class="line">      <span class="hljs-comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> target</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单的总结一下，主要流程为以下四个步骤</p>
+<ul>
+<li>验证监听器是否为函数对象</li>
+<li>避免类型为 <code>newListener</code> 的事件类型造成递归调用，优先触发</li>
+<li>优化单个监听器的场景，不需使用额外的数组对象</li>
+<li>基于 <code>prepend</code> 参数的值，控制监听器的添加顺序</li>
+</ul>
+<h2 id="emit"><a href="#emit" class="headerlink" title="emit()"></a>emit()</h2><p>源码见 <a href="https://github.com/nodejs/node/blob/master/lib/events.js#L160" target="_blank" rel="noopener">EventEmitter.prototype.emit</a>，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.prototype.emit = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">emit</span>(<span class="hljs-params">type, ...args</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">const</span> events = <span class="hljs-keyword">this</span>._events</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 获取对应的处理器</span></span><br><span class="line">  <span class="hljs-keyword">const</span> handler = events[type]</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> (handler === <span class="hljs-literal">undefined</span>)</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> handler === <span class="hljs-string">'function'</span>) &#123;</span><br><span class="line">    apply(handler, <span class="hljs-keyword">this</span>, args)</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> len = handler.length</span><br><span class="line">    <span class="hljs-comment">// arrayClone 方法为一个数组浅拷贝方法</span></span><br><span class="line">    <span class="hljs-keyword">const</span> listeners = arrayClone(handler, len)</span><br><span class="line">    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; len; ++i)</span><br><span class="line">      apply(listeners[i], <span class="hljs-keyword">this</span>, args)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>剔除掉多余的部分以后可以发现，逻辑还是比较好理解的，先根据事件类型获取对应的处理器，然后根据事件处理器的类型，选择直接调用或者是循环调用</p>
+<p>上面我们简单的介绍了 <code>on()</code> 和 <code>emit()</code> 两个方法，它们主要用来添加事件监听和触发事件监听，下面我们再来看看如何移除事件监听</p>
+<h2 id="removeListener"><a href="#removeListener" class="headerlink" title="removeListener()"></a>removeListener()</h2><p>源码见 <a href="https://github.com/nodejs/node/blob/master/lib/events.js#L328" target="_blank" rel="noopener">EventEmitter.prototype.emit</a>，<code>removeListener()</code> 方法最多只会从监听器数组里移除一个监听器实例，如果任何单一的监听器被多次添加到指定 <code>type</code> 的监听器数组中，则必须多次调用 <code>removeListener()</code> 方法才能移除每个实例，为了方便一次性移除 <code>type</code> 对应的监听器，<code>EventEmitter</code> 为我们提供了 <code>removeAllListeners()</code> 方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.prototype.removeListener =</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeListener</span>(<span class="hljs-params">type, listener</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> originalListener</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 这个方式是用于检查监听器是否为函数，如果不是就抛出一个错误</span></span><br><span class="line">    checkListener(listener)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">const</span> events = <span class="hljs-keyword">this</span>._events</span><br><span class="line">    <span class="hljs-keyword">if</span> (events === <span class="hljs-literal">undefined</span>)</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">const</span> list = events[type]</span><br><span class="line">    <span class="hljs-keyword">if</span> (list === <span class="hljs-literal">undefined</span>)</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (list === listener || list.listener === listener) &#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (--<span class="hljs-keyword">this</span>._eventsCount === <span class="hljs-number">0</span>)</span><br><span class="line">        <span class="hljs-keyword">this</span>._events = <span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>)</span><br><span class="line">      <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">delete</span> events[type]</span><br><span class="line">        <span class="hljs-comment">// 如果设置了 removeListener 监听器，则触发 removeListener 事件</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (events.removeListener)</span><br><span class="line">          <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'removeListener'</span>, type, list.listener || listener)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> list !== <span class="hljs-string">'function'</span>) &#123;</span><br><span class="line">      <span class="hljs-keyword">let</span> position = <span class="hljs-number">-1</span></span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 获取需要移除的监听器的索引值</span></span><br><span class="line">      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = list.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (list[i] === listener || list[i].listener === listener) &#123;</span><br><span class="line">          originalListener = list[i].listener</span><br><span class="line">          position = i</span><br><span class="line">          <span class="hljs-keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">if</span> (position &lt; <span class="hljs-number">0</span>)</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">if</span> (position === <span class="hljs-number">0</span>)</span><br><span class="line">        list.shift()</span><br><span class="line">      <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (spliceOne === <span class="hljs-literal">undefined</span>)</span><br><span class="line">          spliceOne = <span class="hljs-built_in">require</span>(<span class="hljs-string">'internal/util'</span>).spliceOne</span><br><span class="line">        <span class="hljs-comment">// 关于这个方法，见下方</span></span><br><span class="line">        spliceOne(list, position)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">if</span> (list.length === <span class="hljs-number">1</span>)</span><br><span class="line">        events[type] = list[<span class="hljs-number">0</span>]</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">if</span> (events.removeListener !== <span class="hljs-literal">undefined</span>)</span><br><span class="line">        <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'removeListener'</span>, type, originalListener || listener)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">EventEmitter.prototype.off = EventEmitter.prototype.removeListener</span><br></pre></td></tr></table></figure>
+
+<p>我们可以简单的梳理一下 <code>removeListener()</code> 方法，当我们在调用 <code>removeListener()</code> 方法时，若 <code>type</code> 事件类型上绑定多个事件处理器，那么内部处理程序会先根据 <code>listener</code> 事件处理器，查找该事件处理器对应的索引值，然后在根据索引值的不同再进行不同的处理</p>
+<p>但是可以发现，在处理移除对应的事件处理器的时候使用了 <code>spliceOne()</code> 方法，那么为什么不直接利用 <code>Array</code> 的 <code>splice()</code> 方法呢？官方的回答是 <code>spliceOne()</code> 方法的执行速度比 <code>Array#splice()</code> 快大约 <code>1.5</code> 倍，实现如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// About 1.5x faster than the two-arg version of Array#splice().</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">spliceOne</span>(<span class="hljs-params">list, index</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = index, k = i + <span class="hljs-number">1</span>, n = list.length; k &lt; n; i += <span class="hljs-number">1</span>, k += <span class="hljs-number">1</span>)</span><br><span class="line">    list[i] = list[k]</span><br><span class="line">  list.pop()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大致原理是从需要删除的位置开始，依次将后一个元素与前一个元素的位置进行互换，在删除掉最后一项</p>
+<p>最后我们来介绍一下 <code>EventEmitter</code> 另一个常用的方法 <code>once()</code></p>
+<h2 id="once"><a href="#once" class="headerlink" title="once()"></a>once()</h2><p>源码见 <a href="https://github.com/nodejs/node/blob/master/lib/events.js#L294" target="_blank" rel="noopener">EventEmitter.prototype.once</a>，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onceWrapper</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 如果事件处理器未被调用，则先移除事件监听器并设置 fired 字段值为 true</span></span><br><span class="line">  <span class="hljs-comment">// 然后利用 apply() 方法调用 type 事件类型，对应的事件处理器</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.fired) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.target.removeListener(<span class="hljs-keyword">this</span>.type, <span class="hljs-keyword">this</span>.wrapFn)</span><br><span class="line">    <span class="hljs-keyword">this</span>.fired = <span class="hljs-literal">true</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">0</span>)</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.call(<span class="hljs-keyword">this</span>.target)</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.listener.apply(<span class="hljs-keyword">this</span>.target, <span class="hljs-built_in">arguments</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_onceWrap</span>(<span class="hljs-params">target, type, listener</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 创建了一个 state 对象，该对象有一个 fired 属性，用来标识是否已触发，其默认值是 false</span></span><br><span class="line">  <span class="hljs-keyword">const</span> state = &#123; <span class="hljs-attr">fired</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">wrapFn</span>: <span class="hljs-literal">undefined</span>, target, type, listener &#125;</span><br><span class="line">  <span class="hljs-keyword">const</span> wrapped = onceWrapper.bind(state)</span><br><span class="line">  wrapped.listener = listener</span><br><span class="line">  state.wrapFn = wrapped</span><br><span class="line">  <span class="hljs-keyword">return</span> wrapped</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">EventEmitter.prototype.once = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">once</span>(<span class="hljs-params">type, listener</span>) </span>&#123;</span><br><span class="line">  checkListener(listener)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">this</span>.on(type, _onceWrap(<span class="hljs-keyword">this</span>, type, listener))</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>梳理后可以发现，<code>once()</code> 方法依次调用了 <code>_onceWrap()</code> 和 <code>onceWrapper()</code> 方法，使用 <code>state</code> 对象的 <code>fired</code> 属性，用来标识是否已触发</p>
+<h2 id="手动实现一个-EventEmitter-模块"><a href="#手动实现一个-EventEmitter-模块" class="headerlink" title="手动实现一个 EventEmitter 模块"></a>手动实现一个 EventEmitter 模块</h2><p>我们下面就来尝试着手动的实现一个 <code>EventEmitter</code> 模块，我们都知道，每一个 <code>EventEmitter</code> 实例都有一个包含所有事件的对象 <code>_events</code>，事件的监听和监听事件的触发，以及监听事件的移除等事件都是在这个 <code>_events</code> 对象的基础上实现，我们首先先成一个 <code>EventEmitter</code> 类，在类的初始化方法中生成这个事件对象 <code>_events</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventEmitter</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._events === <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">      <span class="hljs-comment">// 创建一个纯粹的空对象用于存放事件对象</span></span><br><span class="line">      <span class="hljs-keyword">this</span>._events = <span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>)</span><br><span class="line">      <span class="hljs-keyword">this</span>._eventsCount = <span class="hljs-number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>_eventsCount</code> 用于统计事件的个数，也就是 <code>_events</code> 对象有多少个属性，下面我们来实现 <code>emit</code> 方法，<code>emit</code> 所做的事情是在 <code>_events</code> 对象中取出相应 <code>type</code> 的属性，并执行属性所对应的函数</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventEmitter</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._events === <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">      <span class="hljs-comment">// 创建一个纯粹的空对象用于存放事件对象</span></span><br><span class="line">      <span class="hljs-keyword">this</span>._events = <span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>)</span><br><span class="line">      <span class="hljs-keyword">this</span>._eventsCount = <span class="hljs-number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  emit(type, ...args) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> events = <span class="hljs-keyword">this</span>._events</span><br><span class="line">    <span class="hljs-keyword">const</span> handler = events[type]</span><br><span class="line">    <span class="hljs-comment">// 判断相应 type 的执行函数是否为一个函数还是一个数组</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> handler === <span class="hljs-string">'function'</span>) &#123;</span><br><span class="line">      <span class="hljs-built_in">Reflect</span>.apply(handler, <span class="hljs-keyword">this</span>, args)</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; handler.length; i++) &#123;</span><br><span class="line">        <span class="hljs-built_in">Reflect</span>.apply(handler[i], <span class="hljs-keyword">this</span>, args)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>emit</code> 方法是触发事件，并执行相应的方法，而 <code>on</code> 方法则是对于指定的事件添加监听函数</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">on(type, listener, prepend)&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> m</span><br><span class="line">  <span class="hljs-keyword">var</span> events</span><br><span class="line">  <span class="hljs-keyword">var</span> existing</span><br><span class="line">  events = <span class="hljs-keyword">this</span>._events</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 如果 newListener 存在，则每次添加新方法的时候 emit 出一个 newListener </span></span><br><span class="line">  <span class="hljs-keyword">if</span> (events.newListener !== <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'newListener'</span>, type, listener)</span><br><span class="line">    events = target._events</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  existing = events[type]</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 判断相应的 type 的方法是否存在</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (existing === <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">    <span class="hljs-comment">// 如果相应的 type 的方法不存在，则新增一个相应 type 的事件</span></span><br><span class="line">    existing = events[type] = listener</span><br><span class="line">    ++<span class="hljs-keyword">this</span>._eventsCount</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-comment">// 如果是函数，则添加</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> existing === <span class="hljs-string">'function'</span>) &#123;</span><br><span class="line">      existing = events[type] = prepend ? [listener, existing] : [existing, listener]</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (prepend) &#123;</span><br><span class="line">      existing.unshift(listener)</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      existing.push(listener)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果 <code>_events</code> 存在 <code>newListener</code> 属性，也就是说 <code>_event</code> 存在监听 <code>newListener</code> 监听事件，那么每次 <code>on</code> 方法添加事件的时候，都会 <code>emit</code> 出一个 <code>newListener</code></li>
+<li>且在 <code>on</code> 方法的参数中，第三个参数用于指定是在相应事件类型属性所对应的数组头部添加还是尾部添加</li>
+<li>在 <code>on</code> 方法中为了可以链式的调用，所以返回了 <code>EventEmitter</code> 模块的实例化本身</li>
+</ul>
+<p>在 <code>on</code> 方法的基础上可以实现 <code>addListener</code> 方法和 <code>prependListener</code> 方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.prototype.addListener = EventEmitter.prototype.on</span><br><span class="line"></span><br><span class="line">EventEmitter.prototype.prependListener = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prependListener</span>(<span class="hljs-params">type, listener</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> EventEmitter.prototype.on(type, listener, <span class="hljs-literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来看看 <code>removeListener</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">removeListener(type, listener)&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> list, events, position, i, originalListener</span><br><span class="line">  events = <span class="hljs-keyword">this</span>._events</span><br><span class="line">  list = events[type]</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 如果相应的事件对象的属性值是一个函数，也就是说事件只被一个函数监听</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (list === listener) &#123;</span><br><span class="line">    <span class="hljs-comment">// 如果 -- 归零，则重新定义为一个新对象</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (--<span class="hljs-keyword">this</span>._eventsCount === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>._events = <span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>)</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      <span class="hljs-comment">// 否则删除该事件，并且如果存在 removeListener 的监听函数，则触发 removeListener</span></span><br><span class="line">      <span class="hljs-keyword">delete</span> events[type]</span><br><span class="line">      <span class="hljs-keyword">if</span> (events.removeListener)</span><br><span class="line">        <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'removeListener'</span>, type, listener)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 如果不是函数则为函数数组</span></span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> list !== <span class="hljs-string">'function'</span>) &#123;</span><br><span class="line">    <span class="hljs-comment">// 遍历数组，找出 listener 对应函数的索引值</span></span><br><span class="line">    <span class="hljs-keyword">for</span> (i = list.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (list[i] === listener) &#123;</span><br><span class="line">        position = i</span><br><span class="line">        <span class="hljs-keyword">break</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 没有找到这个函数，则返回不做任何改动的对象</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (position) &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 如果数组的第一个函数才是所需要删除的对应 listener 函数，则直接移除</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (position === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">      list.shift()</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      <span class="hljs-comment">// 直接使用 splice 删除即可，如果需要优化则可以采用源码当中的 spliceOne() 方法</span></span><br><span class="line">      list.splice(position, <span class="hljs-number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (list.length === <span class="hljs-number">1</span>)</span><br><span class="line">      events[type] = list[<span class="hljs-number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment">// 同上</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (events.removeListener !== <span class="hljs-literal">undefined</span>)</span><br><span class="line">      <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'removeListener'</span>, type, listener)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上就是几个核心方法的实现，<code>removeAllListener</code> 与 <code>removeListener</code> 相似，只要找到传入的 <code>type</code> 所对应属性的值，没有遍历过程，直接删除这个属性即可</p>
+<h2 id="EventEmitter-模块的异常处理"><a href="#EventEmitter-模块的异常处理" class="headerlink" title="EventEmitter 模块的异常处理"></a>EventEmitter 模块的异常处理</h2><p>最后我们再来看看 <code>EventEmitter</code> 模块的异常处理的几种方式，比较常用的有以下几种方式</p>
+<ul>
+<li><code>try-catch</code></li>
+<li><code>domains</code></li>
+<li><code>process.on(&#39;uncaughtException&#39;)</code></li>
+</ul>
+<h4 id="try-catch-异常处理方式"><a href="#try-catch-异常处理方式" class="headerlink" title="try catch 异常处理方式"></a>try catch 异常处理方式</h4><p>在 <code>Node.js</code> 中也可以通过 <code>try catch</code> 方式来捕获和处理异常，比如</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">try</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = x</span><br><span class="line">&#125; <span class="hljs-keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(e)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述 <code>let x = x</code> 赋值语句的错误会被捕获，这里提异常处理，那么跟事件有什么关系呢？<code>Node.js</code> 中有一个特殊的事件 <code>error</code>，如果异常没有被捕获，就会触发 <code>process</code> 的 <code>uncaughtException</code> 事件抛出，如果你没有注册该事件的监听器（即该事件没有被处理），则 <code>Node.js</code> 会在控制台打印该异常的堆栈信息，并结束进程（崩溃），比如</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> events = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> emitter = <span class="hljs-keyword">new</span> events.EventEmitter()</span><br><span class="line"></span><br><span class="line">emitter.emit(<span class="hljs-string">'error'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在上述代码中没有监听 <code>error</code> 的事件函数，因此会触发 <code>process</code> 的 <code>uncaughtException</code> 事件，从而打印异常堆栈信息，并结束进程，对于阻塞或者说非异步的异常捕获，<code>try catch</code> 是没有问题的，但是问题在于 <code>try catch</code> 不能捕获非阻塞或者异步函数里面的异常，举例来说</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">try</span> &#123;</span><br><span class="line">  <span class="hljs-comment">// 第二个 x 在使用前未定义，会抛出异常</span></span><br><span class="line">  <span class="hljs-keyword">let</span> x = x</span><br><span class="line">&#125; <span class="hljs-keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'该异常已经被捕获'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(e)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中，因为 <code>try</code> 方法里面是同步的，因此可以捕获异常，但是如果 <code>try</code> 方法里面有异步的函数</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">try</span> &#123;</span><br><span class="line">  process.nextTick(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> x = x</span><br><span class="line">  &#125;)</span><br><span class="line">&#125; <span class="hljs-keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'该异常已经被捕获'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(e)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为 <code>process.nextTick</code> 是异步的，因此在 <code>process.nextTick</code> 内部的错误不能被捕获，也就是说 <code>try catch</code> 不能捕获非阻塞函数内的异常</p>
+<h4 id="通过-domains-管理异常"><a href="#通过-domains-管理异常" class="headerlink" title="通过 domains 管理异常"></a>通过 domains 管理异常</h4><p><code>Node.js</code> 中 <code>domain</code> 模块能被用来集中地处理多个异常操作，通过 <code>Node.js</code> 的 <code>domain</code> 模块可以捕获非阻塞函数内的异常</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> domain = <span class="hljs-built_in">require</span>(<span class="hljs-string">'domain'</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> eventDomain = domain.create()</span><br><span class="line"></span><br><span class="line">eventDomain.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'该异常已经被捕获了'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(err)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">eventDomain.run(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  process.nextTick(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-comment">// 抛出异常</span></span><br><span class="line">    <span class="hljs-keyword">let</span> x = x</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>同样的，即使 <code>process.nextTick</code> 是一个异步函数，<code>domain.on</code> 方法也可以捕获这个异步函数中的异常，即使更复杂的情况下，比如异步嵌套异步的情况下，<code>domain.on</code> 方法也可以捕获异常</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> domain = <span class="hljs-built_in">require</span>(<span class="hljs-string">'domain'</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> eventDomain = domain.create()</span><br><span class="line"></span><br><span class="line">eventDomain.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'该异常已经被捕获了'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(err)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">eventDomain.run(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  process.nextTick(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">let</span> x = x</span><br><span class="line">      &#125;, <span class="hljs-number">0</span>)</span><br><span class="line">    &#125;, <span class="hljs-number">0</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在上述的情况下，即使异步嵌套很复杂，也能在最外层捕获到异常，但是往往现实并没有那么美好，在 <code>Node.js</code> 最新的文档中，<code>domain</code> 已经被废除了（<code>Deprecated</code>），这是因为 <code>domain</code> 从诞生之日起就有着缺陷，举例来说</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> domain = <span class="hljs-built_in">require</span>(<span class="hljs-string">'domain'</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> EventEmitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>).EventEmitter</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> e = <span class="hljs-keyword">new</span> EventEmitter()</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> timer = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  e.emit(<span class="hljs-string">'data'</span>)</span><br><span class="line">&#125;, <span class="hljs-number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">next</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  e.once(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'something wrong here'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> d = domain.create()</span><br><span class="line">d.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'cache by domain'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">d.run(next)</span><br></pre></td></tr></table></figure>
+
+<p>如上述的代码是无法捕获到异常 <code>Error</code> 的，原因在于发出异常的 <code>EventEmitter</code> 实例 <code>e</code>，以及触发异常的定时函数 <code>timer</code> 没有被 <code>domain</code> 包裹，<code>domain</code> 模块是通过重写事件循环中的 <code>nextTick</code> 和 <code>_tickCallback</code> 来事件将 <code>process.domain</code> 注入到 <code>next</code> 包裹的所有异步事件内，解决上述无法捕获异常的情况，只需要将 <code>e</code> 或者 <code>timer</code> 包裹进 <code>domain</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">d.add(e)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// or</span></span><br><span class="line"></span><br><span class="line">d.add(timer)</span><br></pre></td></tr></table></figure>
+
+<p>就可以成功的捕获异常，但是 <code>domain</code> 模块已经在 <code>Node.js</code> 最新的文档中被废除了</p>
+<h4 id="process-on-‘uncaughtException’"><a href="#process-on-‘uncaughtException’" class="headerlink" title="process.on(‘uncaughtException’)"></a>process.on(‘uncaughtException’)</h4><p><code>Node.js</code> 中提供了一个最外层的捕获异常的方法，非阻塞或者异步函数中的异常都会抛出到最外层，如果异常没有被捕获，那么会暴露出来被最外层的 <code>process.on(&#39;uncaughtException&#39;)</code> 所捕获</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">try</span> &#123;</span><br><span class="line">  process.nextTick(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> x = x</span><br><span class="line">  &#125;, <span class="hljs-number">0</span>)</span><br><span class="line">&#125; <span class="hljs-keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'该异常已经被捕获'</span>)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(e)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">process.on(<span class="hljs-string">'uncaughtException'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>&#123; <span class="hljs-built_in">console</span>.log(err) &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这样就能在最外层捕获异步或者说非阻塞函数中的异常，但是需要注意避免 <code>uncaughtException</code> 错误引起 <code>Node.js</code> 进程崩溃</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/semlinker/node-deep/blob/master/event/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0%20Node.js%20EventEmitter.md" target="_blank" rel="noopener">深入 EventEmitter</a></li>
+<li><a href="https://github.com/nodejs/node/blob/master/lib/events.js" target="_blank" rel="noopener">events.js</a></li>
+<li><a href="https://github.com/primus/eventemitter3/blob/master/index.js" target="_blank" rel="noopener">eventemitter3</a></li>
+<li><a href="https://nodejs.org/zh-cn/docs/guides/domain-postmortem/" target="_blank" rel="noopener">domain</a></li>
+<li><a href="https://nodejs.org/api/process.html" target="_blank" rel="noopener">process</a></li>
+<li><a href="https://cnodejs.org/topic/5576a30bc4e7fbea6e9a32ad" target="_blank" rel="noopener">异常处理 uncaughtException 篇</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Node-js/">Node.js</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/09/12/CSS/11/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">CSS 常见布局方式</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/09/01/Node/05/">
+                <span class="level-item">什么是 Node.js</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '461f7cc55a354f76fbed7158346fb7b1',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#EventEmitter-类">
+        <span class="has-mr-6">1</span>
+        <span>EventEmitter 类</span>
+        </a></li><li>
+        <a class="is-flex" href="#观察者模式">
+        <span class="has-mr-6">2</span>
+        <span>观察者模式</span>
+        </a></li><li>
+        <a class="is-flex" href="#发布-订阅模式">
+        <span class="has-mr-6">3</span>
+        <span>发布/订阅模式</span>
+        </a></li><li>
+        <a class="is-flex" href="#观察者模式-VS-发布-订阅模式">
+        <span class="has-mr-6">4</span>
+        <span>观察者模式 VS 发布/订阅模式</span>
+        </a></li><li>
+        <a class="is-flex" href="#EventEmitter-模块">
+        <span class="has-mr-6">5</span>
+        <span>EventEmitter 模块</span>
+        </a></li><li>
+        <a class="is-flex" href="#EventEmitter-基本使用">
+        <span class="has-mr-6">6</span>
+        <span>EventEmitter 基本使用</span>
+        </a></li><li>
+        <a class="is-flex" href="#EventEmitter-构造函数">
+        <span class="has-mr-6">7</span>
+        <span>EventEmitter 构造函数</span>
+        </a></li><li>
+        <a class="is-flex" href="#on">
+        <span class="has-mr-6">8</span>
+        <span>on()</span>
+        </a></li><li>
+        <a class="is-flex" href="#emit">
+        <span class="has-mr-6">9</span>
+        <span>emit()</span>
+        </a></li><li>
+        <a class="is-flex" href="#removeListener">
+        <span class="has-mr-6">10</span>
+        <span>removeListener()</span>
+        </a></li><li>
+        <a class="is-flex" href="#once">
+        <span class="has-mr-6">11</span>
+        <span>once()</span>
+        </a></li><li>
+        <a class="is-flex" href="#手动实现一个-EventEmitter-模块">
+        <span class="has-mr-6">12</span>
+        <span>手动实现一个 EventEmitter 模块</span>
+        </a></li><li>
+        <a class="is-flex" href="#EventEmitter-模块的异常处理">
+        <span class="has-mr-6">13</span>
+        <span>EventEmitter 模块的异常处理</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#try-catch-异常处理方式">
+        <span class="has-mr-6">13.1</span>
+        <span>try catch 异常处理方式</span>
+        </a></li><li>
+        <a class="is-flex" href="#通过-domains-管理异常">
+        <span class="has-mr-6">13.2</span>
+        <span>通过 domains 管理异常</span>
+        </a></li><li>
+        <a class="is-flex" href="#process-on-‘uncaughtException’">
+        <span class="has-mr-6">13.3</span>
+        <span>process.on(‘uncaughtException’)</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">14</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Node.js 中的 EventEmitter 模块" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

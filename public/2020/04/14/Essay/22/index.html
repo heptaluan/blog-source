@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>图的遍历 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="在之前的章节当中，我们介绍了 图结构 和 图的存储结构，所以可以得知 图的存储结构 主要有五种方式，有两种使用较多的『邻接矩阵』和『邻接表』，另外还有三种使用较少的『十字链表』，『邻接多重表』和『边集数组』，本章我们主要来看一下图的遍历">
+<meta name="keywords" content="Essay">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图的遍历">
+<meta property="og:url" content="http://yoursite.com/2020/04/14/Essay/22/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="在之前的章节当中，我们介绍了 图结构 和 图的存储结构，所以可以得知 图的存储结构 主要有五种方式，有两种使用较多的『邻接矩阵』和『邻接表』，另外还有三种使用较少的『十字链表』，『邻接多重表』和『边集数组』，本章我们主要来看一下图的遍历">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/22.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="图的遍历">
+<meta name="twitter:description" content="在之前的章节当中，我们介绍了 图结构 和 图的存储结构，所以可以得知 图的存储结构 主要有五种方式，有两种使用较多的『邻接矩阵』和『邻接表』，另外还有三种使用较少的『十字链表』，『邻接多重表』和『边集数组』，本章我们主要来看一下图的遍历">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/22.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="图的遍历" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/22.webp" alt="图的遍历">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2020-04-14</div>
+                <!-- <time class="level-item has-text-grey" datetime="2020-04-13T16:00:00.000Z">2020-04-14</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Essay/">Essay</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    24 分钟 读完 (大约 3539 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                图的遍历
+            
+        </h1>
+        <div class="content">
+            <p>在之前的章节当中，我们介绍了 <a href="https://heptaluan.github.io/2020/04/05/Essay/20/" target="_blank" rel="noopener">图结构</a> 和 <a href="https://heptaluan.github.io/2020/04/09/Essay/21/" target="_blank" rel="noopener">图的存储结构</a>，所以可以得知 <a href="https://heptaluan.github.io/2020/04/09/Essay/21/" target="_blank" rel="noopener">图的存储结构</a> 主要有五种方式，有两种使用较多的『邻接矩阵』和『邻接表』，另外还有三种使用较少的『十字链表』，『邻接多重表』和『边集数组』，本章我们主要来看一下图的遍历</p>
+<a id="more"></a>
+
+
+<h2 id="图的遍历"><a href="#图的遍历" class="headerlink" title="图的遍历"></a>图的遍历</h2><p>在之前介绍过的二叉树的遍历当中，我们提到来四种遍历方式，它们分别是『前序遍历』，『中序遍历』，『后序遍历』和『层序遍历』，针对于二叉树而言，因为根结点只有一个，并且所有的结点都只有一个双亲，所以我们实现起来不算太过困难</p>
+<p>但是针对图的遍历，因为它的任一顶点都可以和其余的所有顶点相邻接，所以极有可能存在重复走过某个顶点或漏了某个顶点的遍历过程，所以对于图的遍历，如果要避免以上情况，那就需要科学地设计遍历方案，通常有两种遍历方案，它们是『深度优先遍历』和『广度优先遍历』，下面我们就一个一个来进行了解</p>
+<h2 id="深度优先遍历"><a href="#深度优先遍历" class="headerlink" title="深度优先遍历"></a>深度优先遍历</h2><p>深度优化遍历（<code>DepthFirstSearch</code>），也有称为深度优化搜索，简称为 <code>DFS</code>，我们以下面这个图为例</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/22-01.png" alt></p>
+<p>如果我们想要进行遍历，我们可以约定右手原则，即在没有碰到重复顶点的情况下，分叉路口始终是向右手边走，每路过一个顶点就做一个记号，如果走到终点的时候发现分叉路都是已经被标记过的，则执行回退操作，一直回退到起点，比如针对上图，它的执行流程是</p>
+<ul>
+<li>我们首先从 <code>A</code> 出发开始进行遍历，按照我们的右手原则（比如上例当中就是我们面对着 <code>A</code>），它会依次经过 <code>A，B，C，D，E</code>，最终到达 <code>F</code> 处</li>
+<li>到达 <code>F</code> 以后可以发现，<code>A</code> 和 <code>E</code> 都是已经被标记过了，所以它会走向 <code>G</code>，这时发现 <code>B</code> 和 <code>D</code> 也都是已经标记过了，所以会走向 <code>H</code></li>
+<li>到达 <code>H</code> 以后会发现，<code>E，D，G</code> 都是已经标记过了，所以这时就会回退到 <code>G</code> 到位置，同理此时可以发现 <code>B，D，F</code> 也都是标记过了，所以依次经过 <code>F，E</code>，一直会回退到 <code>D</code> 到位置</li>
+<li>到达 <code>D</code> 到位置以后会发现 <code>C</code> 是被标记过到，但是 <code>I</code> 是没有标记过到，所以会走向 <code>I</code>，下一步同理，发现 <code>B</code> 和 <code>C</code> 都是被标记过到，所以会往回走，在依次经过 <code>D，C，B</code> 回到 <code>A</code> 到位置上</li>
+<li>回到 <code>A</code> 到位置上以后就算是结束遍历过程，这就是『深度优先遍历』</li>
+</ul>
+<p>简单总结一下可以发现，『深度优先遍历』其实就是一个『递归』的过程，如果再细心观察，可以发现，其实整个遍历过程就像是一棵树的『前序遍历』，我们将上面到流程简单总结一下其实就是下图这样到流程</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/22-02.png" alt></p>
+<h2 id="深度优先遍历的代码实现"><a href="#深度优先遍历的代码实现" class="headerlink" title="深度优先遍历的代码实现"></a>深度优先遍历的代码实现</h2><p>下面我们来看看如何进行实现，图结构的生成可以参考我们在 <a href="https://heptaluan.github.io/2020/04/09/Essay/21/" target="_blank" rel="noopener">图的存储结构</a> 当中介绍过的邻接矩阵的实现，所以在这里我们只介绍遍历方法，以邻接矩阵为例</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 访问标志数组，遍历时使用</span></span><br><span class="line"><span class="hljs-keyword">let</span> visited = []</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 邻接矩阵的深度优先递归算法</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">DFS</span>(<span class="hljs-params">i</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 访问过的顶点设置为 TRUE</span></span><br><span class="line">  visited[i] = <span class="hljs-literal">true</span></span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'打印顶点:'</span>, G.vexs[i])</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">0</span>; j &lt; G.numVertexes; j++) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (G.arc[i][j] == <span class="hljs-number">1</span> &amp;&amp; !visited[j]) &#123;</span><br><span class="line">      <span class="hljs-built_in">console</span>.log(G.vexs[i], <span class="hljs-string">'-&gt;'</span>, G.vexs[j])</span><br><span class="line">      <span class="hljs-comment">// 对未访问的顶点进行递归</span></span><br><span class="line">      DFS(j)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 邻接矩阵的深度遍历操作</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">DFSTraverse</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.numVertexes; i++) &#123;</span><br><span class="line">    <span class="hljs-comment">// 初始化所有顶点状态都是未访问过状态</span></span><br><span class="line">    visited[i] = <span class="hljs-literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.numVertexes; i++) &#123;</span><br><span class="line">    <span class="hljs-comment">// 若是连通图，只会执行一次</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (!visited[i])</span><br><span class="line">      DFS(i)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="马踏棋盘算法"><a href="#马踏棋盘算法" class="headerlink" title="马踏棋盘算法"></a>马踏棋盘算法</h2><p>马踏棋盘问题（又称骑士周游或骑士漫游问题）是算法设计的经典问题之一，题目是这样的，国际象棋的棋盘为 <code>8 * 8</code> 的方格棋盘，现将马放在任意指定的方格中，按照马走棋的规则将马进行移动，要求每个方格只能进入一次，最终使得马走遍棋盘 <code>64</code> 个方格，如下图所示，当马在棋盘上任意一点当时候，它的走法会有八种</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/22-03.png" alt></p>
+<p>在此之前，我们先来了解两个概念</p>
+<ul>
+<li>回溯法<ul>
+<li>之前在 <a href="https://heptaluan.github.io/2020/03/05/Essay/13/" target="_blank" rel="noopener">递归</a> 章节中我们解决八皇后问题的时候，我们曾经提到过回溯法，简单来说就是一条路走到黑，碰壁了再回来一条路走到黑，如此循环</li>
+<li>一般和递归可以很好的搭配使用，还有深度优先搜索（<code>DFS</code>）</li>
+</ul>
+</li>
+<li>哈密尔顿路径<ul>
+<li>图 <code>G</code> 中的哈密尔顿路径指的是经过图 <code>G</code> 中每个顶点，且『只经过一次的一条轨迹』</li>
+<li>如果这条轨迹是一条闭合的路径（从起点出发不重复地遍历所有点后仍能回到起始点），那么这条路径称为『哈密尔顿回路』</li>
+</ul>
+</li>
+</ul>
+<p>关于马踏棋盘问题，主要的解决方案有两种，一种是基于『深度优先搜索』的方法，另一种是基于『贪婪算法』的方法</p>
+<ul>
+<li>第一种基于深度优先搜索的方法是比较常用的算法，深度优先搜索算法也是数据结构中的经典算法之一，主要是采用递归的思想，一级一级的寻找，遍历出所有的结果，最后找到合适的解</li>
+<li>第二种基于贪婪的算法则是制定贪心准则，一旦设定不能修改，他只关心局部最优解，但不一定能得到最优解</li>
+</ul>
+<p>我们先来简单的分析一下，其实可以分为两种情况</p>
+<ul>
+<li>在四角，马踏日走只有两个选择</li>
+<li>在其余部分，马踏日走有四、六、八不等的选择</li>
+</ul>
+<p>所以我们可以在外层另外加上两层，确保 <code>8 * 8</code> 方格中的每一个格子都有 <code>8</code> 中不同的选择，为了确保每个格子能走日字，而且选择的可能性等同，初始化除了最外两层格子标记没有被访问，最外两层中每个格子都标记为已被访问即可达到目标，如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/22-04.png" alt></p>
+<p>如上，为了确保每个格子能走日字，而且选择的可能性等同，初始化除了最外两层格子标记没有被访问，最外两层中每个格子都标记为已被访问即可达到目标，并且每一个表格中马在访问时都有 <code>8</code> 种不同的选择，这 <code>8</code> 种不同的选择都会在其相应的 <code>x</code> 和 <code>y</code> 坐标上进行追加标记，如下所示</p>
+<table>
+<thead>
+<tr>
+<th><code>x</code></th>
+<th><code>y</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>-1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>-1</td>
+<td>-2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>-2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-1</td>
+</tr>
+</tbody></table>
+<p>先来看第一种实现方式，递归求解（回溯法求解），列出所有的解，并从中找出从 <code>(2, 2)</code> 位置出发的合适解</p>
+<figure class="highlight c hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">int</span> chessboard[<span class="hljs-number">12</span>][<span class="hljs-number">12</span>] = &#123;<span class="hljs-number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 标记马已走的方格数</span></span><br><span class="line"><span class="hljs-keyword">int</span> cnt = <span class="hljs-number">0</span>;  </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 标记马走完全程的具体方案数           </span></span><br><span class="line"><span class="hljs-keyword">int</span> sum = <span class="hljs-number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 初始马当前位置向其周围相邻八个日字的 x, y 的偏移量</span></span><br><span class="line"><span class="hljs-keyword">int</span> move[<span class="hljs-number">8</span>][<span class="hljs-number">2</span>] = &#123;&#123;<span class="hljs-number">2</span>, <span class="hljs-number">1</span>&#125;, &#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>&#125;, &#123;<span class="hljs-number">-1</span>, <span class="hljs-number">2</span>&#125;, &#123;<span class="hljs-number">-2</span>, <span class="hljs-number">1</span>&#125;, &#123;<span class="hljs-number">-2</span>, <span class="hljs-number">-1</span>&#125;, &#123;<span class="hljs-number">-1</span>, <span class="hljs-number">-2</span>&#125;, &#123;<span class="hljs-number">1</span>, <span class="hljs-number">-2</span>&#125;, &#123;<span class="hljs-number">2</span>, <span class="hljs-number">-1</span>&#125;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 输出马踏棋盘的解</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintChess</span><span class="hljs-params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 马踏棋盘递归过程</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Horse</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">int</span> i, j;</span><br><span class="line">  <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">12</span>; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">for</span> (j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">12</span>; j++) &#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (i == <span class="hljs-number">0</span> || i == <span class="hljs-number">1</span> || i == <span class="hljs-number">10</span> || i == <span class="hljs-number">11</span> || j == <span class="hljs-number">0</span> || j == <span class="hljs-number">1</span> || j == <span class="hljs-number">10</span> || j == <span class="hljs-number">11</span>) &#123;</span><br><span class="line">        <span class="hljs-comment">// 在 8 * 8 的外层再加上两层，确保 8 * 8 方格中的每一个格子都有 8 种不同的日字选择</span></span><br><span class="line">        chessboard[i][j] = <span class="hljs-number">-1</span>; </span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 从起始位置开始求得所有解</span></span><br><span class="line">  chessboard[<span class="hljs-number">2</span>][<span class="hljs-number">2</span>] = ++cnt;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 递归调用当前当前位置附近的 8 个日字，看看是否满足条件</span></span><br><span class="line">  Horse(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>);</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 马永远踏的是 x, y 位置，而不是 a, b</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Horse</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span> </span>&#123; </span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 临界值，马走日字全部踏完，成功求出问题解</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (cnt &gt;= <span class="hljs-number">64</span>) &#123; </span><br><span class="line">    sum++;</span><br><span class="line">    PrintChess();</span><br><span class="line">    <span class="hljs-keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">8</span>; i++) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">int</span> a = x + move[i][<span class="hljs-number">0</span>];  <span class="hljs-comment">// 拿到当前马位置相邻的 8 个日字的 x 坐标</span></span><br><span class="line">    <span class="hljs-keyword">int</span> b = y + move[i][<span class="hljs-number">1</span>];  <span class="hljs-comment">// 拿到当前马位置相邻的 8 个日字的 y 坐标</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 判断当前马位置相邻的日字是否已被访问</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (chessboard[a][b] == <span class="hljs-number">0</span>) &#123; </span><br><span class="line">      cnt++;</span><br><span class="line">      chessboard[a][b] = cnt;  <span class="hljs-comment">// 标志已被访问</span></span><br><span class="line">      Horse(a, b);             <span class="hljs-comment">// 从当前马的位置继续往下访问</span></span><br><span class="line">      cnt--;</span><br><span class="line">      chessboard[a][b] = <span class="hljs-number">0</span>;    <span class="hljs-comment">// 回溯回来修改其相邻的日字的访问情况</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 输出马踏棋盘的解</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintChess</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-built_in">endl</span> &lt;&lt; <span class="hljs-string">"马踏棋盘第 "</span> &lt;&lt; sum &lt;&lt; <span class="hljs-string">"组解为:"</span> &lt;&lt; <span class="hljs-built_in">endl</span>;</span><br><span class="line">  <span class="hljs-keyword">int</span> i, j;</span><br><span class="line">  <span class="hljs-keyword">for</span> (i = <span class="hljs-number">2</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">for</span> (j = <span class="hljs-number">2</span>; j &lt; <span class="hljs-number">10</span>; j++) &#123;</span><br><span class="line">      <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"  "</span> &lt;&lt; chessboard[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-built_in">endl</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来看看贪心算法求解，列出从 <code>(2, 2)</code> 位置出发的合适解，局部最优</p>
+<figure class="highlight c hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">/* </span></span><br><span class="line"><span class="hljs-comment"></span></span><br><span class="line"><span class="hljs-comment">typedef struct&#123;</span></span><br><span class="line"><span class="hljs-comment">  int x;      // 记录当前马位置的 x 坐标    </span></span><br><span class="line"><span class="hljs-comment">  int y;      // 记录当前马位置的 y 坐标 </span></span><br><span class="line"><span class="hljs-comment">  int i;      // 记录从当前马的位置前往下一个日字的序号 i (0 &lt; i &lt; 8) </span></span><br><span class="line"><span class="hljs-comment">&#125;StackHorse; </span></span><br><span class="line"><span class="hljs-comment"></span></span><br><span class="line"><span class="hljs-comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 申请一个栈空间（里面存储的就是 x，y，i 三个具体的变量值）来标记马走的具体位置</span></span><br><span class="line"><span class="hljs-keyword">int</span> StackHorse[<span class="hljs-number">100</span>][<span class="hljs-number">3</span>] = &#123;<span class="hljs-number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 记录 8 * 8 棋盘马走的具体脚印</span></span><br><span class="line"><span class="hljs-keyword">int</span> chessboard[<span class="hljs-number">12</span>][<span class="hljs-number">12</span>] = &#123;<span class="hljs-number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 标记马已走的方格数</span></span><br><span class="line"><span class="hljs-keyword">int</span> cnt = <span class="hljs-number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 初始马当前位置向其周围相邻八个日字的 x, y 的偏移量</span></span><br><span class="line"><span class="hljs-keyword">int</span> move[<span class="hljs-number">8</span>][<span class="hljs-number">2</span>] = &#123;&#123;<span class="hljs-number">2</span>, <span class="hljs-number">1</span>&#125;, &#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>&#125;, &#123;<span class="hljs-number">-1</span>, <span class="hljs-number">2</span>&#125;, &#123;<span class="hljs-number">-2</span>, <span class="hljs-number">1</span>&#125;, &#123;<span class="hljs-number">-2</span>, <span class="hljs-number">-1</span>&#125;, &#123;<span class="hljs-number">-1</span>, <span class="hljs-number">-2</span>&#125;, &#123;<span class="hljs-number">1</span>, <span class="hljs-number">-2</span>&#125;, &#123;<span class="hljs-number">2</span>, <span class="hljs-number">-1</span>&#125;&#125;; </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 输出马踏棋盘的解</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintChess</span><span class="hljs-params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 马踏棋盘递归过程</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Horse</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">int</span> i, j;</span><br><span class="line">  <span class="hljs-comment">// 初始化马踏棋盘的具体值（0 代表未被访问，1 代表已被访问，-1 代表新加的最外面两层）</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">12</span>; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">for</span> (j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">12</span>; j++) &#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (i == <span class="hljs-number">0</span> || i == <span class="hljs-number">1</span> || i == <span class="hljs-number">10</span> || i == <span class="hljs-number">11</span> || j == <span class="hljs-number">0</span> || j == <span class="hljs-number">1</span> || j == <span class="hljs-number">10</span> || j == <span class="hljs-number">11</span>) &#123;</span><br><span class="line">        chessboard[i][j] = <span class="hljs-number">-1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 从 (2, 2) 的位置开始跑，求得马踏棋盘的一组解</span></span><br><span class="line">  Horse(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>);</span><br><span class="line">  PrintChess();</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 非递归求一组解的过程</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Horse</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">int</span> top = <span class="hljs-number">0</span>, i = <span class="hljs-number">0</span>;</span><br><span class="line">  <span class="hljs-keyword">int</span> a, b;               <span class="hljs-comment">// 记录当前马位置附近的日字坐标</span></span><br><span class="line">  chessboard[x][y] = <span class="hljs-number">1</span>;   <span class="hljs-comment">// 标记当前起始位置已被访问</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 记录当前马的位置</span></span><br><span class="line">  StackHorse[top][<span class="hljs-number">0</span>] = StackHorse[top][<span class="hljs-number">1</span>] = <span class="hljs-number">2</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-keyword">while</span> (cnt &lt; <span class="hljs-number">64</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">for</span> (; i &lt; <span class="hljs-number">8</span>; i++) &#123;</span><br><span class="line">      a = x + move[i][<span class="hljs-number">0</span>];</span><br><span class="line">      b = y + move[i][<span class="hljs-number">1</span>];</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 如果当前马位置附近的日字没有被访问，跳出循环</span></span><br><span class="line">      <span class="hljs-keyword">if</span> (chessboard[a][b] == <span class="hljs-number">0</span>) &#123;         </span><br><span class="line">        <span class="hljs-keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 能够访问当前马位置附近的日字</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (i &lt; <span class="hljs-number">8</span>) &#123; </span><br><span class="line">      chessboard[a][b] = ++cnt;</span><br><span class="line">      StackHorse[top][<span class="hljs-number">2</span>] = i;  <span class="hljs-comment">// 记录访问当前马位置附近的日字序号 (0 &lt; i &lt; 8)</span></span><br><span class="line">      top++;                   <span class="hljs-comment">// top 指向新的栈顶</span></span><br><span class="line">      StackHorse[top][<span class="hljs-number">0</span>] = a;  <span class="hljs-comment">// 向新的栈顶放入马踏入的 x 坐标</span></span><br><span class="line">      StackHorse[top][<span class="hljs-number">1</span>] = b;  <span class="hljs-comment">// 向新的栈顶放入马踏入的 y 坐标</span></span><br><span class="line">      x = a;                   <span class="hljs-comment">// 标记新的 x</span></span><br><span class="line">      y = b;                   <span class="hljs-comment">// 标记新的 y</span></span><br><span class="line">      i = <span class="hljs-number">0</span>;                   <span class="hljs-comment">// 从栈顶马位置开始寻找附近的 8 个日字</span></span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      <span class="hljs-comment">// 没有在当前马位置附近找到符合条件的日字         </span></span><br><span class="line">      cnt--;                   <span class="hljs-comment">// 回溯</span></span><br><span class="line">      chessboard[x][y] = <span class="hljs-number">0</span>;</span><br><span class="line">      top--;                   <span class="hljs-comment">// 出栈</span></span><br><span class="line">      x = StackHorse[top][<span class="hljs-number">0</span>];  <span class="hljs-comment">// 拿到当前马位置的 x 坐标</span></span><br><span class="line">      y = StackHorse[top][<span class="hljs-number">1</span>];  <span class="hljs-comment">// 拿到当前马位置的 y 坐标</span></span><br><span class="line">      i = StackHorse[top][<span class="hljs-number">2</span>];  <span class="hljs-comment">// 拿到当前马位置前往下一日字的序号</span></span><br><span class="line">      i++;                     <span class="hljs-comment">// 继续搜索从当前马位置访问的日字序号的下一位置继续访问</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 输出马踏棋盘的解</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintChess</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"马踏棋盘一组解为:"</span> &lt;&lt; <span class="hljs-built_in">endl</span>;</span><br><span class="line">  <span class="hljs-keyword">int</span> i, j;</span><br><span class="line">  <span class="hljs-keyword">for</span> (i = <span class="hljs-number">2</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">for</span> (j = <span class="hljs-number">2</span>; j &lt; <span class="hljs-number">10</span>; j++) &#123;</span><br><span class="line">      <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"  "</span> &lt;&lt; chessboard[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-built_in">endl</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="广度优先遍历"><a href="#广度优先遍历" class="headerlink" title="广度优先遍历"></a>广度优先遍历</h2><p>广度优先遍历（<code>BreadthFirstSearch</code>），又称为广度优先搜索，简称 <code>BFS</code>，是最简便的图的搜索算法之一，属于一种盲目搜寻法，目的是系统地展开并检查图中的所有节点，以找寻结果，换句话说，它并不考虑结果的可能位置，彻底地搜索整张图，直到找到结果为止，我们可以对照下图来进行理解</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/22-05.png" alt></p>
+<p>要实现对上图的广度遍历，我们可以利用队列来实现，比如我们以 <code>A</code> 为起点，流程如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/22-06.png" alt></p>
+<h2 id="广度优先遍历的代码实现"><a href="#广度优先遍历的代码实现" class="headerlink" title="广度优先遍历的代码实现"></a>广度优先遍历的代码实现</h2><p>同深度优先遍历一样，我们这里也只介绍遍历算法的实现，原理是借助队列来进行实现</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 邻接矩阵 的广度遍历算法</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">BFSTraverse</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 初始化队列</span></span><br><span class="line">  <span class="hljs-keyword">let</span> queue = []</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.numVertexes; i++) &#123;</span><br><span class="line">    <span class="hljs-comment">// 初始化所有顶点状态都是未访问过状态</span></span><br><span class="line">    visited[i] = <span class="hljs-literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 对每一个顶点做循环</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; G.numVertexes; i++) &#123;</span><br><span class="line">    <span class="hljs-comment">// 如果没有访问过就处理</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (!visited[i]) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 访问过的顶点设置为TRUE</span></span><br><span class="line">      visited[i] = <span class="hljs-literal">true</span></span><br><span class="line">      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'打印顶点：'</span>, G.vexs[i])</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 将此顶点入队列</span></span><br><span class="line">      queue.push(i)</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 退出条件为当前队列不为空</span></span><br><span class="line">      <span class="hljs-keyword">while</span> (queue.length != <span class="hljs-number">0</span>) &#123;</span><br><span class="line">        queue.shift()</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">0</span>; j &lt; G.numVertexes; j++) &#123;</span><br><span class="line">          <span class="hljs-comment">// 判断其他顶点若与当前顶点存在边且未访问过</span></span><br><span class="line">          <span class="hljs-keyword">if</span> (G.arc[i][j] == <span class="hljs-number">1</span> &amp;&amp; !visited[j]) &#123;</span><br><span class="line">            visited[j] = <span class="hljs-literal">true</span></span><br><span class="line">            <span class="hljs-built_in">console</span>.log(G.vexs[i], <span class="hljs-string">'-&gt;'</span>, G.vexs[j])</span><br><span class="line">            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'打印顶点：'</span>, G.vexs[j])</span><br><span class="line"></span><br><span class="line">            <span class="hljs-comment">// 将此顶点放入队列</span></span><br><span class="line">            queue.push(j)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Essay/">Essay</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/04/22/Essay/23/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">普里姆算法和克鲁斯卡尔算法</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/04/09/Essay/21/">
+                <span class="level-item">图的存储结构</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: 'f091a160ebaf98bf5f84f165e1ddd39a',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#图的遍历">
+        <span class="has-mr-6">1</span>
+        <span>图的遍历</span>
+        </a></li><li>
+        <a class="is-flex" href="#深度优先遍历">
+        <span class="has-mr-6">2</span>
+        <span>深度优先遍历</span>
+        </a></li><li>
+        <a class="is-flex" href="#深度优先遍历的代码实现">
+        <span class="has-mr-6">3</span>
+        <span>深度优先遍历的代码实现</span>
+        </a></li><li>
+        <a class="is-flex" href="#马踏棋盘算法">
+        <span class="has-mr-6">4</span>
+        <span>马踏棋盘算法</span>
+        </a></li><li>
+        <a class="is-flex" href="#广度优先遍历">
+        <span class="has-mr-6">5</span>
+        <span>广度优先遍历</span>
+        </a></li><li>
+        <a class="is-flex" href="#广度优先遍历的代码实现">
+        <span class="has-mr-6">6</span>
+        <span>广度优先遍历的代码实现</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="图的遍历" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

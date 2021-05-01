@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>散列表查找 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="之前我们在 查找算法 的章节当中介绍了一些比较常见的查找算法，比如对于数组 a[]，如果我们要在其中查找 key 关键字的记录，可以使用顺序表查找的方式，一个一个挨着排查，也可以使用有序表的一些查找方式，比如二分，插值等 但是如果序列是无序的呢，针对于无序序列，我们之前也介绍过了 二叉排序树 的方式来进行查找，但是二叉排序树的生成过程比较复杂，那么有没有一种针对不太复杂的无序序列，使用起来更为简便">
+<meta name="keywords" content="Essay">
+<meta property="og:type" content="article">
+<meta property="og:title" content="散列表查找">
+<meta property="og:url" content="http://yoursite.com/2020/06/22/Essay/29/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="之前我们在 查找算法 的章节当中介绍了一些比较常见的查找算法，比如对于数组 a[]，如果我们要在其中查找 key 关键字的记录，可以使用顺序表查找的方式，一个一个挨着排查，也可以使用有序表的一些查找方式，比如二分，插值等 但是如果序列是无序的呢，针对于无序序列，我们之前也介绍过了 二叉排序树 的方式来进行查找，但是二叉排序树的生成过程比较复杂，那么有没有一种针对不太复杂的无序序列，使用起来更为简便">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/29.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="散列表查找">
+<meta name="twitter:description" content="之前我们在 查找算法 的章节当中介绍了一些比较常见的查找算法，比如对于数组 a[]，如果我们要在其中查找 key 关键字的记录，可以使用顺序表查找的方式，一个一个挨着排查，也可以使用有序表的一些查找方式，比如二分，插值等 但是如果序列是无序的呢，针对于无序序列，我们之前也介绍过了 二叉排序树 的方式来进行查找，但是二叉排序树的生成过程比较复杂，那么有没有一种针对不太复杂的无序序列，使用起来更为简便">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/29.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="散列表查找" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/29.webp" alt="散列表查找">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2020-06-22</div>
+                <!-- <time class="level-item has-text-grey" datetime="2020-06-21T16:00:00.000Z">2020-06-22</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Essay/">Essay</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    28 分钟 读完 (大约 4135 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                散列表查找
+            
+        </h1>
+        <div class="content">
+            <p>之前我们在 <a href="https://heptaluan.github.io/2020/05/25/Essay/26/" target="_blank" rel="noopener">查找算法</a> 的章节当中介绍了一些比较常见的查找算法，比如对于数组 <code>a[]</code>，如果我们要在其中查找 <code>key</code> 关键字的记录，可以使用顺序表查找的方式，一个一个挨着排查，也可以使用有序表的一些查找方式，比如二分，插值等</p>
+<p>但是如果序列是无序的呢，针对于无序序列，我们之前也介绍过了 <a href="https://heptaluan.github.io/2020/06/12/Essay/27/" target="_blank" rel="noopener">二叉排序树</a> 的方式来进行查找，但是二叉排序树的生成过程比较复杂，那么有没有一种针对不太复杂的无序序列，使用起来更为简便的形式呢，那就是我们今天所要介绍的『散列表查找』</p>
+<a id="more"></a>
+
+
+
+<h2 id="散列表查找"><a href="#散列表查找" class="headerlink" title="散列表查找"></a>散列表查找</h2><p>散列是一种常用的数据存储技术，散列后的数据可以快速地插入或取用，散列使用的数据结构叫做『散列表』，散列技术是在记录的存储位置和它的关键字之间建立一个确定的对应关系 <code>f</code>，使得每个关键字 <code>key</code> 对应一个存储位置 <code>f(key)</code>，这里我们把这种对应关系 <code>f</code> 称为散列函数，又称为哈希（<code>Hash</code>）函数</p>
+<p>采用散列技术将记录存储在一块连续的存储空间中，这块连续存储空间成为散列表或哈希表（<code>Hash table</code>），在散列表上插入、删除和提取数据的速度都是非常快的，当存储记录时，通过散列函数计算出记录的散列地址，而当查找记录时，我们通过同样的是散列函数计算记录的散列地址，并按此散列地址访问该记录</p>
+<p>本章主要包括三部分内容，即如何构造哈希函数和冲突的处理，以及最后的代码实现</p>
+<h2 id="散列函数设计"><a href="#散列函数设计" class="headerlink" title="散列函数设计"></a>散列函数设计</h2><p>构造哈希函数的原则是</p>
+<ul>
+<li>函数本身便于计算</li>
+<li>计算出来的地址分布均匀，即对任一关键字 <code>k</code>，<code>f(k)</code> 对应不同地址的概率相等，目的是尽可能减少冲突</li>
+</ul>
+<p>下面我们来看一些业界前辈总结的一些比较好的设计方式</p>
+<h4 id="直接定址法"><a href="#直接定址法" class="headerlink" title="直接定址法"></a>直接定址法</h4><p>例如有一个从 <code>1</code> 到 <code>100</code> 岁的人口数字统计表，其中『年龄』作为关键字，哈希函数取关键字自身，即 <code>f(key) = key</code>，也就是下图这样</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-01.png" alt></p>
+<p>又或者现在要统计的是 <code>1980</code> 年以后出生的人口数，那么我们也可以对出生年份这个关键字可以变换为用年份减去 <code>1980</code> 的值来作为地址，即 <code>f(key) = key – 1980</code>，也就是下面这样</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-02.png" alt></p>
+<h4 id="数字分析法"><a href="#数字分析法" class="headerlink" title="数字分析法"></a>数字分析法</h4><p>数字分析法通常适合处理『关键字位数比较大』的情况，例如我们现在要存储某家公司员工登记表，如果用手机号作为关键字，那么我们发现『抽取』后面的四位数字作为散列地址是不错的选择</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-03.png" alt></p>
+<h4 id="平方取中法"><a href="#平方取中法" class="headerlink" title="平方取中法"></a>平方取中法</h4><p>平方取中法是将『关键字平方』之后取中间若干位数字作为散列地址，比如 <code>1234^2 = 1522756</code> 的，所以我们可以考虑使用 <code>227</code> 来作为关键字</p>
+<h4 id="折叠法"><a href="#折叠法" class="headerlink" title="折叠法"></a>折叠法</h4><p>折叠法是将关键字从左到右分割成位数相等的几部分，然后将这几部分叠加求和，并按散列表表长取后几位作为散列地址，比如我们的关键字是 <code>9876543210</code> 的话，我们就可以将其分割成为相等的几部分（位数如果不够可以使用 <code>0</code> 来进行填充），也就是 <code>987，654，321，000</code>，然后把这几部分进行相加，它们的结果是 <code>1962</code>，所以我们就可以采用 <code>962</code> 来作为关键字</p>
+<h4 id="除留余数法"><a href="#除留余数法" class="headerlink" title="除留余数法"></a>除留余数法</h4><p>需要注意的是，这个方法也是『最常用』的构造散列函数方法，对于散列表长为 <code>m</code> 的散列函数计算公式为</p>
+<figure class="highlight console hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f(key) = key mod p（p &lt;= m，mod 是取模的意思）</span><br></pre></td></tr></table></figure>
+
+<p>事实上，这个方法不仅可以对关键字直接取模，也可以通过折叠、平方取中后再取模，例如下表，我们对有 <code>12</code> 个记录的关键字构造散列表时，就可以用 <code>f(key) = key mod 12</code> 的方法</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-04.png" alt></p>
+<p>但是 <code>p</code> 的选择是关键，如果对于这个表格的关键字，<code>p</code> 如果还是选择 <code>12</code> 的话，那就不是一个很好的方式了</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-05.png" alt></p>
+<p>不过针对上面这种情况，如果我们把 <code>p</code> 改为 <code>11</code> 也是可以的，如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-06.png" alt></p>
+<h4 id="随机数法"><a href="#随机数法" class="headerlink" title="随机数法"></a>随机数法</h4><p>选择一个随机数，取关键字的随机函数值为它的散列地址，即 <code>f(key) = random(key)</code>，这里的 <code>random</code> 是随机函数，当关键字的长度不等时，采用这个方法构造散列函数是比较合适的</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>我们可以视不同的情况采用不同的散列函数，在现实中，我们应该视不同的情况采用不同的散列函数，下面是一些需要考虑的方向</p>
+<ul>
+<li>计算散列地址所需的时间</li>
+<li>关键字的长度</li>
+<li>散列表的大小</li>
+<li>关键字的分布情况</li>
+<li>记录查找的频率</li>
+</ul>
+<h2 id="处理散列冲突的方法"><a href="#处理散列冲突的方法" class="headerlink" title="处理散列冲突的方法"></a>处理散列冲突的方法</h2><p>通过构造性能良好的哈希函数，可以减少冲突，但一般不可能完全避免冲突，因此解决冲突是哈希法的另一个关键问题，创建哈希表和查找哈希表都会遇到冲突，两种情况下解决冲突的方法应该一致，下面我们就来看几种常用的解决冲突方法</p>
+<h4 id="开放定址法"><a href="#开放定址法" class="headerlink" title="开放定址法"></a>开放定址法</h4><p>所谓的开放定址法就是一旦发生了冲突，就去寻找下一个空的散列地址，只要散列表足够大，空的散列地址总能找到，并将记录存入，它的公式是 <code>fi(key) = (f(key) + di) MOD m (di = 1, 2 ... m - 1)</code>，比如我们的关键字集合为 <code>{ 12, 67, 56, 16, 25, 37, 22, 29, 15, 47, 48 }</code>，如果使用的是『除留余数法（m = 12）』，下面是散列表的排列形式</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-07.png" alt></p>
+<p>需要注意，此时我们需要添加元素 <code>37</code>，但是发现 <code>37 % 12 = 1</code> 的，而此时 <code>1</code> 的位置已经存在元素了，所以就发生了冲突，所以此时我们可以调用公式 <code>fi(key) = (f(1) + 1) MOD 12</code>，它的结果是 <code>2</code>，所以它填充在 <code>2</code> 的位置，也就下面这样</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-08.png" alt></p>
+<p>最终完成后是下面这样</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-09.png" alt></p>
+<p>但是我们可以发现，开放定址法虽然好，但是比较盲目，因为它是线性查找方式，逐渐递增的（即每次只增加一个位置），所以我们可以修改 <code>di</code> 的取值方式，例如使用平方运算来尽量解决『堆积』问题</p>
+<figure class="highlight console hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fi(key) = (f(key) + di) MOD m（di = 1², -1², 2², -2² ... q², -q², q &lt;= m / 1）</span><br></pre></td></tr></table></figure>
+
+<p>还有一种方法是，在冲突时对于位移量 <code>di</code> 采用『随机函数』计算得到，我们称之为『随机探测法』</p>
+<figure class="highlight console hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fi(key) = (f(key) + di) MOD m（di 是由一个随机函数获得的数列）</span><br></pre></td></tr></table></figure>
+
+<h4 id="再散列函数法"><a href="#再散列函数法" class="headerlink" title="再散列函数法"></a>再散列函数法</h4><p>这种方法是同时构造多个不同的哈希函数 <code>fi(key) = RHi(key)（i = 1, 2, 3 ... k）</code>，当哈希地址 <code>fi(key) = RHi(key)</code> 发生冲突时，再计算 <code>fi(key) = RH2(key) ...</code> 直到冲突不再产生，这种方法不易产生聚集，但增加了计算时间</p>
+<h4 id="链地址法"><a href="#链地址法" class="headerlink" title="链地址法"></a>链地址法</h4><p>这种方法的基本思想是将所有哈希地址为 <code>i</code> 的元素构成一个称为同义词链的单链表，并将单链表的头指针存在哈希表的第 <code>i</code> 个单元中，因而查找、插入和删除主要在同义词链中进行，链地址法适用于经常进行插入和删除的情况</p>
+<p>我们还是以之前的示例为例，我们假设集合为 <code>{ 12, 67, 56, 16, 25, 37, 22, 29, 15, 47, 48, 37 }</code>，同样使用除留余数法求散列表是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-10.png" alt></p>
+<h4 id="公共溢出区法"><a href="#公共溢出区法" class="headerlink" title="公共溢出区法"></a>公共溢出区法</h4><p>这种方法的基本思想是，将哈希表分为基本表和溢出表两部分，凡是和基本表发生冲突的元素，一律填入溢出表，还是以上面的例子为例，结果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-11.png" alt></p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>最后，我们来看看如何用代码进行实现，在 <code>JavaScript</code> 当中，我们采用数组来进行设计散列表，数组的长度是预先设定的，如有需要，可以随时增加，所有元素根据和该元素对应的键，保存在数组的特定位置，使用散列表存储数据时，通过一个散列函数将键映射为一个数字，这个数字的范围是 <code>0</code> 到散列表的长度</p>
+<p>散列函数会将每个键值映射为一个唯一的数组索引，然而键的数量是无限的，数组的长度是有限的，一个更现实的目标是让『散列函数尽量将键均匀地映射到数组中』，即使使用一个高效的散列函数，仍然存在将两个键映射成同一个值的可能，这种现象称为碰撞（<code>collision</code>），当碰撞发生时，我们需要利用一定的方法去解决碰撞，也就是上面所介绍的几种方式</p>
+<h4 id="HashTable-类"><a href="#HashTable-类" class="headerlink" title="HashTable 类"></a>HashTable 类</h4><p>我们使用 <code>HashTable</code> 类来表示散列表，该类包含计算散列值的方法、向散列中插入数据，读取数据和显示散列表中数据分布等方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">HashTable</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">this</span>.table = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">137</span>)</span><br><span class="line">  <span class="hljs-keyword">this</span>.simpleHash = simpleHash</span><br><span class="line">  <span class="hljs-keyword">this</span>.showDistro = showDistro</span><br><span class="line">  <span class="hljs-keyword">this</span>.put = put</span><br><span class="line">  <span class="hljs-keyword">this</span>.get = <span class="hljs-keyword">get</span></span><br><span class="line">  this.buildChains = buildChains</span><br><span class="line"></span><br><span class="line">  // 如果使用线性探测法，则需要额外添加一个数组</span><br><span class="line">  this.values = []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h4><p>散列函数的选择依赖于键值的数据类型，如果键是整型，最简单的散列函数就是以数组的长度对键取余，而选择针对字符串类型的散列函数比较困难，一种比较简单的散列函数是针对字符串中每个字符的 <code>ASCII</code> 码值相加然后再除以数组长度，将得出的余数做为散列值</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">simpleHash</span>(<span class="hljs-params">data</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> total = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; data.length; ++i) &#123;</span><br><span class="line">    total += data.charCodeAt(i)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> total % <span class="hljs-keyword">this</span>.table.length</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>put()</code> 和 <code>showDistro()</code> 两个方法一个用来将数据存入散列表，而另一个则是用来显示散列表中的数据</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">put</span>(<span class="hljs-params">data</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> pos = <span class="hljs-keyword">this</span>.simpleHash(data);</span><br><span class="line">  <span class="hljs-keyword">this</span>.table[pos] = data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showDistro</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> n = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>.table.length; ++i) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.table[i] != <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">      print(i + <span class="hljs-string">': '</span> + <span class="hljs-keyword">this</span>.table[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是使用比较简单的散列函数时，它的数据并不是均匀分布的，而是向数组的两端集中，并且数据很大概率将会产生碰撞而不会全部显示出来，所以这里我们也可以采用另外一种方式，那就是『霍纳算法』</p>
+<blockquote>
+<p>霍纳算法是一种比较好的散列函数算法，计算时仍然先计算字符串中各字符的 <code>ASCII</code> 码值，不过求和时每次要乘以一个质数，为了避免碰撞，首先要确保散列表中用来存储数据的数组其大小是个质数，这一点和计算散列值时使用的取余运算有关，数组的长度应该在 <code>100</code> 以上，这是为了让数据在散列表中分布得更加均匀</p>
+</blockquote>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">betterHash</span>(<span class="hljs-params">string, arr</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 质数</span></span><br><span class="line">  <span class="hljs-keyword">const</span> H = <span class="hljs-number">37</span></span><br><span class="line">  <span class="hljs-keyword">var</span> total = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; string.length; ++i) &#123;</span><br><span class="line">    total += H * total + string.charCodeAt(i)</span><br><span class="line">  &#125;</span><br><span class="line">  total = total % arr.length</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseInt</span>(total)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 接受键和数据作为参数的 put() 方法</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">put</span>(<span class="hljs-params">key, data</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 使用霍纳算法</span></span><br><span class="line">  <span class="hljs-keyword">var</span> pos = <span class="hljs-keyword">this</span>.betterHash(key)</span><br><span class="line">  <span class="hljs-keyword">this</span>.table[pos] = data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 读取存储在散列表中的数据</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get</span>(<span class="hljs-params">key</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.table[<span class="hljs-keyword">this</span>.betterHash(key)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="碰撞处理"><a href="#碰撞处理" class="headerlink" title="碰撞处理"></a>碰撞处理</h4><p>当散列函数对于不同的输入产生同样的散列值时，就产生了碰撞，这里我们主要来看两种碰撞解决办法『开链法』和『线性探测法』，关于开链法，当碰撞发生时，仍然将键存储到通过散列算法产生的索引位置上，但实际上每个数组元素又是一个新的数据结构，比如另一个数组，这样就能存储多个键了（即用二维数组实现）</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/essay/29-12.png" alt></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 创建二维数组</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildChains</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>.table.length; ++i) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.table[i] = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用了开链法后，我们要重新定义 <code>put()</code> 和 <code>get()</code> 方法，新的 <code>put()</code> 方法将键值散列，散列后的值对应数组中的一个位置，先尝试将数据放到该位置上的数组中的第一个单元格，如果该单元格里已经有数据了则 <code>put()</code> 方法会搜索下一个位置，直到找到能放置数据的单元格，并把数据存储进去，它既保存数据，也保存键值，该方法使用链中两个连续的单元格，第一个用来保存键值，第二个用来保存数据</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">put</span>(<span class="hljs-params">key, data</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> pos = <span class="hljs-keyword">this</span>.betterHash(key)</span><br><span class="line">  <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.table[pos][index] == <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.table[pos][index] = key</span><br><span class="line">    <span class="hljs-keyword">this</span>.table[pos][index + <span class="hljs-number">1</span>] = data</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">while</span> (<span class="hljs-keyword">this</span>.table[pos][index] != <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">      ++index</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">this</span>.table[pos][index] = key</span><br><span class="line">    <span class="hljs-keyword">this</span>.table[pos][index + <span class="hljs-number">1</span>] = data</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新的 <code>get()</code> 方法先对键值散列，根据散列后的值找到散列表中相应的位置，然后搜索该位置上的链，直到找到键值，如果找到，就将紧跟在键值后面的数据返回</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get</span>(<span class="hljs-params">key</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span></span><br><span class="line">  <span class="hljs-keyword">var</span> pos = <span class="hljs-keyword">this</span>.betterHash(key)</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.table[pos][index] == key) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.table[pos][index + <span class="hljs-number">1</span>]</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">while</span> (<span class="hljs-keyword">this</span>.table[pos][index] != key) &#123;</span><br><span class="line">      index += <span class="hljs-number">2</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.table[pos][index + <span class="hljs-number">1</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后我们再来看下『线性探测法』，线性探测法隶属于一种更一般化的散列技术，也就是『开放寻址散列』，当发生碰撞时，线性探测法检查散列表中的下一个位置是否为空，如果为空，就将数据存入该位置，如果不为空，则继续检查下一个位置，直到找到一个空的位置为止，关于选择哪种实现方式</p>
+<ul>
+<li>当存储数据使用的数组特别大时，选择线性探测法要比开链法好</li>
+<li>如果数组的大小是待存储数据个数的 <code>1.5</code> 倍，那就使用开链法</li>
+<li>如果数组的大小是待存储数据的两倍及两倍以上时，那么使用线性探测法</li>
+</ul>
+<p>使用线性探测法需要为 <code>HashTable</code> 类增加一个新的数组，用来存储数据，数组 <code>table</code> 和 <code>values</code> 并行工作，当将一个键值保存到数组 <code>table</code> 中时，将数据存入数组 <code>values</code> 中相应的位置上，即在 <code>HashTable</code> 的构造函数中加入下面一行代码 <code>this.values = []</code>，然后再来重写我们的 <code>put()</code> 和 <code>get()</code> 方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">put</span>(<span class="hljs-params">key, data</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> pos = <span class="hljs-keyword">this</span>.betterHash(key)</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.table[pos] == <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.table[pos] = key</span><br><span class="line">    <span class="hljs-keyword">this</span>.values[pos] = data</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">while</span> (<span class="hljs-keyword">this</span>.table[pos] != <span class="hljs-literal">undefined</span>) &#123;</span><br><span class="line">      pos++</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">this</span>.table[pos] = key</span><br><span class="line">    <span class="hljs-keyword">this</span>.values[pos] = data</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get</span>(<span class="hljs-params">key</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> hash = <span class="hljs-keyword">this</span>.betterHash(key)</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = hash; <span class="hljs-keyword">this</span>.table[hash] != <span class="hljs-literal">undefined</span>; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.table[hash] == key) &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.values[hash]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-literal">undefined</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Essay/">Essay</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/06/25/React/10/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">React 生命周期</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/06/18/Essay/28/">
+                <span class="level-item">平衡二叉排序树</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '46540930dff4bfc81ae8e48ce43e27fc',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#散列表查找">
+        <span class="has-mr-6">1</span>
+        <span>散列表查找</span>
+        </a></li><li>
+        <a class="is-flex" href="#散列函数设计">
+        <span class="has-mr-6">2</span>
+        <span>散列函数设计</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#直接定址法">
+        <span class="has-mr-6">2.1</span>
+        <span>直接定址法</span>
+        </a></li><li>
+        <a class="is-flex" href="#数字分析法">
+        <span class="has-mr-6">2.2</span>
+        <span>数字分析法</span>
+        </a></li><li>
+        <a class="is-flex" href="#平方取中法">
+        <span class="has-mr-6">2.3</span>
+        <span>平方取中法</span>
+        </a></li><li>
+        <a class="is-flex" href="#折叠法">
+        <span class="has-mr-6">2.4</span>
+        <span>折叠法</span>
+        </a></li><li>
+        <a class="is-flex" href="#除留余数法">
+        <span class="has-mr-6">2.5</span>
+        <span>除留余数法</span>
+        </a></li><li>
+        <a class="is-flex" href="#随机数法">
+        <span class="has-mr-6">2.6</span>
+        <span>随机数法</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结">
+        <span class="has-mr-6">2.7</span>
+        <span>总结</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#处理散列冲突的方法">
+        <span class="has-mr-6">3</span>
+        <span>处理散列冲突的方法</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#开放定址法">
+        <span class="has-mr-6">3.1</span>
+        <span>开放定址法</span>
+        </a></li><li>
+        <a class="is-flex" href="#再散列函数法">
+        <span class="has-mr-6">3.2</span>
+        <span>再散列函数法</span>
+        </a></li><li>
+        <a class="is-flex" href="#链地址法">
+        <span class="has-mr-6">3.3</span>
+        <span>链地址法</span>
+        </a></li><li>
+        <a class="is-flex" href="#公共溢出区法">
+        <span class="has-mr-6">3.4</span>
+        <span>公共溢出区法</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#代码实现">
+        <span class="has-mr-6">4</span>
+        <span>代码实现</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#HashTable-类">
+        <span class="has-mr-6">4.1</span>
+        <span>HashTable 类</span>
+        </a></li><li>
+        <a class="is-flex" href="#散列函数">
+        <span class="has-mr-6">4.2</span>
+        <span>散列函数</span>
+        </a></li><li>
+        <a class="is-flex" href="#碰撞处理">
+        <span class="has-mr-6">4.3</span>
+        <span>碰撞处理</span>
+        </a></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="散列表查找" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Node.js 中的模块机制 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="为了让 Node.js 的文件可以相互调用，Node.js 提供了一个简单的模块系统，模块是 Node.js 应用程序的基本组成部分，文件和模块是一一对应的，换言之，一个 Node.js 文件就是一个模块，这个文件可能是 JavaScript 代码、JSON 或者编译过的 C/C++ 扩展">
+<meta name="keywords" content="Node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js 中的模块机制">
+<meta property="og:url" content="http://yoursite.com/2019/09/28/Node/08/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="为了让 Node.js 的文件可以相互调用，Node.js 提供了一个简单的模块系统，模块是 Node.js 应用程序的基本组成部分，文件和模块是一一对应的，换言之，一个 Node.js 文件就是一个模块，这个文件可能是 JavaScript 代码、JSON 或者编译过的 C/C++ 扩展">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js 中的模块机制">
+<meta name="twitter:description" content="为了让 Node.js 的文件可以相互调用，Node.js 提供了一个简单的模块系统，模块是 Node.js 应用程序的基本组成部分，文件和模块是一一对应的，换言之，一个 Node.js 文件就是一个模块，这个文件可能是 JavaScript 代码、JSON 或者编译过的 C/C++ 扩展">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Node.js 中的模块机制" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp" alt="Node.js 中的模块机制">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2019-09-28</div>
+                <!-- <time class="level-item has-text-grey" datetime="2019-09-27T16:00:00.000Z">2019-09-28</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    33 分钟 读完 (大约 4893 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Node.js 中的模块机制
+            
+        </h1>
+        <div class="content">
+            <p>为了让 <code>Node.js</code> 的文件可以相互调用，<code>Node.js</code> 提供了一个简单的模块系统，模块是 <code>Node.js</code> 应用程序的基本组成部分，文件和模块是一一对应的，换言之，一个 <code>Node.js</code> 文件就是一个模块，这个文件可能是 <code>JavaScript</code> 代码、<code>JSON</code> 或者编译过的 <code>C/C++</code> 扩展</p>
+<a id="more"></a>
+
+
+<h2 id="CommonJS-规范"><a href="#CommonJS-规范" class="headerlink" title="CommonJS 规范"></a>CommonJS 规范</h2><p><code>Node.js</code> 遵循 <a href="http://wiki.commonjs.org/wiki/CommonJS" target="_blank" rel="noopener">CommonJS</a> 规范，该规范的核心思想是允许模块通过 <code>require</code> 方法来同步加载所要依赖的其他模块，然后通过 <code>exports</code> 或 <code>module.exports</code> 来导出需要暴露的接口，<code>CommonJS</code> 规范是为了解决 <code>JavaScript</code> 的作用域问题而定义的模块形式，可以使每个模块它自身的命名空间中执行，下面是一个简单的示例</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// a.js</span></span><br><span class="line"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a + b</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// b.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> add = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./a'</span>)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(add(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>))</span><br></pre></td></tr></table></figure>
+
+<p><code>CommonJS</code> 也有浏览器端的实现，其原理是现将所有模块都定义好并通过 <code>id</code> 索引，这样就可以方便的在浏览器环境中解析了，可以参考 <a href="https://github.com/Stuk/require1k" target="_blank" rel="noopener">require1k</a> 和 <a href="https://github.com/ruanyf/tiny-browser-require" target="_blank" rel="noopener">tiny-browser-require</a> 源码</p>
+<p>经常与 <code>CommonJS</code> 规范一起出现的还有 <code>AMD</code> 规范和 <code>CMD</code> 规范，在这里就不详细展开，感兴趣的可以参考 <a href="http://blog.chinaunix.net/uid-26672038-id-4112229.html" target="_blank" rel="noopener">JavaSript 模块规范 - AMD 规范与 CMD 规范介绍</a>，总结的很棒</p>
+<h2 id="模块分类"><a href="#模块分类" class="headerlink" title="模块分类"></a>模块分类</h2><p>在 <code>Node.js</code> 中，模块主要可以分为以下几种类型</p>
+<ul>
+<li>核心模块，包含在 <code>Node.js</code> 源码中，被编译进 <code>Node.js</code> 可执行二进制文件 <code>JavaScript</code> 模块，也叫 <code>Native</code> 模块，比如常用的 <code>HTTP</code>，<code>fs</code> 等等</li>
+<li><code>C/C++</code> 模块，也叫 <code>built-in</code> 模块，一般我们不直接调用，而是在 <code>native module</code> 中调用，然后我们再 <code>require</code></li>
+<li><code>Native</code> 模块，比如我们在 <code>Node.js</code> 中常用的 <code>Buffer</code>，<code>fs</code>，<code>os</code> 等 <code>Native</code> 模块，其底层都有调用 <code>built-in</code> 模块<ul>
+<li>如对于 <code>Native</code> 模块 <code>Buffer</code>，还是需要借助 <code>builtin node_buffer.cc</code> 中提供的功能来实现大容量内存申请和管理，目的是能够脱离 <code>V8</code> 内存大小使用限制</li>
+</ul>
+</li>
+<li>第三方模块，非 <code>Node.js</code> 源码自带的模块都可以统称第三方模块，比如 <code>express</code>，<code>Webpack</code> 等等<ul>
+<li><code>JavaScript</code> 模块，这是最常见的，我们开发的时候一般都写的是 <code>JavaScript</code> 模块</li>
+<li><code>JSON</code> 模块，就是一个 <code>JSON</code> 文件</li>
+<li><code>C/C++</code> 扩展模块，使用 <code>C/C++</code> 编写，编译之后后缀名为 <code>.node</code></li>
+</ul>
+</li>
+</ul>
+<p>源码的目录结构如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">├── benchmark      <span class="hljs-comment">// 一些 Node.js 性能测试代码</span></span><br><span class="line">├── deps           <span class="hljs-comment">// Node.js 依赖</span></span><br><span class="line">├── doc            <span class="hljs-comment">// 文档</span></span><br><span class="line">├── lib            <span class="hljs-comment">// Node.js 对外暴露的 js 模块源码</span></span><br><span class="line">├── src            <span class="hljs-comment">// Node.js 的 C/C++ 源码文件，内建模块</span></span><br><span class="line">├── test           <span class="hljs-comment">// 单元测试</span></span><br><span class="line">├── tools          <span class="hljs-comment">// 编译时用到的工具</span></span><br><span class="line">├── doc            <span class="hljs-comment">// api 文档</span></span><br><span class="line">├── vcbuild.bat    <span class="hljs-comment">// win 平台 makefile 文件</span></span><br><span class="line">├── node.gyp       <span class="hljs-comment">// node-gyp 构建编译任务的配置文件</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="模块对象"><a href="#模块对象" class="headerlink" title="模块对象"></a>模块对象</h2><p>每个模块内部，都有一个 <code>module</code> 对象，代表当前模块，它有以下属性</p>
+<ul>
+<li><code>module.id</code>，模块的识别符，通常是带有绝对路径的模块文件名</li>
+<li><code>module.filename</code>，模块的文件名，带有绝对路径</li>
+<li><code>module.loaded</code>，返回一个布尔值，表示模块是否已经完成加载</li>
+<li><code>module.parent</code>，返回一个对象，表示调用该模块的模块</li>
+<li><code>module.children</code>，返回一个数组，表示该模块要用到的其他模块</li>
+<li><code>module.exports</code>，表示模块对外输出的值</li>
+</ul>
+<h2 id="模块加载机制"><a href="#模块加载机制" class="headerlink" title="模块加载机制"></a>模块加载机制</h2><p>简单来说，模块加载机制也就是 <code>require</code> 函数执行的主要流程，在 <code>Node.js</code> 中模块加载一般会经历三个步骤，『路径分析』、『文件定位』、『编译执行』，按照模块的分类，按照以下顺序进行优先加载</p>
+<ul>
+<li>系统缓存，模块被执行之后会会进行缓存，首先是先进行缓存加载，判断缓存中是否有值</li>
+<li>系统模块，也就是原生模块，这个优先级仅次于缓存加载，部分核心模块已经被编译成二进制，省略了『路径分析』、『文件定位』，直接加载到了内存中，系统模块定义在 <code>Node.js</code> 源码的 <code>lib</code> 目录下</li>
+<li>文件模块，优先加载以 <code>.</code>、<code>..</code>、<code>/</code> 开头的，如果文件没有加上扩展名，会依次按照 <code>.js</code>、<code>.json</code>、<code>.node</code> 进行扩展名补足尝试，那么在尝试的过程中也是以同步阻塞模式来判断文件是否存在<ul>
+<li>从性能优化的角度来看待，<code>.json</code>、<code>.node</code> 最好还是加上文件的扩展名</li>
+</ul>
+</li>
+<li>目录做为模块，这种情况发生在文件模块加载过程中，也没有找到，但是发现是一个目录的情况，这个时候会将这个目录当作一个『包』来处理<ul>
+<li><code>Node.js</code> 这块采用了 <code>Commonjs</code> 规范，先会在项目根目录查找 <code>package.json</code> 文件，取出文件中定义的 <code>main</code> 属性 <code>(&quot;main&quot;: &quot;lib/hello.js&quot;)</code> 描述的入口文件进行加载</li>
+<li>如果也没加载到，则会抛出默认错误: <code>Error: Cannot find module &#39;lib/hello.js&#39;</code></li>
+</ul>
+</li>
+<li><code>node_modules</code> 目录加载，对于系统模块、路径文件模块都找不到，<code>Node.js</code> 会从当前模块的父目录进行查找，直到系统的根目录</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/node/23.png" alt></p>
+<p>我们在上面介绍了 <code>Node.js</code> 模块机制的一些基本内容，下面我们就来看一些 <code>Node.js</code> 模块当中可能涉及到的一些问题，主要有下面这些</p>
+<ul>
+<li>模块中的 <code>module</code>、<code>exports</code>、<code>__dirname</code>、<code>__filename</code> 和 <code>require</code> 来自何方？</li>
+<li><code>module.exports</code> 与 <code>exports</code> 有什么区别？</li>
+<li>模块之间循环依赖是否会陷入死循环？</li>
+<li><code>require</code> 函数支持导入哪几类文件？</li>
+<li><code>require</code> 函数执行的主要流程是什么？</li>
+<li><code>Node.js</code> 模块与前端模块的异同</li>
+<li><code>Node.js</code> 中的 <code>VM</code> 模块是做什么用的？</li>
+</ul>
+<h2 id="模块中的-module、exports、dirname、filename-和-require-来自何方？"><a href="#模块中的-module、exports、dirname、filename-和-require-来自何方？" class="headerlink" title="模块中的 module、exports、dirname、filename 和 require 来自何方？"></a>模块中的 module、exports、<strong>dirname、</strong>filename 和 require 来自何方？</h2><p>针对于这个问题，我们手动的试一下就知道了，新建一个 <code>index.js</code> 文件，输入以下内容</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">module</span>)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(exports)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(__dirname)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(__filename)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">require</span>)</span><br></pre></td></tr></table></figure>
+
+<p>执行完以上代码，控制台的输出如下，我们忽略掉输出对象中的大部分属性，只保留一些比较重要的，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Module &#123; ========================================================&gt; <span class="hljs-built_in">module</span></span><br><span class="line">  id: <span class="hljs-string">'.'</span>,</span><br><span class="line">  exports: &#123;&#125;,</span><br><span class="line">  parent: <span class="hljs-literal">null</span>,</span><br><span class="line">  filename: <span class="hljs-string">'index.js'</span>,</span><br><span class="line">  loaded: <span class="hljs-literal">false</span>,</span><br><span class="line">  children: [],</span><br><span class="line">  <span class="hljs-comment">// 模块查找路径</span></span><br><span class="line">  paths: []</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#123;&#125; ==============================================================&gt; exports</span><br><span class="line"></span><br><span class="line">/Users/Desktop/test =============================================&gt; __dirname</span><br><span class="line"></span><br><span class="line">/Users/Desktop/test/index.js ====================================&gt; __filename</span><br><span class="line"></span><br><span class="line">&#123; </span><br><span class="line">  [<span class="hljs-built_in">Function</span>: <span class="hljs-built_in">require</span>] ===========================================&gt; <span class="hljs-built_in">require</span></span><br><span class="line">  resolve: &#123; [<span class="hljs-built_in">Function</span>: resolve] paths: [<span class="hljs-built_in">Function</span>: paths] &#125;,</span><br><span class="line">  <span class="hljs-comment">// Module对象</span></span><br><span class="line">  main: Module &#123; ... &#125;,</span><br><span class="line">  extensions: &#123; <span class="hljs-string">'.js'</span>: [<span class="hljs-built_in">Function</span>], <span class="hljs-string">'.json'</span>: [<span class="hljs-built_in">Function</span>], <span class="hljs-string">'.node'</span>: [<span class="hljs-built_in">Function</span>] &#125;,</span><br><span class="line">  cache: &#123; ... &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过控制台的输出值，我们可以清楚地看出每个变量的值，在执行代码之前，<code>Node.js</code> 会对要执行的代码进行封装，至于到底是如何封装的，可以见下方 <a href="#require-函数支持导入哪几类文件？">require 函数支持导入哪几类文件？</a>，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">exports, require, module, __filename, __dirname</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 模块的代码</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们就清楚了，模块中的 <code>module</code>、<code>exports</code>、<code>__dirname</code>、<code>__filename</code> 和 <code>require</code> 这些对象都是函数的输入参数，在调用包装后的函数时传入</p>
+<h2 id="module-exports-与-exports-的区别"><a href="#module-exports-与-exports-的区别" class="headerlink" title="module.exports 与 exports 的区别"></a>module.exports 与 exports 的区别</h2><p>我们先来看一行代码</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">module</span>.exports === exports)   <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现，输出为 <code>true</code>，再看下面这样</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exports.id = <span class="hljs-number">1</span>                            <span class="hljs-comment">// 方式一，可以正常导出</span></span><br><span class="line">exports = &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span> &#125;                       <span class="hljs-comment">// 方式二，无法正常导出</span></span><br><span class="line"><span class="hljs-built_in">module</span>.exports = &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span> &#125;                <span class="hljs-comment">// 方式三，可以正常导出</span></span><br></pre></td></tr></table></figure>
+
+<p>为什么方式二无法正常导出呢？这里可以参考上面的 <code>module</code> 和 <code>exports</code> 输出的对应值来理解，如果 <code>module.exports === exports</code> 执行的结果为 <code>true</code>，那么表示模块中的 <code>exports</code> 变量与 <code>module.exports</code> 属性是指向同一个对象，当使用方式二 <code>exports = { id: 1 }</code> 的方式会改变 <code>exports</code> 变量的指向，这时与 <code>module.exports</code> 属性指向不同的变量，而当我们导入某个模块时，是导入 <code>module.exports</code> 属性指向的对象</p>
+<blockquote>
+<p>如果想要深入了解，可以参考之前整理过的一篇文章内容 <a href="https://heptaluan.github.io/2018/06/05/Node/03/" target="_blank" rel="noopener">exports、module.exports 和 export、export default</a>，分析的很详细</p>
+</blockquote>
+<h2 id="模块之间循环依赖是否会陷入死循环？"><a href="#模块之间循环依赖是否会陷入死循环？" class="headerlink" title="模块之间循环依赖是否会陷入死循环？"></a>模块之间循环依赖是否会陷入死循环？</h2><p>我们先来看看什么是循环依赖，所谓循环依赖就是，当模块 <code>a</code> 执行时需要依赖模块 <code>b</code> 中定义的属性或方法，而在导入模块 <code>b</code> 中，发现模块 <code>b</code> 同时也依赖模块 <code>a</code> 中的属性或方法，即两个模块之间互相依赖，这种现象我们称之为循环依赖，我们来验证一下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// a.js</span></span><br><span class="line">exports.a = <span class="hljs-number">1</span></span><br><span class="line">exports.b = <span class="hljs-number">2</span></span><br><span class="line"><span class="hljs-built_in">require</span>(<span class="hljs-string">'./b'</span>)</span><br><span class="line">exports.c = <span class="hljs-number">3</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// b.js</span></span><br><span class="line"><span class="hljs-keyword">const</span> a = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./a'</span>)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(a)</span><br></pre></td></tr></table></figure>
+
+<p>当在控制台运行 <code>a.js</code> 之后可以发现程序正常运行，并不会出现死循环，但『只会输出相应模块已加载的部分数据』，如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以我们可以得出结论，在启动 <code>a.js</code> 的时候，会加载 <code>b.js</code>，那么在 <code>b.js</code> 中又加载了 <code>a.js</code>，但是此时 <code>a.js</code> 模块还没有执行完，返回的是一个 <code>a.js</code> 模块的 <code>exports</code> 对象『未完成的副本』给到 <code>b.js</code> 模块（因此是不会陷入死循环的），然后 <code>b.js</code> 完成加载之后将 <code>exports</code> 对象提供给了 <code>a.js</code> 模块</p>
+<h2 id="require-函数支持导入哪几类文件？"><a href="#require-函数支持导入哪几类文件？" class="headerlink" title="require 函数支持导入哪几类文件？"></a>require 函数支持导入哪几类文件？</h2><p>在 <code>require</code> 函数对象中，有一个 <code>extensions</code> 属性，顾名思义表示它支持的扩展名，支持的文件类型主要有 <code>.js</code>、<code>.json</code> 和 <code>.node</code>，在上面输出的 <code>require</code> 函数对象中我们已经可以了解到了</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">  [<span class="hljs-built_in">Function</span>: <span class="hljs-built_in">require</span>] ===========================================&gt; <span class="hljs-built_in">require</span></span><br><span class="line">  resolve: &#123; [<span class="hljs-built_in">Function</span>: resolve] paths: [<span class="hljs-built_in">Function</span>: paths] &#125;,</span><br><span class="line">  <span class="hljs-comment">// Module对象</span></span><br><span class="line">  main: Module &#123; ... &#125;,</span><br><span class="line">  extensions: &#123; <span class="hljs-string">'.js'</span>: [<span class="hljs-built_in">Function</span>], <span class="hljs-string">'.json'</span>: [<span class="hljs-built_in">Function</span>], <span class="hljs-string">'.node'</span>: [<span class="hljs-built_in">Function</span>] &#125;,</span><br><span class="line">  cache: &#123; ... &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们再来深入一下，其实模块内的 <code>require</code> 函数对象是通过 <code>lib/internal/module.js</code> 文件中的 <code>makeRequireFunction</code> 函数创建的</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeRequireFunction</span>(<span class="hljs-params">mod</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> Module = mod.constructor</span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">require</span>(<span class="hljs-params">path</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      exports.requireDepth += <span class="hljs-number">1</span></span><br><span class="line">      <span class="hljs-keyword">return</span> mod.require(path)</span><br><span class="line">    &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">      exports.requireDepth -= <span class="hljs-number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// Enable support to add extra extension types.</span></span><br><span class="line">  <span class="hljs-built_in">require</span>.extensions = Module._extensions</span><br><span class="line">  <span class="hljs-built_in">require</span>.cache = Module._cache</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-built_in">require</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，在导入模块时，最终还是通过调用 <code>Module</code> 对象的 <code>require()</code> 方法来实现模块导入，在上面代码中，我们可以发现这一行 <code>require.extensions = Module._extensions</code>，在 <code>lib/module.js</code> 文件当中我们可以发现以下的定义</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// Native extension for .js</span></span><br><span class="line">Module._extensions[<span class="hljs-string">'.js'</span>] = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module, filename</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> content = fs.readFileSync(filename, <span class="hljs-string">'utf8'</span>)</span><br><span class="line">  <span class="hljs-built_in">module</span>._compile(internalModule.stripBOM(content), filename)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// Native extension for .json</span></span><br><span class="line">Module._extensions[<span class="hljs-string">'.json'</span>] = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module, filename</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> content = fs.readFileSync(filename, <span class="hljs-string">'utf8'</span>)</span><br><span class="line">  <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">module</span>.exports = <span class="hljs-built_in">JSON</span>.parse(internalModule.stripBOM(content))</span><br><span class="line">  &#125; <span class="hljs-keyword">catch</span> (err) &#123;</span><br><span class="line">    err.message = filename + <span class="hljs-string">': '</span> + err.message</span><br><span class="line">    <span class="hljs-keyword">throw</span> err</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//Native extension for .node</span></span><br><span class="line">Module._extensions[<span class="hljs-string">'.node'</span>] = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module, filename</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> process.dlopen(<span class="hljs-built_in">module</span>, path.toNamespacedPath(filename))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Node.js</code> 针对处理的几种文件类型，这里我们主要看处理 <code>.js</code> 类型文件</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// Native extension for .js</span></span><br><span class="line">Module._extensions[<span class="hljs-string">'.js'</span>] = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module, filename</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> content = fs.readFileSync(filename, <span class="hljs-string">'utf8'</span>)</span><br><span class="line">  <span class="hljs-built_in">module</span>._compile(internalModule.stripBOM(content), filename)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，首先我们会以同步的方式读取对应的文件内容，然后在使用 <code>module._compile()</code> 方法对文件的内容进行编译</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Module.prototype._compile = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">content, filename</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// create wrapper function</span></span><br><span class="line">  <span class="hljs-keyword">var</span> wrapper = Module.wrap(content)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这里，我们主要关注 <code>var wrapper = Module.wrap(content)</code> 这一行，调用 <code>Module</code> 内部的封装函数对模块的原始内容进行封装</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Module.wrap = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">script</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> Module.wrapper[<span class="hljs-number">0</span>] + script + Module.wrapper[<span class="hljs-number">1</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Module.wrapper = [</span><br><span class="line">  <span class="hljs-string">'(function (exports, require, module, __filename, __dirname) &#123; '</span>,</span><br><span class="line">  <span class="hljs-string">'\n&#125;);'</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>看到这里我们就可以明白，原来模块中的原始内容是在这个阶段进行包装的，包装后的格式为</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">exports, require, module, __filename, __dirname</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 模块原始内容</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这也就解释了之前的模块中的 <code>exports</code>，<code>require</code>，<code>module</code>，<code>__filename</code> 和 <code>__dirname</code> 来自何方</p>
+<h2 id="require-函数执行的主要流程是什么？"><a href="#require-函数执行的主要流程是什么？" class="headerlink" title="require 函数执行的主要流程是什么？"></a>require 函数执行的主要流程是什么？</h2><p>在之前的章节中我们已经了解到了 <code>require</code> 函数执行的主要流程，其实就是模块加载机制，在加载对应模块前，我们首先需要定位文件的路径，文件的定位是通过 <code>Module</code> 内部的 <code>_resolveFilename()</code> 方法来实现，简化版的相关的伪代码描述如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">从 Y 路径的模块 <span class="hljs-built_in">require</span>(X)</span><br><span class="line"><span class="hljs-number">1.</span> 如果 X 是一个核心模块，</span><br><span class="line">  a. 返回核心模块</span><br><span class="line">  b. 结束</span><br><span class="line"><span class="hljs-number">2.</span> 如果 X 是以 <span class="hljs-string">'/'</span> 开头</span><br><span class="line">  a. 设 Y 为文件系统根目录</span><br><span class="line"><span class="hljs-number">3.</span> 如果 X 是以 <span class="hljs-string">'./'</span> 或 <span class="hljs-string">'/'</span> 或 <span class="hljs-string">'../'</span> 开头</span><br><span class="line">  a. 加载文件(Y + X)</span><br><span class="line">  b. 加载目录(Y + X)</span><br><span class="line"><span class="hljs-number">4.</span> 加载Node模块(X, dirname(Y))</span><br><span class="line"><span class="hljs-number">5.</span> 抛出 <span class="hljs-string">"未找到"</span></span><br><span class="line"></span><br><span class="line">加载文件(X)</span><br><span class="line"><span class="hljs-number">1.</span> 如果 X 是一个文件，加载 X 作为 JavaScript 文本，结束</span><br><span class="line"><span class="hljs-number">2.</span> 如果 X.js 是一个文件，加载 X.js 作为 JavaScript 文本，结束</span><br><span class="line"><span class="hljs-number">3.</span> 如果 X.json 是一个文件，解析 X.json 成一个 JavaScript 对象，结束</span><br><span class="line"><span class="hljs-number">4.</span> 如果 X.node 是一个文件，加载 X.node 作为二进制插件，结束</span><br><span class="line"></span><br><span class="line">加载索引(X)</span><br><span class="line"><span class="hljs-number">1.</span> 如果 X/index.js 是一个文件，加载 X/index.js 作为 JavaScript 文本，结束</span><br><span class="line"><span class="hljs-number">3.</span> 如果 X/index.json  是一个文件，解析 X/index.json 成一个 JavaScript 对象，结束</span><br><span class="line"><span class="hljs-number">4.</span> 如果 X/index.node 是一个文件，加载 X/index.node 作为二进制插件，结束</span><br><span class="line"></span><br><span class="line">加载目录(X)</span><br><span class="line"><span class="hljs-number">1.</span> 如果 X/package.json 是一个文件，</span><br><span class="line">  a. 解析 X/package.json，查找 <span class="hljs-string">"main"</span> 字段</span><br><span class="line">  b. let M = X + (json main 字段)</span><br><span class="line">  c. 加载文件(M)</span><br><span class="line">  d. 加载索引(M)</span><br><span class="line"><span class="hljs-number">2.</span> 加载索引(X)</span><br><span class="line"></span><br><span class="line">加载Node模块(X, START)</span><br><span class="line"><span class="hljs-number">1.</span> <span class="hljs-keyword">let</span> DIRS=NODE_MODULES_PATHS(START)</span><br><span class="line"><span class="hljs-number">2.</span> <span class="hljs-keyword">for</span> each DIR <span class="hljs-keyword">in</span> DIRS:</span><br><span class="line">  a. 加载文件(DIR/X)</span><br><span class="line">  b. 加载目录(DIR/X)</span><br><span class="line"></span><br><span class="line">NODE_MODULES_PATHS(START)</span><br><span class="line"><span class="hljs-number">1.</span> <span class="hljs-keyword">let</span> PARTS = path split(START)</span><br><span class="line"><span class="hljs-number">2.</span> <span class="hljs-keyword">let</span> I = count <span class="hljs-keyword">of</span> PARTS - <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-number">3.</span> <span class="hljs-keyword">let</span> DIRS = []</span><br><span class="line"><span class="hljs-number">4.</span> <span class="hljs-keyword">while</span> I &gt;= <span class="hljs-number">0</span>,</span><br><span class="line">  a. if PARTS[I] = <span class="hljs-string">"node_modules"</span> CONTINUE</span><br><span class="line">  b. DIR = path join(PARTS[<span class="hljs-number">0</span> .. I] + <span class="hljs-string">"node_modules"</span>)</span><br><span class="line">  c. DIRS = DIRS + DIR</span><br><span class="line">  d. let I = I - <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-number">5.</span> <span class="hljs-keyword">return</span> DIRS</span><br></pre></td></tr></table></figure>
+
+<p>下面就简单的看一下内部的 <code>Module</code> 对象的 <code>require()</code> 方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// Loads a module at the given file path. Returns that module's</span></span><br><span class="line"><span class="hljs-comment">// `exports` property.</span></span><br><span class="line">Module.prototype.require = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">id</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> id !== <span class="hljs-string">'string'</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> errors.TypeError(<span class="hljs-string">'ERR_INVALID_ARG_TYPE'</span>, <span class="hljs-string">'id'</span>, <span class="hljs-string">'string'</span>, id)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (id === <span class="hljs-string">''</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> errors.Error(<span class="hljs-string">'ERR_INVALID_ARG_VALUE'</span>,</span><br><span class="line">      <span class="hljs-string">'id'</span>, id, <span class="hljs-string">'must be a non-empty string'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> Module._load(id, <span class="hljs-keyword">this</span>, <span class="hljs-comment">/* isMain */</span> <span class="hljs-literal">false</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过源码可以发现，其本质上是调用了 <code>Module._load()</code> 方法</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// Check the cache for the requested file.</span></span><br><span class="line"><span class="hljs-comment">// 1. If a module already exists in the cache: return its exports object.</span></span><br><span class="line"><span class="hljs-comment">// 2. If the module is native: call `NativeModule.require()` with the</span></span><br><span class="line"><span class="hljs-comment">//    filename and return the result.</span></span><br><span class="line"><span class="hljs-comment">// 3. Otherwise, create a new module for the file and save it to the cache.</span></span><br><span class="line"><span class="hljs-comment">//    Then have it load  the file contents before returning its exports</span></span><br><span class="line"><span class="hljs-comment">//    object.</span></span><br><span class="line">Module._load = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">request, parent, isMain</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 解析文件的具体路径</span></span><br><span class="line">  <span class="hljs-keyword">var</span> filename = Module._resolveFilename(request, parent, isMain)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 优先从缓存中获取</span></span><br><span class="line">  <span class="hljs-keyword">var</span> cachedModule = Module._cache[filename]</span><br><span class="line">  <span class="hljs-keyword">if</span> (cachedModule) &#123;</span><br><span class="line">    updateChildren(parent, cachedModule, <span class="hljs-literal">true</span>)</span><br><span class="line">    <span class="hljs-comment">// 导出模块的 exports 属性</span></span><br><span class="line">    <span class="hljs-keyword">return</span> cachedModule.exports</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 判断是否为 native module，如 fs、http 等</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (NativeModule.nonInternalExists(filename)) &#123;</span><br><span class="line">    debug(<span class="hljs-string">'load native module %s'</span>, request)</span><br><span class="line">    <span class="hljs-keyword">return</span> NativeModule.require(filename)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// Don't call updateChildren(), Module constructor already does.</span></span><br><span class="line">  <span class="hljs-comment">// 创建新的模块对象</span></span><br><span class="line">  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = <span class="hljs-keyword">new</span> Module(filename, parent)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> (isMain) &#123;</span><br><span class="line">    process.mainModule = <span class="hljs-built_in">module</span></span><br><span class="line">    <span class="hljs-built_in">module</span>.id = <span class="hljs-string">'.'</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 缓存新建的模块</span></span><br><span class="line">  Module._cache[filename] = <span class="hljs-built_in">module</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 尝试进行模块加载</span></span><br><span class="line">  tryModuleLoad(<span class="hljs-built_in">module</span>, filename)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>.exports</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，与我们之前的模块加载机制是完全类似的，这里存在一个小问题，模块首次被加载后，会被缓存在 <code>Module._cache</code> 属性中，但有些时候，我们修改了已被缓存的模块，希望其它模块导入时，获取到更新后的内容的话该怎么处理呢？针对这种情况，我们可以使用以下方法清除指定缓存的模块，或清理所有已缓存的模块</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 删除指定模块的缓存</span></span><br><span class="line"><span class="hljs-keyword">delete</span> <span class="hljs-built_in">require</span>.cache[<span class="hljs-built_in">require</span>.resolve(<span class="hljs-string">'/* 被缓存的模块名称 */'</span>)]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 删除所有模块的缓存</span></span><br><span class="line"><span class="hljs-built_in">Object</span>.keys(<span class="hljs-built_in">require</span>.cache).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">key</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">delete</span> <span class="hljs-built_in">require</span>.cache[key]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Node-js-模块与前端模块的异同"><a href="#Node-js-模块与前端模块的异同" class="headerlink" title="Node.js 模块与前端模块的异同"></a>Node.js 模块与前端模块的异同</h2><p>通常有一些模块可以同时适用于前后端，但是在浏览器端通过 <code>script</code> 标签的载入 <code>JavaScript</code> 文件的方式与 <code>Node.js</code> 不同，<code>Node.js</code> 在载入到最终的执行中，进行了包装，使得每个文件中的变量天然的形成在一个闭包之中，不会污染全局变量，而浏览器端则通常是裸露的 <code>JavaScript</code> 代码片段，所以为了解决前后端一致性的问题，类库开发者需要将类库代码包装在一个闭包内，比如 <code>underscore</code> 的定义方式</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// Establish the root object, `window` in the browser, or `global` on the server.</span></span><br><span class="line">  <span class="hljs-keyword">var</span> root = <span class="hljs-keyword">this</span></span><br><span class="line">  <span class="hljs-keyword">var</span> _ = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> wrapper(obj)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports !== <span class="hljs-string">'undefined'</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> !== <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports) &#123;</span><br><span class="line">      exports = <span class="hljs-built_in">module</span>.exports = _</span><br><span class="line">    &#125;</span><br><span class="line">    exports._ = _</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) &#123;</span><br><span class="line">    <span class="hljs-comment">// Register as a named module with AMD.</span></span><br><span class="line">    define(<span class="hljs-string">'underscore'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> _</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    root[<span class="hljs-string">'_'</span>] = _</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).call(<span class="hljs-keyword">this</span>)</span><br></pre></td></tr></table></figure>
+
+<p>首先，它通过 <code>function</code> 定义构建了一个闭包，将 <code>this</code> 作为上下文对象直接 <code>call</code> 调用，以避免内部变量污染到全局作用域，续而通过判断 <code>exports</code> 是否存在来决定将局部变量 <code>_</code> 绑定给 <code>exports</code>，并且根据 <code>define</code> 变量是否存在，作为处理在实现了 <a href="http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition" target="_blank" rel="noopener">AMD 规范环境</a> 下的使用案例</p>
+<p>仅只当处于浏览器的环境中的时候，<code>this</code> 指向的是全局对象（<code>window</code> 对象），才将 <code>_</code> 变量赋在全局对象上，作为一个全局对象的方法导出，以供外部调用，所以在设计前后端通用的 <code>JavaScript</code> 类库时，都有着以下类似的判断</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports !== <span class="hljs-string">'undefined'</span>) &#123;</span><br><span class="line">  exports.EventProxy = EventProxy</span><br><span class="line">&#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">this</span>.EventProxy = EventProxy</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>即，如果 <code>exports</code> 对象存在，则将局部变量挂载在 <code>exports</code> 对象上，如果不存在，则挂载在全局对象上</p>
+<h2 id="Node-js-中的-VM-模块是做什么用的？"><a href="#Node-js-中的-VM-模块是做什么用的？" class="headerlink" title="Node.js 中的 VM 模块是做什么用的？"></a>Node.js 中的 VM 模块是做什么用的？</h2><p><code>VM</code> 模块提供了一系列 <code>API</code> 用于在 <code>V8</code> 虚拟机环境中编译和运行代码，<code>JavaScript</code> 代码可以被编译并立即运行，或编译、保存然后再运行</p>
+<h4 id="vm-runInThisContext-code-options"><a href="#vm-runInThisContext-code-options" class="headerlink" title="vm.runInThisContext(code[, options])"></a>vm.runInThisContext(code[, options])</h4><p><code>vm.runInThisContext()</code> 在当前的 <code>global</code> 对象的上下文中编译并执行 <code>code</code>，最后返回结果，运行中的代码无法获取本地作用域，但可以获取当前的 <code>global</code> 对象</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> vm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vm'</span>)</span><br><span class="line"><span class="hljs-keyword">let</span> localVar = <span class="hljs-string">'initial value'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> vmResult = vm.runInThisContext(<span class="hljs-string">'localVar = "vm";'</span>)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'vmResult:'</span>, vmResult)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'localVar:'</span>, localVar)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> evalResult = <span class="hljs-built_in">eval</span>(<span class="hljs-string">'localVar = "eval";'</span>)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'evalResult:'</span>, evalResult)</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'localVar:'</span>, localVar)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// vmResult: 'vm', localVar: 'initial value'</span></span><br><span class="line"><span class="hljs-comment">// evalResult: 'eval', localVar: 'eval'</span></span><br></pre></td></tr></table></figure>
+
+<p>正因 <code>vm.runInThisContext()</code> 无法获取本地作用域，故 <code>localVar</code> 的值不变，相反 <code>eval()</code> 确实能获取本地作用域，所以 <code>localVar</code> 的值被改变了</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://wiki.commonjs.org/wiki/CommonJS" target="_blank" rel="noopener">CommonJS</a></li>
+<li><a href="http://blog.chinaunix.net/uid-26672038-id-4112229.html" target="_blank" rel="noopener">JavaSript 模块规范 - AMD 规范与 CMD 规范介绍</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/35238127" target="_blank" rel="noopener">结合源码分析 Node.js 模块加载与运行原理</a></li>
+<li><a href="http://nodejs.cn/api/modules.html" target="_blank" rel="noopener">modules</a></li>
+<li><a href="https://juejin.im/post/5c7b6e8bf265da2dd218e6d3" target="_blank" rel="noopener">node模块化之require学习</a></li>
+<li><a href="https://www.jianshu.com/p/4cf16168912e" target="_blank" rel="noopener">Node.js介绍 - 模块化</a></li>
+<li><a href="https://juejin.im/post/597ec55a51882556a234fcef" target="_blank" rel="noopener">exports、module.exports 和 export、export default 到底是咋回事</a></li>
+<li><a href="http://www.alloyteam.com/2015/04/xiang-jie-nodejs-di-vm-mo-kuai/" target="_blank" rel="noopener">Node.js 的 VM 模块</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Node-js/">Node.js</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/02/Node/09/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">Node.js 中的 HTTP 模块</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/09/27/CSS/12/">
+                <span class="level-item">CSS 中一些小技巧汇总</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: 'edf096a7a65f63a146d583c936faf8ba',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#CommonJS-规范">
+        <span class="has-mr-6">1</span>
+        <span>CommonJS 规范</span>
+        </a></li><li>
+        <a class="is-flex" href="#模块分类">
+        <span class="has-mr-6">2</span>
+        <span>模块分类</span>
+        </a></li><li>
+        <a class="is-flex" href="#模块对象">
+        <span class="has-mr-6">3</span>
+        <span>模块对象</span>
+        </a></li><li>
+        <a class="is-flex" href="#模块加载机制">
+        <span class="has-mr-6">4</span>
+        <span>模块加载机制</span>
+        </a></li><li>
+        <a class="is-flex" href="#模块中的-module、exports、dirname、filename-和-require-来自何方？">
+        <span class="has-mr-6">5</span>
+        <span>模块中的 module、exports、dirname、filename 和 require 来自何方？</span>
+        </a></li><li>
+        <a class="is-flex" href="#module-exports-与-exports-的区别">
+        <span class="has-mr-6">6</span>
+        <span>module.exports 与 exports 的区别</span>
+        </a></li><li>
+        <a class="is-flex" href="#模块之间循环依赖是否会陷入死循环？">
+        <span class="has-mr-6">7</span>
+        <span>模块之间循环依赖是否会陷入死循环？</span>
+        </a></li><li>
+        <a class="is-flex" href="#require-函数支持导入哪几类文件？">
+        <span class="has-mr-6">8</span>
+        <span>require 函数支持导入哪几类文件？</span>
+        </a></li><li>
+        <a class="is-flex" href="#require-函数执行的主要流程是什么？">
+        <span class="has-mr-6">9</span>
+        <span>require 函数执行的主要流程是什么？</span>
+        </a></li><li>
+        <a class="is-flex" href="#Node-js-模块与前端模块的异同">
+        <span class="has-mr-6">10</span>
+        <span>Node.js 模块与前端模块的异同</span>
+        </a></li><li>
+        <a class="is-flex" href="#Node-js-中的-VM-模块是做什么用的？">
+        <span class="has-mr-6">11</span>
+        <span>Node.js 中的 VM 模块是做什么用的？</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#vm-runInThisContext-code-options">
+        <span class="has-mr-6">11.1</span>
+        <span>vm.runInThisContext(code[, options])</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">12</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Node.js 中的模块机制" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

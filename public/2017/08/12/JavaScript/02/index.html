@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>移动端开发相关内容汇总 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="最后更新于 2019-12-02  由于最近在工作当中经常遇到移动端的一些相关问题，所以打算抽些时间来重新的梳理一下，主要目的是厘清 Web 移动端开发的前前后后，一些技术的发展过程，一些问题的优化手段以及给出一些常见的兼容性问题的解决方案，主要参考的是 移动端的兼容适配 这篇文章，内容有所调整，主要是方便自己理解，如果想了解更为详细的流程可以参考原文">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端开发相关内容汇总">
+<meta property="og:url" content="http://yoursite.com/2017/08/12/JavaScript/02/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="最后更新于 2019-12-02  由于最近在工作当中经常遇到移动端的一些相关问题，所以打算抽些时间来重新的梳理一下，主要目的是厘清 Web 移动端开发的前前后后，一些技术的发展过程，一些问题的优化手段以及给出一些常见的兼容性问题的解决方案，主要参考的是 移动端的兼容适配 这篇文章，内容有所调整，主要是方便自己理解，如果想了解更为详细的流程可以参考原文">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/02.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="移动端开发相关内容汇总">
+<meta name="twitter:description" content="最后更新于 2019-12-02  由于最近在工作当中经常遇到移动端的一些相关问题，所以打算抽些时间来重新的梳理一下，主要目的是厘清 Web 移动端开发的前前后后，一些技术的发展过程，一些问题的优化手段以及给出一些常见的兼容性问题的解决方案，主要参考的是 移动端的兼容适配 这篇文章，内容有所调整，主要是方便自己理解，如果想了解更为详细的流程可以参考原文">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/02.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="移动端开发相关内容汇总" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/02.webp" alt="移动端开发相关内容汇总">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2017-08-12</div>
+                <!-- <time class="level-item has-text-grey" datetime="2017-08-11T16:00:00.000Z">2017-08-12</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 11097 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                移动端开发相关内容汇总
+            
+        </h1>
+        <div class="content">
+            <blockquote>
+<p>最后更新于 <code>2019-12-02</code></p>
+</blockquote>
+<p>由于最近在工作当中经常遇到移动端的一些相关问题，所以打算抽些时间来重新的梳理一下，主要目的是厘清 <code>Web</code> 移动端开发的前前后后，一些技术的发展过程，一些问题的优化手段以及给出一些常见的兼容性问题的解决方案，主要参考的是 <a href="https://www.shangmayuan.com/a/fc5249be71b04adaab9e4ef1.html" target="_blank" rel="noopener">移动端的兼容适配</a> 这篇文章，内容有所调整，主要是方便自己理解，如果想了解更为详细的流程可以参考原文</p>
+<a id="more"></a>
+
+
+<h2 id="响应式设计"><a href="#响应式设计" class="headerlink" title="响应式设计"></a>响应式设计</h2><p>首先我们先来看看『响应式设计』，这个与移动端开发有着密切的联系，响应式设计即是 <code>RWD</code>（<code>Responsive Web Design</code>）</p>
+<p>根据维基百科及其参考文献，理论上响应式界面能够适应不同的设备，描述响应式界面最著名的一句话就是 <code>Content is like water</code>，翻译成中文便是『如果将屏幕看作容器，那么内容就像水一样』</p>
+<h4 id="为什么要设计响应式界面"><a href="#为什么要设计响应式界面" class="headerlink" title="为什么要设计响应式界面"></a>为什么要设计响应式界面</h4><p>那么为什么要费神的尝试统一所有设备呢？简单来说主要有以下几点</p>
+<ul>
+<li>即便是 <code>PC</code> 或 <code>Mac</code> 用户，调查显示只有一半的人会将浏览器全屏显示，而剩下的一般人使用多大的浏览器，很难预知</li>
+<li>台式机、投影、电视、笔记本、手机、平板、手表、<code>VR</code> 等智能设备正在不断增加，主流设备的概念正在消失</li>
+<li>屏幕分辨率正飞速发展，同一张图片在不同设备上看起来，大小可能天差地别</li>
+<li>鼠标、触屏、笔、摄像头手势等不可预期的操控方式正在不断出现</li>
+</ul>
+<h4 id="响应式界面的四个层次"><a href="#响应式界面的四个层次" class="headerlink" title="响应式界面的四个层次"></a>响应式界面的四个层次</h4><ul>
+<li>同一页面在不同大小和比例上看起来都应该是舒适的</li>
+<li>同一页面在不同分辨率上看起来都应该是合理</li>
+<li>同一页面在不同操作方式（如鼠标和触屏）下，体验应该是统一的</li>
+<li>同一页面在不同类型的设备（手机、平板、电脑）上，交互方式应该是符合习惯的</li>
+</ul>
+<h4 id="响应式界面的基本规则"><a href="#响应式界面的基本规则" class="headerlink" title="响应式界面的基本规则"></a>响应式界面的基本规则</h4><ul>
+<li>可伸缩的内容区块，内容区块的在一定程度上能够自动调整，以确保填满整个页面</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-01.png" alt></p>
+<ul>
+<li>可自由排布的内容区块，当页面尺寸变动较大时，能够减少或是增加排布的列数</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-02.png" alt></p>
+<ul>
+<li>适应页面尺寸的边距，到页面尺寸发生更大变化时，区块的边距也应该变化</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-03.png" alt></p>
+<ul>
+<li>能够适应比例变化的图片，对于常见的宽度调整，图片在隐去两侧部分时，依旧保持美观可用</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-04.png" alt></p>
+<ul>
+<li>能够自动隐藏或是显示部分的内容，如在电脑上显示的的大段描述文本，在手机上就只能少量显示或全部隐藏</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-05.png" alt></p>
+<ul>
+<li>能自动折叠的导航和菜单，展开还是收起，应该根据页面尺寸来判断</li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-06.png" alt>  </p>
+<ul>
+<li>放弃使用像素作为尺寸单位，用 <code>dp</code>（对于前端来说，这里可能是 <code>em/rem</code>）尺寸等方法来确保页面在分辨率相差很大的设备上，看起来也能保持一致，同时也要求提供的图片应该比预想的更大，才能适应高分辨率的屏幕</li>
+</ul>
+<p>上面一段我觉得已经涵盖了响应式设计的绝大部分，简单总结起来，可以概括为</p>
+<ul>
+<li>媒体查询，边界断点的规则设定（<code>Media queries &amp;&amp; break point</code>）</li>
+<li>内容的可伸缩性效果（<code>Flexibel visuals</code>）</li>
+<li>流式网格布局（<code>Fluid grids</code>）</li>
+<li>主要内容呈现及图片的高质量（<code>Main content and high quality</code>）</li>
+</ul>
+<h2 id="响应式和自适应"><a href="#响应式和自适应" class="headerlink" title="响应式和自适应"></a>响应式和自适应</h2><p>响应式设计是 <code>Responsive Web Design</code>（<code>RWD</code>），自适应设计是 <code>Adaptive Web Design</code>（<code>AWD</code>），经常有人会将两者混为一谈，或者其实根本也区分不了所谓的响应式与自适应</p>
+<p><code>RWD</code> 和 <code>AWD</code> 两者都是为了适配各种不同的移动设备，致力于提升用户体验所产生的的技术，核心思想是用技术来使网页适应从小到大（现在到超大）的不同分辨率的屏幕，通常认为 <code>RWD</code> 是 <code>AWD</code> 的子集</p>
+<ul>
+<li><code>RWD</code>，<code>Ethan Marcote</code> 的文章是大家认为 <code>RWD</code> 的起源，他提出的 <code>RWD</code> 方案是通过 <code>HTML</code> 和 <code>CSS</code> 的媒体查询技术，配合流体布局实现，<code>RWD</code> 倾向于只改变元素的外观布局，而不大幅度改变内容，<code>Jeffrey Zeldman</code> 总结说，我们就把 <code>RWD</code> 定义为一切能用来为各种分辨率和设备性能优化视觉体验的技术</li>
+<li><code>AWD</code>，<code>Adaptive Design</code> 是 <code>Aaron Gustafson</code> 的书的标题，他认为 <code>AWD</code> 在包括 <code>RWD</code> 的 <code>CSS</code> 媒体查询技术以外，也要用 <code>JavaScript</code> 来操作 <code>HTML</code> 来更适应移动设备的能力，<code>AWD</code> 有可能会针对移动端用户减去内容，减去功能，<code>AWD</code> 可以在服务器端就进行优化，把优化过的内容送到终端上</li>
+</ul>
+<p>一图胜千言</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-07.png" alt></p>
+<p>从定义上而言 <code>RWD</code> 是一套代码，适用于所有屏幕，而 <code>AWD</code> 则是多端多套代码，本文不会过多去纠结响应式与自适应区别，这两者的本质都是致力于适配不同设备，更好地提升用户体验，更多相关内容可以参考下面两个链接</p>
+<ul>
+<li><a href="https://www.quora.com/What-is-the-difference-between-responsive-and-adaptive-design" target="_blank" rel="noopener">Responsive Design vs. Adaptive Design</a></li>
+<li><a href="https://www.zhihu.com/question/20628050?rf=24334181" target="_blank" rel="noopener">Responsive design 和 Adaptive design 的区别</a></li>
+</ul>
+<h2 id="渐进增强和优雅降级"><a href="#渐进增强和优雅降级" class="headerlink" title="渐进增强和优雅降级"></a>渐进增强和优雅降级</h2><ul>
+<li>渐进增强（<code>progressive enhancement</code>），针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验</li>
+<li>优雅降级（<code>graceful degradation</code>），一开始就构建完整的功能，然后再针对低版本浏览器进行兼容</li>
+</ul>
+<p>两者的区别是，优雅降级是从复杂的现状开始，并试图减少用户体验的供给，而渐进增强则是从一个非常基础的，能够起作用的版本开始，并不断扩充，以适应未来环境的需要，降级意味着往回看，而渐进增强则意味着朝前看，同时保证其根基处于安全地带</p>
+<p>渐进增强和优雅降级通常是 <code>AWD</code> 会牵扯到的另一个技术术语，本质上而言即是随着屏幕的大小的改变，功能会一点一点增强，也通常会用在一些高级 <code>CSS3</code> 属性上，我们对一些 <code>CSS</code> 属性进行特性检测，甚至不进行特性检测直接使用，后果是在支持它的网页上该属性正常展示，而不支持它的网页该属性不生效，但也不影响用户的基本使用</p>
+<p>典型的例子是 <code>CSS3</code> 逐渐被大众认可并被使用，<code>PC</code> 端页面开始由低版本的 <code>IE</code> 向兼容性更好的 <code>IE 9+</code>，<code>Chrome</code>，<code>Firefox</code> 浏览器转变的时期，我们可以对页面元素直接使用阴影，圆角等属性，对于不支持它的低版本 <code>IE</code> 而言，没有什么损失，而对于支持它的高级浏览器而言，带给了用户更好的交互视觉体验，这就是渐进增强</p>
+<h2 id="移动端屏幕适配方案"><a href="#移动端屏幕适配方案" class="headerlink" title="移动端屏幕适配方案"></a>移动端屏幕适配方案</h2><p>我们在下面会针对一些具体的案例来深入的了解，首先来看高保真还原设计稿，也就是如何适配移动端繁杂的屏幕大小，通常而言设计师只会给出单一分辨率下的设计稿，而我们要做的，就是以这个设计稿为基准，去适配所有不同大小的移动端设备</p>
+<p>在此之前，有一些基础概念需要我们先行理解</p>
+<h4 id="设备独立像素"><a href="#设备独立像素" class="headerlink" title="设备独立像素"></a>设备独立像素</h4><p>这里以 <code>iPhone 6/7/8</code> 为例，我们打开 <code>Chrome</code> 开发者工具，如下图</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-08.png" alt></p>
+<p>这里的 <code>375 * 667</code> 表示的是设备独立像素（<code>DIP</code>），也可以理解为 <code>CSS</code> 像素，也称为『逻辑像素』，简单来说就是</p>
+<blockquote>
+<p>设备独立像素 = <code>CSS</code> 像素 = 逻辑像素</p>
+</blockquote>
+<h4 id="物理像素"><a href="#物理像素" class="headerlink" title="物理像素"></a>物理像素</h4><p>那么什么又是物理像素呢，我们到电商网站购买手机，都会看一看手机的参数，以 <code>iPhone 7</code> 为例</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-09.png" alt></p>
+<p>可以看到，<code>iPhone 7</code> 的分辨率是 <code>1334 x 750</code>，这里描述的就是屏幕实际的物理像素，物理像素又称为『设备像素』，显示屏是由一个个物理像素点组成的，<code>1334 x 750</code> 表示手机分别在垂直和水平上所具有的像素点数，通过控制每个像素点的颜色，就可以使屏幕显示出不同的图像，屏幕从工厂出来那天起，它上面的物理像素点就固定不变了，单位为 <code>pt</code>，简单来说就是</p>
+<blockquote>
+<p>设备像素 = 物理像素</p>
+</blockquote>
+<h4 id="DPR（Device-Pixel-Ratio）设备像素比"><a href="#DPR（Device-Pixel-Ratio）设备像素比" class="headerlink" title="DPR（Device Pixel Ratio）设备像素比"></a>DPR（Device Pixel Ratio）设备像素比</h4><p>有了上面两个概念以后，我们就可以顺理成章引出下一个概念，<code>DPR</code>（<code>Device Pixel Ratio</code>）设备像素比，这个与我们通常说的视网膜屏（多倍屏，<code>Retina</code> 屏）有关</p>
+<p>设备像素比描述的是未缩放状态下，物理像素和设备独立像素的初始比例关系，简单的计算公式是下面这样的</p>
+<blockquote>
+<p><code>DPR</code> = 物理像素 / 设备独立像素</p>
+</blockquote>
+<p>我们套用一下上面 <code>iPhone 7</code> 的数据（取设备的物理像素宽度与设备独立像素宽度进行计算），可以发现</p>
+<blockquote>
+<p><code>iPhone 7</code> 的 <code>DPR</code> = <code>iPhone 7</code> 的物理像素宽度 / <code>iPhone 7</code> 的设备独立像素宽度 = <code>2</code></p>
+</blockquote>
+<p>其实也就是 <code>750 / 375 = 2</code> 或者是 <code>1334 / 667 = 2</code>，所以我们可以得到 <code>iPhone 7</code> 的 <code>dpr</code> 为 <code>2</code>，这也就是我们常说的『视网膜屏幕』，而视网膜（<code>Retina</code>）屏幕是苹果公司的一个营销术语，简单来说就是苹果公司将 <code>dpr &gt; 1</code> 的屏幕称为视网膜屏幕</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-10.png" alt></p>
+<p>在视网膜屏幕中，以 <code>dpr = 2</code> 为例，把 <code>4</code>（<code>2 x 2</code>）个像素当 <code>1</code> 个像素使用，这样让屏幕看起来更精致，但是元素的大小本身不会改变</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-11.png" alt></p>
+<p>下面我们再来看看 <code>iPhone XS Max</code></p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-12.png" alt></p>
+<p>它的物理像素如上图是 <code>2688 x 1242</code></p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-13.png" alt></p>
+<p>而它的 <code>CSS</code> 像素是 <code>896 x 414</code>，所以我们可以很容易得出 <code>iPhone XS Max</code> 的 <code>dpr</code> 为 <code>3</code></p>
+<p>至此，我们也算是完成了一个小的里程碑，我们通常说的 <code>H5</code> 手机适配其实也就是指的这两个维度</p>
+<ul>
+<li>适配不同屏幕大小，也就是适配不同屏幕下的 <code>CSS</code> 像素</li>
+<li>适配不同像素密度，也就是适配不同屏幕下 <code>dpr</code> 不一致导致的一些问题</li>
+</ul>
+<blockquote>
+<p>当然这里还有一些其他比较重要的概念，比如 <code>PPI</code>、<code>DPI</code> 等，但是我们就不详细展开了，可以自行去加深理解</p>
+</blockquote>
+<h2 id="适配不同屏幕大小"><a href="#适配不同屏幕大小" class="headerlink" title="适配不同屏幕大小"></a>适配不同屏幕大小</h2><p>通常我们在移动端开发过程当中，都会添加一个移动端专用的 <code>meta</code> 标签，也就是下面这样的</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width; initial-scale=1; maximum-scale=1; minimum-scale=1; user-scalable=no;"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>那么它的具体含义是什么样的呢？其中视口（<code>viewport</code>）代表当前可见的计算机图形区域，在 <code>Web</code> 浏览器术语中，通常与浏览器窗口相同，但不包括浏览器的 <code>UI</code>，菜单栏等，即指你正在浏览的文档的那一部分，而关于 <code>content</code> 参数的含义可以参考下表</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>含义</th>
+<th>取值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>width</code></td>
+<td>定义视口的宽度，单位为像索</td>
+<td>正整数或设备宽度 <code>device-width</code></td>
+</tr>
+<tr>
+<td><code>height</code></td>
+<td>定义视口的高度，单位为像索</td>
+<td>正整数或 <code>device-height</code></td>
+</tr>
+<tr>
+<td><code>initial-scale</code></td>
+<td>定义初始缩放值</td>
+<td>整数或小数</td>
+</tr>
+<tr>
+<td><code>minimum-scale</code></td>
+<td>定义缩小最小比例，它必须小于或等于 <code>maximum-scale</code> 设置</td>
+<td>整数或小数</td>
+</tr>
+<tr>
+<td><code>maximum-scale</code></td>
+<td>定义放大最大比例，它必须大于或等于 <code>minimum-scale</code> 设置</td>
+<td>整数或小数</td>
+</tr>
+<tr>
+<td><code>user-scalable</code></td>
+<td>定义是否允许用户手动缩放页面，默认值 <code>yes</code></td>
+<td><code>yes/no</code></td>
+</tr>
+</tbody></table>
+<p>我们在移动端视口要想视觉效果和体验好，那么我们的视口宽度必去无限接近理想视口，而所谓的理想视口，一般来讲，这个视口其实不是真是存在的，它对设备来说是一个最理想布局视口尺寸，在用户不进行手动缩放的情况下，可以将页面理想地展示，那么所谓的理想宽度就是浏览器（屏幕）的宽度了</p>
+<p>于是上述的 <code>meta</code> 设置，就是我们的理想设置，它规定了我们的视口宽度为屏幕宽度，初始缩放比例为 <code>1</code>，就是初始时候我们的视觉视口就是理想视口，下面我们就来看看有哪些比较常用的适配方法</p>
+<p>通常来说，适配不同屏幕大小，也就是适配不同屏幕下的 <code>CSS</code> 像素，最早移动端屏幕 <code>CSS</code> 像素适配方案是媒体查询，但是无法做到接近 <code>100%</code> 的还原，适配不同屏幕大小其实只需要遵循一条原则，确保页面元素大小的与屏幕大小保持一定比例，也就是『按比例还原设计稿』</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-14.png" alt></p>
+<p>假设我们现在拿到标注为 <code>375 * 667</code> 的大小的设计稿，其中一个元素的标注如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-15.png" alt></p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-16.png" alt></p>
+<p>以页面宽度为基准的话，那么</p>
+<ul>
+<li>元素的宽度为 <code>209 / 375 = 55.73%</code></li>
+<li>元素的高度为 <code>80 / 375 = 21.33%</code></li>
+<li>元素的上左右边距依次计算</li>
+</ul>
+<p>这样，无论屏幕的 <code>CSS</code> 像素宽度是 <code>320px</code> 还是 <code>375px</code> 还是 <code>414px</code>，按照等量百分比还原出来的界面总是正确的</p>
+<p>然而，理想很丰满，现实很骨感，实现上述百分比方案的核心需要一个全局通用的基准单位，让所有百分比展示以它为基准，但是在 <code>CSS</code> 中，根据 <a href="https://www.w3.org/TR/css-values-4/#percentages" target="_blank" rel="noopener">CSS Values and Units Module Level 4</a> 的定义</p>
+<blockquote>
+<p>百分比值总要相对于另一个量，比如长度，每个允许使用百分比值的属性，同时也要定义百分比值参照的那个量，这个量可以是相同元素的另一个属性的值，也可以是祖先元素的某个属性的值，甚至是格式化上下文的一个度量（比如包含块的宽度）</p>
+</blockquote>
+<p>具体来说就是</p>
+<ul>
+<li>宽度（<code>width</code>）、间距（<code>maring/padding</code>）支持百分比值，但默认的相对参考值是包含块的宽度</li>
+<li>高度（<code>height</code>）百分比的大小是相对其父级元素高的大小</li>
+<li>边框（<code>border</code>）不支持百分值</li>
+<li>边框圆角半径（<code>border-radius</code>）支持百分比值，但水平方向相对参考值是盒子的宽度，垂直方向相对参考值是盒子的高度</li>
+<li>文本大小（<code>font-size</code>）支持百分比值，但相对参考值是父元素的 <code>font-size</code> 的值</li>
+<li>盒阴影（<code>box-shadow</code>）和文本阴影（<code>text-shadow</code>）不支持百分比值</li>
+</ul>
+<p>首先，支持百分比单位的度量属性有其各自的参照基准，其次并非所有度量属性都支持百分比单位，所以我们需要另辟蹊径</p>
+<h4 id="rem-适配方案"><a href="#rem-适配方案" class="headerlink" title="rem 适配方案"></a>rem 适配方案</h4><p>在 <code>vw</code> 方案出来之前，最被大众接受的就是使用 <code>rem</code> 进行适配的方案，因为 <code>rem</code> 满足上面说的，可以是一个全局性的基准单位</p>
+<blockquote>
+<p><code>rem</code>（<code>font size of the root element</code>）在 <a href="https://drafts.csswg.org/css-values-3/#lengths" target="_blank" rel="noopener">CSS Values and Units Module Level 3</a> 中的定义就是，根据网页的根元素来设置字体大小，和 <code>em</code>（<code>font size of the element</code>）的区别是，<code>em</code> 是根据其父元素的字体大小来设置，而 <code>rem</code> 是根据网页的跟元素（<code>html</code>）来设置字体大小</p>
+</blockquote>
+<h6 id="flexible"><a href="#flexible" class="headerlink" title="flexible"></a>flexible</h6><p>基于此，淘宝早年推行的一套以 <code>rem</code> 为基准的适配方案 <a href="https://github.com/amfe/lib-flexible" target="_blank" rel="noopener">lib-flexible</a>，其核心做法在于</p>
+<ul>
+<li><del>根据设备的 <code>dpr</code> 动态改写 <code>&lt;meta&gt;</code> 标签，设置 <code>viewport</code> 的缩放</del></li>
+<li><del>给 <code>&lt;html&gt;</code> 元素添加 <code>data-dpr</code> 属性，并且动态改写 <code>data-dpr</code> 的值</del></li>
+<li>根据 <code>document.documentElement.clientWidth</code> 动态修改 <code>&lt;html&gt;</code> 的 <code>font-size</code>，页面其他元素使用 <code>rem</code> 作为长度单位进行布局，从而实现页面的等比缩放</li>
+</ul>
+<p>只不过关于上面划掉的两点，是因为现在的 <code>lib-flexible</code> 库已经不再去缩放 <code>viewport</code>，字体大小的设定也直接使用了 <code>rem</code></p>
+<h6 id="hotcss"><a href="#hotcss" class="headerlink" title="hotcss"></a>hotcss</h6><p><a href="https://github.com/imochen/hotcss" target="_blank" rel="noopener">hotcss</a> 不是一个库，也不是一个框架，它是一个移动端布局开发解决方案，使用 <code>hotcss</code> 可以让移动端布局开发更容易，本质的思想与 <code>flexible</code> 完全一致</p>
+<h6 id="rem-方案的一些总结"><a href="#rem-方案的一些总结" class="headerlink" title="rem 方案的一些总结"></a>rem 方案的一些总结</h6><p>使用 <code>flexible/hotcss</code> 作为屏幕宽度适配解决方案，是存在一些问题的</p>
+<ol>
+<li>动态修改 <code>viewport</code> 是存在一定的风险的，譬如通过 <code>viewport</code> 改变了页面的缩放之后，获取到的 <code>innerWidth/innerHeight</code> 也会随之发生变化，如果业务逻辑有获取此类高宽进行其他计算的，可能会导致意想不到的错误（其实到今天，其实存在很多在 <code>flexible</code> 基础上演化而来的各种 <code>rem</code> 解决方案，有的不会对 <code>viewport</code> 进行缩放处理，自行处理 <code>1px</code> 边框问题）</li>
+<li><code>flexible/hotcss</code> 都并非纯 <code>CSS</code> 方案，需要引入一定的 <code>JavaScript</code> 代码</li>
+<li><code>rem</code> 的设计初衷并非是用于解决此类问题，用 <code>rem</code> 进行页面的宽度适配多少有一种 <code>hack</code> 的感觉</li>
+<li>存在一定的兼容性问题，对于安卓 <code>4.4</code> 以下版本系统不支持 <code>viewport</code> 缩放（当然 <code>flexible</code> 处理 <code>Android</code> 系列时，始终认为其 <code>dpr</code> 为 <code>1</code>，没有进行 <code>viewport</code> 缩放）</li>
+</ol>
+<h4 id="vw-适配方案"><a href="#vw-适配方案" class="headerlink" title="vw 适配方案"></a>vw 适配方案</h4><p>严格来说，使用 <code>rem</code> 进行页面适配其实是一种 <code>hack</code> 手段，<code>rem</code> 单位的初衷本身并不是用来进行移动端页面宽度适配的，到了今天有了一种更好的替代方案，那就是使用 <code>vw</code> 进行适配，也就是『百分比适配』</p>
+<p>百分比适配方案的核心需要一个全局通用的基准单位，<code>rem</code> 是不错，但是需要借助 <code>JavaScript</code> 进行动态修改根元素的 <code>font-size</code>，而 <code>vw/vh</code>（<code>vmax/vmin</code>）的出现则很好弥补 <code>rem</code> 需要 <code>JavaScript</code> 辅助的缺点</p>
+<p><a href="https://www.w3.org/TR/css-values-4/#percentages" target="_blank" rel="noopener">CSS Values and Units Module Level 4</a> 的定义，<code>vw</code> 等于初始包含块（<code>html</code> 元素）宽度的 <code>1%</code>，也就是</p>
+<ul>
+<li><code>1vw</code> 等于 <code>window.innerWidth</code> 的数值的 <code>1%</code></li>
+<li><code>1vh</code> 等于 <code>window.innerHeight</code> 的数值的 <code>1%</code></li>
+</ul>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-17.png" alt></p>
+<p>再以上面设计稿图的元素为例，那么</p>
+<ul>
+<li>元素的宽度为 <code>209 / 375 = 55.73% = 55.73vw</code></li>
+<li>元素的高度为 <code>80 / 375 = 21.33% = 21.33vw</code></li>
+<li>元素的上左右边距依次计算</li>
+</ul>
+<p>根据相关的测试，可以使用 <code>vw</code> 进行长度单位的有</p>
+<ul>
+<li>容器大小适配，可以使用 <code>vw</code></li>
+<li>文本大小的适配，可以使用 <code>vw</code></li>
+<li>大于 <code>1px</code> 的边框、圆角、阴影都可以使用 <code>vw</code></li>
+<li>内距和外距，可以使用 <code>vw</code></li>
+</ul>
+<p>简单的一个页面，看看效果，完全是等比例缩放的效果，线上预览地址可见 <a href="https://codepen.io/Chokcoco/pen/oNvWVYq?editors=1100" target="_blank" rel="noopener">CodePen</a></p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-18.gif" alt></p>
+<h6 id="自动转换插件"><a href="#自动转换插件" class="headerlink" title="自动转换插件"></a>自动转换插件</h6><p>当我们使用 <code>rem</code> 作为长度单位的时，通常会有借助 <code>Sass/Less</code> 实现一个转换函数，像是这样</p>
+<figure class="highlight scss hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 假设设计稿的宽度是 375px，假设取设计稿宽度下 1rem = 100px</span></span><br><span class="line"><span class="hljs-variable">$baseFontSize</span>: <span class="hljs-number">100</span>;</span><br><span class="line"></span><br><span class="line">@function px2rem(<span class="hljs-variable">$px</span>) &#123;</span><br><span class="line">  @return <span class="hljs-variable">$px</span> / <span class="hljs-variable">$baseFontSize</span> * 1rem;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同理，在 <code>vw</code> 方案下，我们只需要去改写这个方法</p>
+<figure class="highlight scss hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 假设设计稿的宽度是 375px</span></span><br><span class="line">@function px2vw(<span class="hljs-variable">$px</span>) &#123;</span><br><span class="line">  @return <span class="hljs-variable">$px</span> / 375 * 100vw;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，我们还可以借助一些插件包去实现这个自动转换，提高效率，譬如 <a href="https://www.npmjs.com/package/postcss-px-to-viewport" target="_blank" rel="noopener">postcss-px-to-viewport</a></p>
+<h6 id="vw-polyfill"><a href="#vw-polyfill" class="headerlink" title="vw polyfill"></a>vw polyfill</h6><p>但是 <code>vw</code> 目前毕竟还是存在兼容问题的，如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-19.png" alt></p>
+<p>看上去其实已经覆盖了绝大部分设备，但是如果在业务使用中又真的出现了兼容问题，应该怎么处理呢？通常来说，有下面两种方式可以进行降级处理</p>
+<ul>
+<li><code>CSS Houdini</code>，通过 <code>CSS Houdini</code> 针对 <code>vw</code> 做处理，调用 <code>CSS Typed OM Level1</code> 提供的 <code>CSSUnitValue API</code></li>
+<li><code>CSS Polyfill</code>，通过相应的 <code>Polyfill</code> 做相应的处理，目前针对于 <code>vw</code> 单位的 <code>Polyfill</code> 主要有 <code>vminpoly</code>、<code>Viewport Units Buggyfill</code>、<code>vunits.js</code> 和 <code>Modernizr</code> 等</li>
+</ul>
+<h6 id="对于-vw-方案的一些总结"><a href="#对于-vw-方案的一些总结" class="headerlink" title="对于 vw 方案的一些总结"></a>对于 vw 方案的一些总结</h6><p><code>vw</code> 确实看上去很不错，但是也是存在它的一些问题</p>
+<ul>
+<li>也没能很好的解决 <code>1px</code> 边框在高清屏下的显示问题，需要自行处理</li>
+<li>由于 <code>vw</code> 方案是完全的等比缩放，在完全等比还原设计稿的同时带来的一个问题是无法很好的限定一个最大最小宽度值，由于 <code>rem</code> 方案是借助 <code>JavaScript</code> 的，所以这一点 <code>rem</code> 比 <code>vw</code> 会更加的灵活</li>
+</ul>
+<p>当然，两个方案现阶段其实都可以使用甚至一起搭配使用，更多详情可以参考下面几个链接</p>
+<ul>
+<li><a href="https://juejin.cn/post/6844903569884184589" target="_blank" rel="noopener">再聊移动端页面的适配</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NgGd9zSm6NEaF5Jxp5WBKg" target="_blank" rel="noopener">H5 必知必会之像素级还原设计稿</a></li>
+<li><a href="https://www.smashingmagazine.com/2016/05/fluid-typography/" target="_blank" rel="noopener">Responsive And Fluid Typography With vh And vw Units</a></li>
+<li><a href="https://www.cnblogs.com/wengxuesong/archive/2016/05/16/5497653.html" target="_blank" rel="noopener">使用 VH 和 VW 实现真正的流体排版</a></li>
+</ul>
+<h2 id="1px-边框"><a href="#1px-边框" class="headerlink" title="1px 边框"></a>1px 边框</h2><p>上面我们说到使用 <code>vw</code> 适配屏幕大小方案，其中有一个缺点就是在 <code>Retina</code> 屏下，无法很好的展示真正的 <code>1px</code> 物理像素线条，设计师想要的 <code>Retina</code> 下 <code>border: 1px</code>，其实是 <code>1</code> 物理像素宽度，而不是 <code>1 CSS</code> 像素宽度，对于 <code>CSS</code> 而言</p>
+<ul>
+<li>在 <code>dpr = 1</code> 时，此时 <code>1</code> 物理像素等于 <code>1 CSS</code> 像素宽度</li>
+<li>在 <code>dpr = 2</code> 时，此时 <code>1</code> 物理像素等于 <code>0.5 CSS</code> 宽度像素，可以认为 <code>border-width: 1px</code> 这里的 <code>1px</code> 其实是 <code>1 CSS</code> 像素宽度，等于 <code>2</code> 像素物理宽度，设计师其实想要的是 <code>border-width: 0.5px</code></li>
+<li>在 <code>dpr = 3</code> 时，此时 <code>1</code> 物理像素等于 <code>0.33 CSS</code> 宽度像素，设计师其实想要的是 <code>border-width: 0.333px</code></li>
+</ul>
+<p>然而并不是所有手机浏览器都能识别 <code>border-width: 0.5px</code>，在 <code>iOS 7</code> 以下，<code>Android</code> 等其他系统里，小于 <code>1px</code> 的单位会被当成为 <code>0px</code> 处理，那么如何实现这 <code>0.5px</code>、<code>0.33px</code> 呢？</p>
+<p>比较常见的解决方式有以下几种，线上预览地址可见 <a href="https://codepen.io/Chokcoco/pen/XyNjqK" target="_blank" rel="noopener">CodePen</a></p>
+<ul>
+<li>渐变实现</li>
+<li>使用缩放实现</li>
+<li>使用图片实现（<code>base64</code>）</li>
+<li>使用 <code>SVG</code> 实现（嵌入 <code>background-url</code>）</li>
+</ul>
+<h2 id="图片适配及优化"><a href="#图片适配及优化" class="headerlink" title="图片适配及优化"></a>图片适配及优化</h2><p>图像通常占据了网页上下载资源绝的大部分，优化图像通常可以最大限度地减少从网站下载的字节数以及提高网站性能，通常我们可以采取以下这些通用的优化手段</p>
+<ul>
+<li>消除多余的图像资源</li>
+<li>尽可能利用 <code>CSS3/SVG</code> 矢量图像替代某些光栅图像</li>
+<li>谨慎使用字体图标，使用网页字体取代在图像中进行文本编码</li>
+<li>选择正确的图片格式</li>
+<li>为不同 <code>DPR</code> 屏幕提供最适合的图片尺寸</li>
+</ul>
+<p>在这里我们主要重点关注如何在不同的 <code>dpr</code> 屏幕下，让图片看起来都不失真，首先就是上述的第二点，尽可能利用 <code>CSS3/SVG</code> 矢量图像替代某些光栅图像，而像某些简单的几何图标，可以用 <code>CSS3</code> 快速实现的图形，都应该尽量避免使用光栅图像，这样能够保证它们在任何尺寸下都不会失真</p>
+<p>其次，实在到了必须使用光栅图像的地步，也是有许多方式能保证图像在各种场景下都不失真</p>
+<h4 id="无脑多倍图"><a href="#无脑多倍图" class="headerlink" title="无脑多倍图"></a>无脑多倍图</h4><p>在移动端假设我们需要一张 <code>CSS</code> 像素为 <code>300 x 200</code> 的图像，考虑到现在已经有了 <code>dpr = 3</code> 的设备，那么要保证图片在 <code>dpr = 3</code> 的设备下也正常高清展示，我们最大可能需要一张 <code>900 x 600</code> 的原图，这样不管设备的 <code>dpr</code> 是否为 <code>3</code>，我们统一都使用 <code>3</code> 倍图，这样即使在 <code>dpr = 1</code>，<code>dpr = 2</code> 的设备上，也能非常好的展示图片</p>
+<p>当然这样并不可取，会造成大量带宽的浪费，并且现代浏览器，提供了更好的方式，让我们能够根据设备 <code>dpr</code> 的不同，提供不同尺寸的图片</p>
+<h4 id="srcset-配合-1x-2x-像素密度描述符"><a href="#srcset-配合-1x-2x-像素密度描述符" class="headerlink" title="srcset 配合 1x 2x 像素密度描述符"></a>srcset 配合 1x 2x 像素密度描述符</h4><p>简单来说，<code>srcset</code> 可以根据不同的 <code>dpr</code> 拉取对应尺寸的图片</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">'illustration'</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">img</span></span></span><br><span class="line"><span class="hljs-tag">    <span class="hljs-attr">src</span>=<span class="hljs-string">'illustration-small.png'</span></span></span><br><span class="line"><span class="hljs-tag">    <span class="hljs-attr">srcset</span>=<span class="hljs-string">'images/illustration-small.png 1x, images/illustration-big.png 2x'</span></span></span><br><span class="line"><span class="hljs-tag">    <span class="hljs-attr">style</span>=<span class="hljs-string">'max-width: 500px'</span></span></span><br><span class="line"><span class="hljs-tag">  /&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面 <code>srcset</code> 里的 <code>1x</code>，<code>2x</code> 表示『像素密度描述符』，简单来说就是</p>
+<ul>
+<li>当屏幕的 <code>dpr = 1</code> 时，使用 <code>images/illustration-small.png</code> 这张图</li>
+<li>当屏幕的 <code>dpr = 2</code> 时，使用 <code>images/illustration-big.png</code> 这张图</li>
+</ul>
+<h4 id="srcset-属性配合-sizes-属性-w-宽度描述符"><a href="#srcset-属性配合-sizes-属性-w-宽度描述符" class="headerlink" title="srcset 属性配合 sizes 属性 w 宽度描述符"></a>srcset 属性配合 sizes 属性 w 宽度描述符</h4><p>上面的 <code>1x</code>，<code>2x</code> 的写法比较容易接受易于理解，但是除此之外，<code>srcset</code> 属性还有一个 <code>w</code> 宽度描述符，配合 <code>sizes</code> 属性一起使用可以覆盖更多的面，比如下面这个示例</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">img</span></span></span><br><span class="line"><span class="hljs-tag">  <span class="hljs-attr">sizes</span>=<span class="hljs-string">"(min-width: 600px) 600px, 300px"</span></span></span><br><span class="line"><span class="hljs-tag">  <span class="hljs-attr">src</span>=<span class="hljs-string">"photo.png"</span></span></span><br><span class="line"><span class="hljs-tag">  <span class="hljs-attr">srcset</span>=<span class="hljs-string">"photo@1x.png 300w, photo@2x.png 600w, photo@3x.png 1200w"</span></span></span><br><span class="line"><span class="hljs-tag">/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>sizes = &quot;(min-width: 600px) 600px, 300px&quot;</code> 的意思是，如果屏幕当前的 <code>CSS</code> 像素宽度大于或者等于 <code>600px</code>，则图片的 <code>CSS</code> 宽度为 <code>600px</code>，反之则图片的 <code>CSS</code> 宽度为 <code>300px</code></p>
+<p>也就是 <code>sizes</code> 属性声明了在不同宽度下图片的 <code>CSS</code> 宽度表现，这里可以理解为，大屏幕下图片宽度为 <code>600px</code>，小屏幕下图片宽度为 <code>300px</code>（具体的媒体查询代码由 <code>CSS</code> 实现）</p>
+<blockquote>
+<p>但是需要注意的是，这里的 <code>sizes</code> 属性只是声明了在不同宽度下图片的 <code>CSS</code> 宽度表现，而具体使图片在大于 <code>600px</code> 的屏幕上展示为 <code>600px</code> 宽度的代码需要另外由 <code>CSS</code> 或者 <code>JavaScript</code> 实现</p>
+</blockquote>
+<p>而 <code>srcset = &quot;photo@1x.png 300w, photo@2x.png 600w, photo@3x.png 1200w&quot;</code> 里面的 <code>300w</code>，<code>600w</code>，<code>900w</code> 叫宽度描述符，那么我们该如何确定当前场景会选取哪张图片呢？</p>
+<h6 id="当前屏幕-dpr-2，CSS-宽度为-375px"><a href="#当前屏幕-dpr-2，CSS-宽度为-375px" class="headerlink" title="当前屏幕 dpr = 2，CSS 宽度为 375px"></a>当前屏幕 dpr = 2，CSS 宽度为 375px</h6><p>当前屏幕 <code>CSS</code> 宽度为 <code>375px</code>，则图片 <code>CSS</code> 宽度为 <code>300px</code>，分别用上述 <code>3</code> 个宽度描述符的数值除以 <code>300</code></p>
+<ul>
+<li><code>300 / 300 = 1</code></li>
+<li><code>600 / 300 = 2</code></li>
+<li><code>1200 / 300 = 4</code></li>
+</ul>
+<p>上面得到的 <code>1</code>、<code>2</code>、<code>4</code> 即是算出的有效的像素密度，换算成和 <code>x</code> 描述符等价的值，这里 <code>600w</code> 算出的 <code>2</code> 即满足 <code>dpr = 2</code> 的情况选择此张图</p>
+<h6 id="当前屏幕-dpr-3，CSS-宽度为-414px"><a href="#当前屏幕-dpr-3，CSS-宽度为-414px" class="headerlink" title="当前屏幕 dpr = 3，CSS 宽度为 414px"></a>当前屏幕 dpr = 3，CSS 宽度为 414px</h6><p>当前屏幕 <code>CSS</code> 宽度为 <code>414px</code>，则图片 <code>CSS</code> 宽度仍为 <code>300px</code>，再计算一次</p>
+<ul>
+<li><code>300 / 300 = 1</code></li>
+<li><code>600 / 300 = 2</code></li>
+<li><code>1200 / 300 = 4</code></li>
+</ul>
+<p>因为 <code>dpr = 3</code>，<code>2</code> 已经不满足了，则此时会选择 <code>1200w</code> 这张图</p>
+<h6 id="当前屏幕-dpr-1，CSS-宽度为-1920px"><a href="#当前屏幕-dpr-1，CSS-宽度为-1920px" class="headerlink" title="当前屏幕 dpr = 1，CSS 宽度为 1920px"></a>当前屏幕 dpr = 1，CSS 宽度为 1920px</h6><p>当前屏幕 <code>CSS</code> 宽度为 <code>1920px</code>，则图片 <code>CSS</code> 宽度变为了 <code>600px</code>，再计算一次</p>
+<ul>
+<li><code>300 / 600 = .5</code></li>
+<li><code>600 / 600 = 1</code></li>
+<li><code>1200 / 600 = 2</code></li>
+</ul>
+<p>因为 <code>dpr = 1</code>，所以此时会选择 <code>600w</code> 对应的图片，具体使用方式可以参考 <a href="https://codepen.io/Chokcoco/pen/WNeZvOX?editors=1100" target="_blank" rel="noopener">CodePen</a> 这个示例</p>
+<p>简单总结就是此方案的意义在于考虑到了响应性布局的复杂性与屏幕的多样性，利用上述规则，可以一次适配 <code>PC</code> 端大屏幕和移动端高清屏，一箭多雕，此外 <code>CSS</code> 还有个类似的属性 <code>image-set()</code>，搭配使用，效果更佳，其他更多内容可以参考以下链接</p>
+<ul>
+<li><a href="https://developers.google.com/web/fundamentals/design-and-ux/responsive/images" target="_blank" rel="noopener">Google Web Fundamentals – Web Responsive Images</a></li>
+<li><a href="https://www.zhangxinxu.com/wordpress/2014/10/responsive-images-srcset-size-w-descriptor/" target="_blank" rel="noopener">响应式图片 srcset 全新释义 sizes 属性 w 描述符</a></li>
+</ul>
+<h2 id="字体适配方案"><a href="#字体适配方案" class="headerlink" title="字体适配方案"></a>字体适配方案</h2><p>本小节当中我们主要来看看字体相关的适配方案</p>
+<h4 id="字体大小"><a href="#字体大小" class="headerlink" title="字体大小"></a>字体大小</h4><p>字体是很多前端开发同学容易忽略的一个点，但是其中也是有很多小知识点，首先要知道，浏览器有最小字体限制</p>
+<ul>
+<li><code>PC</code> 上最小 <code>font-size = 12px</code></li>
+<li>手机上最小 <code>font-size = 8px</code></li>
+</ul>
+<p>如果小于最小字体，那么字体默认就是最小字体，其次很多早期的文章规范都建议不要使用奇数级单位来定义字体大小（如 <code>13px</code>，<code>15px</code> 等），容易在一些低端设备上造成字体模糊，出现锯齿</p>
+<h4 id="字体的选择展示"><a href="#字体的选择展示" class="headerlink" title="字体的选择展示"></a>字体的选择展示</h4><p>在字体适配上面，我们需要从『性能』和『展示效果』两个维度去考虑，完整的一个字体资源实在太大了，所以我们应该尽可能的使用用户设备上已有的字体，而不是额外去下载字体资源，从而使加载时间明显加快</p>
+<p>而从展示效果层面来说，使用系统字体能更好的与当前操作系统使用的相匹配，得到最佳的展示效果，所以我们在字体使用方面，有一个应该尽量去遵循的原则，也是现在大部分网站在字体适配上使用的策略，那就是『尽量去使用各个支持平台上的默认系统字体』</p>
+<h4 id="兼顾各个操作系统"><a href="#兼顾各个操作系统" class="headerlink" title="兼顾各个操作系统"></a>兼顾各个操作系统</h4><p>我们通常比较常见的操作系统有 <code>Windows</code>、<code>Windows Phone</code>、<code>Mac OS X</code>、<code>iPhone</code>、<code>Android Phone</code>、<code>Linux</code> 等，当然对于普通用户而言，无须关注 <code>Linux</code> 系统，我们下面就以 <a href="https://css-tricks.com/" target="_blank" rel="noopener">CSS-Trick</a> 网站最新的 <code>font-family</code> 为例，看看是如何在字体选择上做到适配各个操作系统的</p>
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="hljs-attribute">font-family</span>: system-ui, -apple-system, BlinkMacSystemFont, segoe ui, Roboto,</span><br><span class="line">    Helvetica, Arial, sans-serif, apple color emoji, segoe ui emoji, segoe ui symbol;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="font-family-关键字"><a href="#font-family-关键字" class="headerlink" title="font-family 关键字"></a>font-family 关键字</h4><p>对于 <code>CSS</code> 中的 <code>font-family</code> 而言，它有两类取值</p>
+<ul>
+<li>一类是类似这样的具体的字体族名定义 <code>font-family: Arial</code> 这里定义了一个具体的字体样式，字体族名为 <code>Arial</code></li>
+<li>一类是通用字体族名，它是一种备选机制，用于在指定的字体不可用时给出较好的字体，类似这样 <code>font-family: sans-serif</code></li>
+</ul>
+<p>其中 <code>sans-serif</code> 表无衬线字体族，例如 <code>&#39;Open Sans&#39;</code>，<code>&#39;Arial&#39;</code>，<code>&#39;微软雅黑&#39;</code> 等等，关于通用字体族名，在 <a href="https://www.w3.org/TR/2018/REC-css-fonts-3-20180920/#generic-font-families" target="_blank" rel="noopener">CSS Fonts Module Level 3 – Basic Font Properties</a> 中定义了 <code>5</code> 个，也就是我们熟知的几个通用字体族名</p>
+<ol>
+<li><code>serif</code>，衬线字体族</li>
+<li><code>sans-serif</code>，非衬线字体族</li>
+<li><code>monospace</code>，等宽字体，即字体中每个字宽度相同</li>
+<li><code>cursive</code>，草书字体</li>
+<li><code>fantasy</code>，主要是那些具有特殊艺术效果的字体</li>
+</ol>
+<h4 id="新增通用字体族关键字"><a href="#新增通用字体族关键字" class="headerlink" title="新增通用字体族关键字"></a>新增通用字体族关键字</h4><p>而在 <a href="https://www.w3.org/TR/css-fonts-4/#generic-font-families" target="_blank" rel="noopener">CSS Fonts Module Level 4 – Basic Font Properties</a> 中，新增了几个关键字</p>
+<ol>
+<li><code>system-ui</code>，系统默认字体</li>
+<li><code>emoji</code>，用于兼容 <code>emoji</code> 表情符号字符</li>
+<li><code>math</code>，适用于数学表达式</li>
+<li><code>fangsong</code>，此字体系列用于中文的（仿宋）字体</li>
+</ol>
+<p>下面我们还是以上面的 <code>font-family</code> 为例，看看它们几者之间的区别</p>
+<h4 id="system-ui"><a href="#system-ui" class="headerlink" title="system-ui"></a>system-ui</h4><p>简单而言，<code>font-family: system-ui</code> 的目的就是在不同的操作系统的 <code>Web</code> 页面下，自动选择本操作系统下的默认系统字体</p>
+<p>默认使用特定操作系统的系统字体可以提高性能，因为浏览器或者 <code>WebView</code> 不必去下载任何字体文件，而是使用已有的字体文件，<code>font-family: system-ui</code> 字体设置的优势之处在于它与当前操作系统使用的字体相匹配，对于文本内容而言，它可以得到最恰当的展示</p>
+<h4 id="San-Francisco-Fonts"><a href="#San-Francisco-Fonts" class="headerlink" title="San Francisco Fonts"></a>San Francisco Fonts</h4><p>我们在上面简单的了解了 <code>system-ui</code> 字体族，但是像 <code>-apple-system</code>、<code>BlinkMacSystemFont</code> 并没有在最新的标准里出现，那它们又代表什么意思呢？</p>
+<p>在此之前，我们需要先了解一下 <code>San Francisco Fonts</code>，<code>San Francisco Fonts</code> 又叫旧金山字体，是一款西文字体，随着 <code>iOS 9</code> 更新面世，在 <code>WatchOS</code> 中随 <code>Apple Watch</code> 一起悄然发售，并且还将在 <code>Apple TV</code> 上的新 <code>tvOS</code> 中使用</p>
+<p><code>San Francisco Fonts</code> 在 <code>iOS</code> 系统上用于替代升级另外一款西文字体 <code>Helvetica Neue</code>，<code>Apple</code> 做了一些重要的改变，使其成为平台上更好的，甚至是完美的西文字体</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-20.png" alt></p>
+<h4 id="apple-system-BlinkMacSystemFont"><a href="#apple-system-BlinkMacSystemFont" class="headerlink" title="-apple-system/BlinkMacSystemFont"></a>-apple-system/BlinkMacSystemFont</h4><p>话说回来，正如每个前端开发人员都知道的那样，将一个功能纳入规范是一回事，将其纳入浏览器又是另一回事，幸运的是 <code>system-ui</code> 的普及很快，<code>Chrome</code> 和 <code>Safari</code> 都可以在各种平台上完全支持它，只有 <code>Mozilla</code> 和 <code>Windows</code> 相对落后，我们来看看 <code>system-ui</code> 的兼容性</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-21.png" alt></p>
+<p>仔细看上图的最后两行</p>
+<ul>
+<li><code>Supported as the -apple-system value</code>（<code>only on macOS and iOS</code>）</li>
+<li><code>Supported as the BlinkMacSystemFont value</code>（<code>only on macOS</code>）</li>
+</ul>
+<p>考虑到不同平台及向后兼容，在 <code>macOS</code> 和 <code>iOS</code> 上，我们需要使用 <code>-apple-system</code> 及 <code>BlinkMacSystemFont</code> 来兼容适配 <code>system-ui</code> 标准</p>
+<h4 id="Segoe-UI"><a href="#Segoe-UI" class="headerlink" title="Segoe UI"></a>Segoe UI</h4><p><code>Segoe UI</code> 是 <code>Windows</code> 从 <code>Vista</code> 开始的默认西文字体族，只有西文，不支持汉字，属于无衬线体，它也表示一个系列而不是某一款字体</p>
+<p>使用 <code>font-family: Segoe UI</code> 可以在 <code>Windows</code> 平台及 <code>Windows Phone</code> 上选取最佳的西文字体展示</p>
+<h4 id="Roboto"><a href="#Roboto" class="headerlink" title="Roboto"></a>Roboto</h4><p><code>Roboto</code> 是为 <code>Android</code> 操作系统设计的一个无衬线字体家族，<code>Google</code> 描述该字体为现代的、但平易近人和有感情的</p>
+<p>这个字体家族包含 <code>Thin</code>、<code>Light</code>、<code>Regular</code>、<code>Medium</code>、<code>Bold</code>、<code>Black</code> 六种粗细及相配的斜体</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>到此，我们可以总结一下了，还是以上面 <a href="https://css-tricks.com/" target="_blank" rel="noopener">CSS-Trick</a> 网站的 <code>font-family</code> 定义为例子</p>
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="hljs-attribute">font-family</span>: system-ui, -apple-system, BlinkMacSystemFont, segoe ui, Roboto,</span><br><span class="line">    Helvetica, Arial, sans-serif, apple color emoji, segoe ui emoji, segoe ui symbol;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>system-ui</code>，使用各个支持平台上的默认系统字体</li>
+<li><code>-apple-system</code>， 在一些稍低版本 <code>Mac OS X</code> 和 <code>iOS</code> 上，它针对旧版上的 <code>Neue Helvetica</code> 和 <code>Lucida Grande</code> 字体，升级使用更为合适的 <code>San Francisco Fonts</code></li>
+<li><code>BlinkMacSystemFont</code>，针对一些 <code>Mac OS X</code> 上的 <code>Chrome</code> 浏览器，使用系统默认字体</li>
+<li><code>segoe ui</code>，在 <code>Windows</code> 及 <code>Windows Phone</code> 上选取系统默认字体</li>
+<li><code>Roboto</code>，面向 <code>Android</code> 和一些新版的的 <code>Chrome OS</code></li>
+<li><code>Helvetica/Arial</code>，在针对不同操作系统不同平台设定采用默认系统字体后，针对一些低版本浏览器的降级方案</li>
+<li><code>sans-serif</code>，兜底方案，保证字体风格统一，至少也得是无衬线字体</li>
+</ol>
+<p>上述 <code>5</code> 个字体族定义，优先级由高到底，可以看到，它们 <code>5</code> 个都并非某个特定字体，基本的核心思想都是选择对应平台上的默认系统字体，涵盖了 <code>iOS</code>、<code>MAC OS X</code>、<code>Android</code>、<code>Windows</code>、<code>Windows Phone</code> 基本所有用户经常使用的主流操作系统</p>
+<p>使用系统默认字体的主要原因是性能，字体通常是网站上加载的最大（也可能是最重）的资源之一，如果我们可以使用用户机器上已有的字体，我们就完全不需要再去获取字体资源，从而使加载时间明显加快，并且系统字体的优点在于它与当前操作系统使用的相匹配，因此它的文本展示必然也是一个让人舒适展示效果</p>
+<p>当然，上述 <code>font-family</code> 的定义不一定是最佳的，譬如天猫移动端在 <code>font-family</code> 最前面添加了 <code>&#39;PingFang SC&#39;</code>，<code>&#39;miui&#39;</code> 等字体，想必也是有他们业务上的考虑，这里我们就再来简单的看看天猫的字体定义与 <code>Github</code> 的字体定义，比较比较它们两者有什么异同</p>
+<ul>
+<li><a href="https://www.tmall.com/" target="_blank" rel="noopener">天猫</a> 的定义为 <code>font-family: &quot;PingFang SC&quot;, miui, system-ui, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, sans-serif;</code></li>
+<li><a href="https://github.com/" target="_blank" rel="noopener">Github</a> 的定义为 <code>font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;</code></li>
+</ul>
+<p>对比可以发现，它们总体遵循了这样一个基本原则</p>
+<ol>
+<li>尽量使用系统默认字体</li>
+</ol>
+<p>使用系统默认字体的主要原因是性能，并且系统字体的优点在于它与当前操作系统使用的相匹配，因此它的文本展示必然也是一个让人舒适展示效果</p>
+<ol start="2">
+<li>兼顾中西，西文在前，中文在后</li>
+</ol>
+<p>中文或者西文（英文）都要考虑到，由于大部分中文字体也是带有英文部分的，但是英文部分又不怎么好看，但是英文字体中大多不包含中文，通常会先进行英文字体的声明，选择最优的英文字体，这样<br>不会影响到中文字体的选择，中文字体声明则紧随其次</p>
+<ol start="3">
+<li>兼顾多操作系统</li>
+</ol>
+<p>选择字体的时候要考虑多操作系统，例如 <code>MAC OS</code> 下的很多中文字体在 <code>Windows</code> 都没有预装，为了保证 <code>MAC</code> 用户的体验，在定义中文字体的时候，先定义 <code>MAC</code> 用户的中文字体，再定义 <code>Windows</code> 用户的中文字体</p>
+<ol start="4">
+<li>兼顾旧操作系统，以字体族系列 <code>serif</code> 和 <code>sans-serif</code> 结尾</li>
+</ol>
+<p>当使用一些非常新的字体时，要考虑向下兼容，兼顾到一些极旧的操作系统，使用字体族系列 <code>serif</code> 和 <code>sans-serif</code> 结尾总归是不错的选择</p>
+<p>暂时就总结这么多，更多的关于字体方面的细节知识，可以参考下面这几个链接</p>
+<ul>
+<li><a href="https://github.com/chokcoco/iCSS/issues/69" target="_blank" rel="noopener">Web 字体 font-family 再探秘</a></li>
+<li><a href="https://github.com/chokcoco/iCSS/issues/6" target="_blank" rel="noopener">你该知道的字体 – font-family</a></li>
+<li><a href="https://github.com/chokcoco/iCSS/issues/69" target="_blank" rel="noopener">Web 字体 font-family 再探秘</a></li>
+<li><a href="https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/" target="_blank" rel="noopener">Using UI System Fonts In Web Design: A Quick Practical Guide</a></li>
+<li><a href="https://furbo.org/2018/03/28/system-fonts-in-css/" target="_blank" rel="noopener">System Fonts in CSS</a></li>
+<li><a href="https://designforhackers.com/blog/san-francisco-font/" target="_blank" rel="noopener">Apple’s San Francisco Font</a></li>
+</ul>
+<h2 id="前端布局的兼容适配"><a href="#前端布局的兼容适配" class="headerlink" title="前端布局的兼容适配"></a>前端布局的兼容适配</h2><p>最后我们再来简单的了解一下前端布局的兼容适配，因为前端工程师的一大工作内容就是页面布局，无论在 <code>PC</code> 端还是移动端，页面布局的兼容适配都是重中之重，在整个前端发展的历程中，布局的方法也在不断的推陈出新</p>
+<h4 id="布局发展历程"><a href="#布局发展历程" class="headerlink" title="布局发展历程"></a>布局发展历程</h4><p>简单来说，前端的布局发展历程经历了下面几个过程</p>
+<blockquote>
+<p>表格布局 ==&gt; 定位布局 ==&gt; 浮动布局 ==&gt; <code>flexbox</code> 布局 ==&gt; <code>gridbox</code> 布局</p>
+</blockquote>
+<p>每一种布局在特定时期都发挥了重要的作用，而每一种新的布局方式的出现，往往都是因为现有的布局方式已经在该时期已经无法很好的满足开发者的需求，无法满足越来越潮流的页面布局的方式，以 <code>Flexbox</code> 的出现为例子，在 <code>Flexbox</code> 被大家广为接受使用之前，我们一直在使用定位+浮动的布局方式，像下面这个布局</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-22.png" alt></p>
+<p>容器宽度不定，内部三个元素，均分排列且占满整个空间，并且垂直居中，如果使用定位加浮动的布局方式，你无法很快想到最佳的解决方式，三个元素并排那么必然需要浮动或者绝对定位，容器宽度不定且中间元素始终居中，需要顾虑的方面就很多了，也许使用 <code>text-align: justufy</code> 可以 <code>hack</code> 实现等等，然而使用 <code>flexbox</code> 布局的话，只需要下面三行代码就可以了</p>
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-class">.container</span> &#123;</span><br><span class="line">  <span class="hljs-attribute">display</span>: flex;</span><br><span class="line">  <span class="hljs-attribute">justify-content</span>: space-between;</span><br><span class="line">  <span class="hljs-attribute">align-items</span>: center;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>flexbox</code> 的出现，一次性解决了流动布局，弹性布局，排列方式等多个问题，并且它是简洁的，可控的，再来看一个例子，水平垂直居中一个元素，使用 <code>flexbox</code> 也许是最便捷的，线上预览地址可见 <a href="https://codepen.io/Chokcoco/pen/GarPev" target="_blank" rel="noopener">CodePen</a></p>
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-class">.container</span> &#123;</span><br><span class="line">  <span class="hljs-attribute">display</span>: flex;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-selector-class">.item</span> &#123;</span><br><span class="line">  <span class="hljs-attribute">margin</span>: auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CSS-Grid-Layout"><a href="#CSS-Grid-Layout" class="headerlink" title="CSS Grid Layout"></a>CSS Grid Layout</h4><p><code>flexbox</code> 已经足够优秀了，为什么 <code>gird</code> 网格布局的出现又是为什么？它又解决了哪些 <code>flex</code> 布局无法很好解决的问题呢？先来看看下面这张图</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-23.png" alt></p>
+<p><code>flexbox</code> 是一维布局，他只能在一条直线上放置你的内容区块，而 <code>grid</code> 是一个二维布局，它除了可以灵活的控制水平方向之外，还能轻易的控制垂直方向的布局模式，对于上图那样的九宫格布局，它就可以轻而易举的完成，如果用图片来进行表示的话，<code>flexbox</code> 是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-24.png" alt></p>
+<p>而 <code>gridbox</code> 则是</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/02-25.png" alt></p>
+<p>在现阶段，移动端布局应当更多使用 <code>flexbox</code> 去完成（相对那些还在使用 <code>float</code> 布局的），而考虑到未来页面布局的推陈出新，对于 <code>Grid</code> 布局我们应当像前几年对待 <code>flexbox</code> 一样，重视起来，随着兼容性的普及，<code>Grid</code> 布局也会慢慢成为主流</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/JavaScript/">JavaScript</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2017/09/20/JavaScript/19/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">ES6 中的 Class</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2017/07/06/JavaScript/18/">
+                <span class="level-item">JSON.parse() &amp;&amp; JSON.stringify()</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '3b4596cb90f6d31b4f48b5d85332c4e8',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#响应式设计">
+        <span class="has-mr-6">1</span>
+        <span>响应式设计</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#为什么要设计响应式界面">
+        <span class="has-mr-6">1.1</span>
+        <span>为什么要设计响应式界面</span>
+        </a></li><li>
+        <a class="is-flex" href="#响应式界面的四个层次">
+        <span class="has-mr-6">1.2</span>
+        <span>响应式界面的四个层次</span>
+        </a></li><li>
+        <a class="is-flex" href="#响应式界面的基本规则">
+        <span class="has-mr-6">1.3</span>
+        <span>响应式界面的基本规则</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#响应式和自适应">
+        <span class="has-mr-6">2</span>
+        <span>响应式和自适应</span>
+        </a></li><li>
+        <a class="is-flex" href="#渐进增强和优雅降级">
+        <span class="has-mr-6">3</span>
+        <span>渐进增强和优雅降级</span>
+        </a></li><li>
+        <a class="is-flex" href="#移动端屏幕适配方案">
+        <span class="has-mr-6">4</span>
+        <span>移动端屏幕适配方案</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#设备独立像素">
+        <span class="has-mr-6">4.1</span>
+        <span>设备独立像素</span>
+        </a></li><li>
+        <a class="is-flex" href="#物理像素">
+        <span class="has-mr-6">4.2</span>
+        <span>物理像素</span>
+        </a></li><li>
+        <a class="is-flex" href="#DPR（Device-Pixel-Ratio）设备像素比">
+        <span class="has-mr-6">4.3</span>
+        <span>DPR（Device Pixel Ratio）设备像素比</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#适配不同屏幕大小">
+        <span class="has-mr-6">5</span>
+        <span>适配不同屏幕大小</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#rem-适配方案">
+        <span class="has-mr-6">5.1</span>
+        <span>rem 适配方案</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#flexible">
+        <span class="has-mr-6">5.1.1</span>
+        <span>flexible</span>
+        </a></li><li>
+        <a class="is-flex" href="#hotcss">
+        <span class="has-mr-6">5.1.2</span>
+        <span>hotcss</span>
+        </a></li><li>
+        <a class="is-flex" href="#rem-方案的一些总结">
+        <span class="has-mr-6">5.1.3</span>
+        <span>rem 方案的一些总结</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#vw-适配方案">
+        <span class="has-mr-6">5.2</span>
+        <span>vw 适配方案</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#自动转换插件">
+        <span class="has-mr-6">5.2.1</span>
+        <span>自动转换插件</span>
+        </a></li><li>
+        <a class="is-flex" href="#vw-polyfill">
+        <span class="has-mr-6">5.2.2</span>
+        <span>vw polyfill</span>
+        </a></li><li>
+        <a class="is-flex" href="#对于-vw-方案的一些总结">
+        <span class="has-mr-6">5.2.3</span>
+        <span>对于 vw 方案的一些总结</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#1px-边框">
+        <span class="has-mr-6">6</span>
+        <span>1px 边框</span>
+        </a></li><li>
+        <a class="is-flex" href="#图片适配及优化">
+        <span class="has-mr-6">7</span>
+        <span>图片适配及优化</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#无脑多倍图">
+        <span class="has-mr-6">7.1</span>
+        <span>无脑多倍图</span>
+        </a></li><li>
+        <a class="is-flex" href="#srcset-配合-1x-2x-像素密度描述符">
+        <span class="has-mr-6">7.2</span>
+        <span>srcset 配合 1x 2x 像素密度描述符</span>
+        </a></li><li>
+        <a class="is-flex" href="#srcset-属性配合-sizes-属性-w-宽度描述符">
+        <span class="has-mr-6">7.3</span>
+        <span>srcset 属性配合 sizes 属性 w 宽度描述符</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#当前屏幕-dpr-2，CSS-宽度为-375px">
+        <span class="has-mr-6">7.3.1</span>
+        <span>当前屏幕 dpr = 2，CSS 宽度为 375px</span>
+        </a></li><li>
+        <a class="is-flex" href="#当前屏幕-dpr-3，CSS-宽度为-414px">
+        <span class="has-mr-6">7.3.2</span>
+        <span>当前屏幕 dpr = 3，CSS 宽度为 414px</span>
+        </a></li><li>
+        <a class="is-flex" href="#当前屏幕-dpr-1，CSS-宽度为-1920px">
+        <span class="has-mr-6">7.3.3</span>
+        <span>当前屏幕 dpr = 1，CSS 宽度为 1920px</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#字体适配方案">
+        <span class="has-mr-6">8</span>
+        <span>字体适配方案</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#字体大小">
+        <span class="has-mr-6">8.1</span>
+        <span>字体大小</span>
+        </a></li><li>
+        <a class="is-flex" href="#字体的选择展示">
+        <span class="has-mr-6">8.2</span>
+        <span>字体的选择展示</span>
+        </a></li><li>
+        <a class="is-flex" href="#兼顾各个操作系统">
+        <span class="has-mr-6">8.3</span>
+        <span>兼顾各个操作系统</span>
+        </a></li><li>
+        <a class="is-flex" href="#font-family-关键字">
+        <span class="has-mr-6">8.4</span>
+        <span>font-family 关键字</span>
+        </a></li><li>
+        <a class="is-flex" href="#新增通用字体族关键字">
+        <span class="has-mr-6">8.5</span>
+        <span>新增通用字体族关键字</span>
+        </a></li><li>
+        <a class="is-flex" href="#system-ui">
+        <span class="has-mr-6">8.6</span>
+        <span>system-ui</span>
+        </a></li><li>
+        <a class="is-flex" href="#San-Francisco-Fonts">
+        <span class="has-mr-6">8.7</span>
+        <span>San Francisco Fonts</span>
+        </a></li><li>
+        <a class="is-flex" href="#apple-system-BlinkMacSystemFont">
+        <span class="has-mr-6">8.8</span>
+        <span>-apple-system/BlinkMacSystemFont</span>
+        </a></li><li>
+        <a class="is-flex" href="#Segoe-UI">
+        <span class="has-mr-6">8.9</span>
+        <span>Segoe UI</span>
+        </a></li><li>
+        <a class="is-flex" href="#Roboto">
+        <span class="has-mr-6">8.10</span>
+        <span>Roboto</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结">
+        <span class="has-mr-6">8.11</span>
+        <span>总结</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#前端布局的兼容适配">
+        <span class="has-mr-6">9</span>
+        <span>前端布局的兼容适配</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#布局发展历程">
+        <span class="has-mr-6">9.1</span>
+        <span>布局发展历程</span>
+        </a></li><li>
+        <a class="is-flex" href="#CSS-Grid-Layout">
+        <span class="has-mr-6">9.2</span>
+        <span>CSS Grid Layout</span>
+        </a></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="移动端开发相关内容汇总" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

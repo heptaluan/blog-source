@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>CSS 当中的 z-index - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="我们在之前的 position 章节当中介绍的固定定位部分，曾经提起过 z-index 这个属性，但是在之前我们只是简单的提及了一下，并没有深入的去了解它，所以在今天就抽点时间来深入的了解一下 CSS 当中的 z-index">
+<meta name="keywords" content="CSS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS 当中的 z-index">
+<meta property="og:url" content="http://yoursite.com/2019/02/02/CSS/17/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="我们在之前的 position 章节当中介绍的固定定位部分，曾经提起过 z-index 这个属性，但是在之前我们只是简单的提及了一下，并没有深入的去了解它，所以在今天就抽点时间来深入的了解一下 CSS 当中的 z-index">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/17.webp">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSS 当中的 z-index">
+<meta name="twitter:description" content="我们在之前的 position 章节当中介绍的固定定位部分，曾经提起过 z-index 这个属性，但是在之前我们只是简单的提及了一下，并没有深入的去了解它，所以在今天就抽点时间来深入的了解一下 CSS 当中的 z-index">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/17.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="CSS 当中的 z-index" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/17.webp" alt="CSS 当中的 z-index">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2019-02-02</div>
+                <!-- <time class="level-item has-text-grey" datetime="2019-02-01T16:00:00.000Z">2019-02-02</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/CSS/">CSS</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    18 分钟 读完 (大约 2627 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                CSS 当中的 z-index
+            
+        </h1>
+        <div class="content">
+            <p>我们在之前的 <a href="https://heptaluan.github.io/2018/11/30/CSS/14/" target="_blank" rel="noopener">position</a> 章节当中介绍的固定定位部分，曾经提起过 <code>z-index</code> 这个属性，但是在之前我们只是简单的提及了一下，并没有深入的去了解它，所以在今天就抽点时间来深入的了解一下 <code>CSS</code> 当中的 <code>z-index</code></p>
+<a id="more"></a>
+
+
+<h2 id="层叠上下文"><a href="#层叠上下文" class="headerlink" title="层叠上下文"></a>层叠上下文</h2><p>层叠上下文（<code>Stacking Context</code>），是 <code>HTML</code> 元素的三维概念，这些 <code>HTML</code> 元素在一条假想的相对于面向（电脑屏幕的）视窗或者网页的用户的 <code>z</code> 轴上延伸，<code>HTML</code> 元素依据其自身属性按照优先级顺序占用层叠上下文的空间</p>
+<p>所有的盒模型元素都处于三维坐标系中，除了我们常用的横坐标和纵坐标，盒模型元素还可以沿着 <code>z</code> 轴层叠摆放，当他们相互覆盖时，<code>z</code> 轴顺序就变得十分重要，但 <code>z</code> 轴顺序，不完全由 <code>z-index</code> 决定，在层叠比较复杂的 <code>HTML</code> 元素上使用 <code>z-index</code> 时，结果可能让人觉得困惑，甚至不可思议，这是由复杂的元素排布规则导致的，我们来看下面这个图</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/css/17-01.png" alt></p>
+<p>在层叠上下文中，其子元素的 <code>z-index</code> 值只在父级层叠上下文中有意义，子级层叠上下文被自动视为父级层叠上下文的一个独立单元</p>
+<ul>
+<li>层叠上下文可以包含在其他层叠上下文中，并且一起创建一个有层级的层叠上下文</li>
+<li>每个层叠上下文完全独立于它的兄弟元素，当处理层叠时只考虑子元素</li>
+<li>每个层叠上下文是自包含的，当元素的内容发生层叠后，整个该元素将会 在父层叠上下文中 按顺序进行层叠</li>
+</ul>
+<h2 id="如何形成层叠上下文？"><a href="#如何形成层叠上下文？" class="headerlink" title="如何形成层叠上下文？"></a>如何形成层叠上下文？</h2><p>我们这里只介绍以下这些比较常见的方式，完整的列表可以参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Understanding_z_index/The_stacking_context" target="_blank" rel="noopener">MDN-层叠上下文的形成</a></p>
+<ul>
+<li>根元素（<code>HTML</code>）</li>
+<li>定位元素（<code>relative</code>、<code>absolute</code>），并且 <code>z-index</code> 不为 <code>auto</code></li>
+<li><code>opacity</code> 小于 <code>1</code> 时</li>
+<li><code>transform</code> 不为 <code>none</code> 时</li>
+<li><code>z-index</code> 不为 <code>auto</code> 的 <code>flex-item</code></li>
+</ul>
+<p>这里有一个需要注意的地方，即层叠上下文的层级是 <code>HTML</code> 元素层级的一个层级，因为只有某些元素才会创建层叠上下文，所以可以认为没有创建自己的层叠上下文的元素将被父元素的层叠上下文所包含，来看下面这个示例</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"div1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Division Element #1<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>position: relative;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span></span><br><span class="line">    z-index: 5;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"div2"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Division Element #2<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>position: relative;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span></span><br><span class="line">  z-index: 2;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"div3"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"div4"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Division Element #4<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>position: relative;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span></span><br><span class="line">    z-index: 6;</span><br><span class="line">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Division Element #3<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>position: absolute;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span></span><br><span class="line">  z-index: 4;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"div5"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Division Element #5<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>position: relative;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span></span><br><span class="line">    z-index: 1;</span><br><span class="line">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"div6"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Division Element #6<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>position: absolute;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span></span><br><span class="line">    z-index: 3;</span><br><span class="line">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">  </span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-tag">html</span> &#123; <span class="hljs-attribute">padding</span>: <span class="hljs-number">20px</span>; <span class="hljs-attribute">font</span>: <span class="hljs-number">12px</span>/<span class="hljs-number">20px</span> Arial, sans-serif; &#125;</span><br><span class="line"><span class="hljs-selector-tag">div</span> &#123; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.7</span>; <span class="hljs-attribute">position</span>: relative; &#125;</span><br><span class="line"><span class="hljs-selector-tag">h1</span> &#123; <span class="hljs-attribute">font</span>: inherit; <span class="hljs-attribute">font-weight</span>: bold; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div1</span>, <span class="hljs-selector-id">#div2</span> &#123; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#696</span>; <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#cfc</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div1</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">5</span>; <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">190px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div2</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">2</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div3</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">4</span>; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">1</span>; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">top</span>: <span class="hljs-number">40px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">180px</span>; <span class="hljs-attribute">width</span>: <span class="hljs-number">330px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#900</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#fdd</span>; <span class="hljs-attribute">padding</span>: <span class="hljs-number">40px</span> <span class="hljs-number">20px</span> <span class="hljs-number">20px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div4</span>, <span class="hljs-selector-id">#div5</span> &#123; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#996</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffc</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div4</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">6</span>; <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">15px</span>; <span class="hljs-attribute">padding</span>: <span class="hljs-number">25px</span> <span class="hljs-number">10px</span> <span class="hljs-number">5px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div5</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">1</span>; <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">15px</span>; <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span> <span class="hljs-number">10px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#div6</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">3</span>; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">top</span>: <span class="hljs-number">20px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">180px</span>; <span class="hljs-attribute">width</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">125px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#009</span>; <span class="hljs-attribute">padding-top</span>: <span class="hljs-number">125px</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ddf</span>; <span class="hljs-attribute">text-align</span>: center; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如下图所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/css/17-05.png" alt></p>
+<h2 id="层叠上下文如何影响层叠"><a href="#层叠上下文如何影响层叠" class="headerlink" title="层叠上下文如何影响层叠"></a>层叠上下文如何影响层叠</h2><p>主要分为以下几种情况</p>
+<ol>
+<li>元素的 <code>background</code> 和 <code>borders</code></li>
+<li>拥有负层叠层级（<code>negative-stack-levels</code>）的子层叠上下文（<code>child-stacking-contexts</code>）</li>
+<li>在文档流中的（<code>in-flow</code>），非行内级的（<code>non-inline-level</code>），非定位（<code>non-positioned</code>）的后代元素</li>
+<li>非定位的浮动元素</li>
+<li>在文档流中的（<code>in-flow</code>），行内级的（<code>inline-level</code>），非定位（<code>non-positioned</code>）的后代元素，包括行内块级元素（<code>inline-blocks</code>）和行内表格元素（<code>inline-tables</code>）</li>
+<li>层叠层级为 <code>0</code> 的子层叠上下文（<code>child-stacking-contexts</code>）和层叠层级为 <code>0</code> 的定位的后代元素</li>
+<li>层叠层级为正的子层叠上下文</li>
+</ol>
+<p>上述关于层次的绘制规则递归地适用于任何层叠上下文，看下面这个示例</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #1<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"container1"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev2"</span>&gt;</span></span><br><span class="line">      <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #2<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">      <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>z-index: 1;</span><br><span class="line">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"container2"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev3"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev2"</span>&gt;</span></span><br><span class="line">      <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #2<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">      <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>z-index: 1;</span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #1<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #1<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"lev1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>LEVEL #1<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-tag">div</span> &#123; <span class="hljs-attribute">font</span>: <span class="hljs-number">12px</span> Arial; &#125;</span><br><span class="line"><span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.bold</span> &#123; <span class="hljs-attribute">font-weight</span>: bold; &#125;</span><br><span class="line"><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.lev1</span> &#123; <span class="hljs-attribute">width</span>: <span class="hljs-number">250px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">70px</span>; <span class="hljs-attribute">position</span>: relative; <span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> outset <span class="hljs-number">#669966</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ccffcc</span>; <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">5px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#container1</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">1</span>; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">top</span>: <span class="hljs-number">30px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">75px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.lev2</span> &#123; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.9</span>; <span class="hljs-attribute">width</span>: <span class="hljs-number">200px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">60px</span>; <span class="hljs-attribute">position</span>: relative; <span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> outset <span class="hljs-number">#990000</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffdddd</span>; <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">5px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#container2</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">1</span>; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">top</span>: <span class="hljs-number">20px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">110px</span>; &#125;</span><br><span class="line"><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.lev3</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">10</span>; <span class="hljs-attribute">width</span>: <span class="hljs-number">100px</span>; <span class="hljs-attribute">position</span>: relative; <span class="hljs-attribute">border</span>: <span class="hljs-number">2px</span> outset <span class="hljs-number">#000099</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ddddff</span>; <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">5px</span>; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>页面展示如下</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/css/17-06.png" alt></p>
+<p>下面我们就来分几情况讨论元素是如何影响层叠的</p>
+<h2 id="不含-z-index-元素如何层叠"><a href="#不含-z-index-元素如何层叠" class="headerlink" title="不含 z-index 元素如何层叠"></a>不含 z-index 元素如何层叠</h2><p>当没有元素包含 <code>z-index</code> 属性时，元素按照如下顺序层叠（从底到顶顺序）</p>
+<ol>
+<li>根元素（<code>&lt;html&gt;</code>）的背景和边界</li>
+<li>位于普通流中的后代无定位块级元素，按它们在 <code>HTML</code> 中的出现顺序层叠</li>
+<li>后代中的定位元素，按它们在 <code>HTML</code> 中的出现顺序层叠</li>
+</ol>
+<p>这里需要注意一点，即普通流中的无定位块级元素『始终先于』定位元素渲染，并出现在定位元素下层，即便它们在 <code>HTML</code> 结构中出现的位置晚于定位元素也是如此，我们来看下面这个例子</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"abs1"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"absolute"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #1<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: absolute;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"rel1"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"relative"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #2<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: relative;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"rel2"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"relative"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #3<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: relative;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"abs2"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"absolute"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #4<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: absolute;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"sta1"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"static"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #5<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: static;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-tag">b</span> &#123; <span class="hljs-attribute">font-family</span>: sans-serif;&#125;</span><br><span class="line"><span class="hljs-selector-tag">div</span> &#123; <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed; <span class="hljs-attribute">text-align</span>: center;&#125;</span><br><span class="line"><span class="hljs-selector-class">.static</span> &#123; <span class="hljs-attribute">position</span>: static; <span class="hljs-attribute">height</span>: <span class="hljs-number">80px</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffc</span>; <span class="hljs-attribute">border-color</span>: <span class="hljs-number">#996</span>;&#125;</span><br><span class="line"><span class="hljs-selector-class">.absolute</span> &#123; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">width</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">350px</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#fdd</span>; <span class="hljs-attribute">border-color</span>: <span class="hljs-number">#900</span>; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.7</span>;&#125;</span><br><span class="line"><span class="hljs-selector-class">.relative</span> &#123; <span class="hljs-attribute">position</span>: relative; <span class="hljs-attribute">height</span>: <span class="hljs-number">80px</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#cfc</span>; <span class="hljs-attribute">border-color</span>: <span class="hljs-number">#696</span>; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.7</span>;&#125;</span><br><span class="line"><span class="hljs-selector-id">#abs1</span> &#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">10px</span>;&#125;</span><br><span class="line"><span class="hljs-selector-id">#rel1</span> &#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">30px</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">50px</span> <span class="hljs-number">0px</span> <span class="hljs-number">50px</span>;&#125;</span><br><span class="line"><span class="hljs-selector-id">#rel2</span> &#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">15px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">20px</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">50px</span> <span class="hljs-number">0px</span> <span class="hljs-number">50px</span>;&#125;</span><br><span class="line"><span class="hljs-selector-id">#abs2</span> &#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">right</span>: <span class="hljs-number">10px</span>;&#125;</span><br><span class="line"><span class="hljs-selector-id">#sta1</span> &#123; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffc</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">50px</span> <span class="hljs-number">0px</span> <span class="hljs-number">50px</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码运行完成以后是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/css/17-02.png" alt></p>
+<p>这里有一个需要注意的地方，就是上图当中的 <code>div#5</code>，由于其是非定位块级元素，虽然它在 <code>DOM</code> 顺序上处于最后，但它的渲染始终位于定位元素下面</p>
+<h2 id="浮动的块元素如何层叠"><a href="#浮动的块元素如何层叠" class="headerlink" title="浮动的块元素如何层叠"></a>浮动的块元素如何层叠</h2><p>对于浮动的块元素来说，层叠顺序变得有些不同，浮动块元素被放置于非定位块元素与定位块元素之间，它遵循以下的规律</p>
+<ol>
+<li>根元素（<code>&lt;html&gt;</code>）的背景和边界</li>
+<li>位于普通流中的后代无定位块级元素，按它们在 <code>HTML</code> 中的出现顺序层叠</li>
+<li>浮动块元素</li>
+<li>位于普通流中的后代无定位行内元素</li>
+<li>后代中的定位元素，按它们在 <code>HTML</code> 中的出现顺序层叠</li>
+</ol>
+<p>同样的，我们也来看一个示例，如下</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"abs1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #1<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: absolute;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"flo1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #2<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>float: left;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"flo2"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #3<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>float: right;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"sta1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #4<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>no positioning</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"abs2"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>DIV #5<span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: absolute;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-tag">div</span> &#123; <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">text-align</span>: center; &#125;</span><br><span class="line"><span class="hljs-selector-tag">b</span> &#123; <span class="hljs-attribute">font-family</span>: sans-serif; &#125;</span><br><span class="line"><span class="hljs-selector-id">#abs1</span> &#123; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">width</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">200px</span>; <span class="hljs-attribute">top</span>: <span class="hljs-number">20px</span>; <span class="hljs-attribute">right</span>: <span class="hljs-number">160px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#900</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#fdd</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#sta1</span> &#123; <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#996</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffc</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">10px</span> <span class="hljs-number">0px</span> <span class="hljs-number">10px</span>; <span class="hljs-attribute">text-align</span>: left; &#125;</span><br><span class="line"><span class="hljs-selector-id">#flo1</span> &#123; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">10px</span> <span class="hljs-number">0px</span> <span class="hljs-number">20px</span>; <span class="hljs-attribute">float</span>: left; <span class="hljs-attribute">width</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">200px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#090</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#cfc</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#flo2</span> &#123; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">20px</span> <span class="hljs-number">0px</span> <span class="hljs-number">10px</span>; <span class="hljs-attribute">float</span>: right; <span class="hljs-attribute">width</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">200px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#090</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#cfc</span>; &#125;</span><br><span class="line"><span class="hljs-selector-id">#abs2</span> &#123; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">width</span>: <span class="hljs-number">300px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>; <span class="hljs-attribute">top</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">100px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#990</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#fdd</span>; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码运行完成以后是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/css/17-03.png" alt></p>
+<p>注意与上面不含 <code>z-index</code> 元素对比查看，下面我们就来看看我们今天的主角，<code>z-index</code> 如何影响层叠</p>
+<h2 id="z-index-如何影响层叠"><a href="#z-index-如何影响层叠" class="headerlink" title="z-index 如何影响层叠"></a>z-index 如何影响层叠</h2><p><code>z-index</code> 属性指定了一个具有定位属性的元素及其子代元素的 <code>z-order</code>，当元素之间重叠的时候 <code>z-order</code> 决定哪一个元素覆盖在其余元素的上方显示，通常来说 <code>z-index</code> 较大的元素会覆盖较小的一个</p>
+<p>对于一个已经定位的元素（即 <code>position</code> 属性值不是 <code>static</code> 的元素），<code>z-index</code> 属性指定</p>
+<ol>
+<li>元素在当前层叠上下文中的层叠层级</li>
+<li>元素是否创建一个新的本地层叠上下文</li>
+</ol>
+<p>同样的，看下面这个示例</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"absdiv1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>DIV #1<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: absolute;</span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>z-index: 5;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"reldiv1"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>DIV #2<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: relative;</span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>z-index: 3;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"reldiv2"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>DIV #3<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: relative;</span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>z-index: 2;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"absdiv2"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>DIV #4<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>position: absolute;</span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>z-index: 1;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"normdiv"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bold"</span>&gt;</span>DIV #5<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>no positioning</span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>z-index: 8;</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-tag">div</span> &#123; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.7</span>; <span class="hljs-attribute">font</span>: <span class="hljs-number">12px</span> Arial; &#125;</span><br><span class="line"><span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.bold</span> &#123; <span class="hljs-attribute">font-weight</span>: bold; &#125;</span><br><span class="line"><span class="hljs-selector-id">#normdiv</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">8</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">70px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#999966</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffffcc</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">50px</span> <span class="hljs-number">0px</span> <span class="hljs-number">50px</span>; <span class="hljs-attribute">text-align</span>: center; &#125;</span><br><span class="line"><span class="hljs-selector-id">#reldiv1</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">3</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>; <span class="hljs-attribute">position</span>: relative; <span class="hljs-attribute">top</span>: <span class="hljs-number">30px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#669966</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ccffcc</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">50px</span> <span class="hljs-number">0px</span> <span class="hljs-number">50px</span>; <span class="hljs-attribute">text-align</span>: center; &#125;</span><br><span class="line"><span class="hljs-selector-id">#reldiv2</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">2</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>; <span class="hljs-attribute">position</span>: relative; <span class="hljs-attribute">top</span>: <span class="hljs-number">15px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">20px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#669966</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ccffcc</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">0px</span> <span class="hljs-number">50px</span> <span class="hljs-number">0px</span> <span class="hljs-number">50px</span>; <span class="hljs-attribute">text-align</span>: center; &#125;</span><br><span class="line"><span class="hljs-selector-id">#absdiv1</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">5</span>; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">width</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">350px</span>; <span class="hljs-attribute">top</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#990000</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffdddd</span>; <span class="hljs-attribute">text-align</span>: center; &#125;</span><br><span class="line"><span class="hljs-selector-id">#absdiv2</span> &#123; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">1</span>; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">width</span>: <span class="hljs-number">150px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">350px</span>; <span class="hljs-attribute">top</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">right</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> dashed <span class="hljs-number">#990000</span>; <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffdddd</span>; <span class="hljs-attribute">text-align</span>: center; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行完以后是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/css/17-04.png" alt></p>
+<p>这里需要注意上面的 <code>div#5</code>，由于其不是定位元素，所以 <code>z-index</code> 是不生效的</p>
+<blockquote>
+<p>于非浮层元素，避免设置 <code>z-index</code> 值，原因是定位元素一旦设置了 <code>z-index</code> 值，就从普通定位元素变成了层叠上下文元素，相互间的层叠顺序就发生了根本的变化，很容易出现设置了巨大的 <code>z-index</code> 值也无法覆盖其他元素的问题</p>
+</blockquote>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>看完了上面关于层叠上下文的一些介绍以后，我们来一个关于层叠相关的面试题，加深一下印象，它要求写出以下六个 <code>div</code> 元素的堆叠顺序，要求最上面的元素排在第一个位置，代码如下</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"one"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"two"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"three"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"four"</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"five"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"six"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight scss hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-selector-class">.one</span> &#123;</span><br><span class="line">  <span class="hljs-attribute">position</span>: relative;</span><br><span class="line">  <span class="hljs-attribute">z-index</span>: <span class="hljs-number">2</span>;</span><br><span class="line">  <span class="hljs-selector-class">.two</span> &#123;</span><br><span class="line">    <span class="hljs-attribute">z-index</span>: <span class="hljs-number">6</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-selector-class">.three</span> &#123;</span><br><span class="line">    <span class="hljs-attribute">position</span>: absolute;</span><br><span class="line">    <span class="hljs-attribute">z-index</span>: <span class="hljs-number">5</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-selector-class">.four</span> &#123;</span><br><span class="line">  <span class="hljs-attribute">position</span>: absolute;</span><br><span class="line">  <span class="hljs-attribute">z-index</span>: <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-selector-class">.five</span> &#123;&#125;</span><br><span class="line">  <span class="hljs-selector-class">.six</span> &#123;</span><br><span class="line">    <span class="hljs-attribute">position</span>: absolute;</span><br><span class="line">    <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>;</span><br><span class="line">    <span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>;</span><br><span class="line">    <span class="hljs-attribute">z-index</span>: -<span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后的答案为 <code>.three .two .one .five .six .four</code>，可以将各元素添加一个背景色用于测试</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Understanding_z_index/The_stacking_context" target="_blank" rel="noopener">层叠上下文</a></li>
+<li><a href="https://www.zhangxinxu.com/wordpress/2016/01/understand-css-stacking-context-order-z-index/" target="_blank" rel="noopener">深入理解 CSS 中的层叠上下文和层叠顺序</a></li>
+<li><a href="https://www.smashingmagazine.com/2009/09/the-z-index-css-property-a-comprehensive-look/" target="_blank" rel="noopener">The Z-Index CSS Property: A Comprehensive Look</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/CSS/">CSS</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/02/22/React/01/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">Flux 与 Redux</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/01/12/CSS/09/">
+                <span class="level-item">关于子容器属性 flex 取值问题</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '987c86df27fc5f2ee73b48a444fbcde2',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        153
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#层叠上下文">
+        <span class="has-mr-6">1</span>
+        <span>层叠上下文</span>
+        </a></li><li>
+        <a class="is-flex" href="#如何形成层叠上下文？">
+        <span class="has-mr-6">2</span>
+        <span>如何形成层叠上下文？</span>
+        </a></li><li>
+        <a class="is-flex" href="#层叠上下文如何影响层叠">
+        <span class="has-mr-6">3</span>
+        <span>层叠上下文如何影响层叠</span>
+        </a></li><li>
+        <a class="is-flex" href="#不含-z-index-元素如何层叠">
+        <span class="has-mr-6">4</span>
+        <span>不含 z-index 元素如何层叠</span>
+        </a></li><li>
+        <a class="is-flex" href="#浮动的块元素如何层叠">
+        <span class="has-mr-6">5</span>
+        <span>浮动的块元素如何层叠</span>
+        </a></li><li>
+        <a class="is-flex" href="#z-index-如何影响层叠">
+        <span class="has-mr-6">6</span>
+        <span>z-index 如何影响层叠</span>
+        </a></li><li>
+        <a class="is-flex" href="#实战">
+        <span class="has-mr-6">7</span>
+        <span>实战</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">8</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/07/Vue/06/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
+                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
+                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
+                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="CSS 当中的 z-index" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
