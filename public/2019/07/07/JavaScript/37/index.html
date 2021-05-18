@@ -16,7 +16,7 @@
 <meta property="og:description" content="在展开渲染机制相关内容之前，我们先来简单的了解一下常见的浏览器内核有哪些，浏览器的内核是指支持浏览器运行的最核心的程序，分为两个部分的，一是渲染引擎，另一个是 JavaScript 引擎（比如我们经常可以听到的 V8 引擎），渲染引擎在不同的浏览器中也不是都相同的，目前市面上常见的浏览器内核主要有以下这些    浏览器/RunTime 内核（渲染引擎） JavaScript 引擎    Chrom">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/37.webp">
-<meta property="og:updated_time" content="2021-03-31T14:18:08.000Z">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.710Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浏览器的渲染机制">
 <meta name="twitter:description" content="在展开渲染机制相关内容之前，我们先来简单的了解一下常见的浏览器内核有哪些，浏览器的内核是指支持浏览器运行的最核心的程序，分为两个部分的，一是渲染引擎，另一个是 JavaScript 引擎（比如我们经常可以听到的 V8 引擎），渲染引擎在不同的浏览器中也不是都相同的，目前市面上常见的浏览器内核主要有以下这些    浏览器/RunTime 内核（渲染引擎） JavaScript 引擎    Chrom">
@@ -161,7 +161,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    1 小时 读完 (大约 11457 个字)
+                    1 小时 读完 (大约 11453 个字)
                 </span>
                 
                 
@@ -235,7 +235,7 @@
 </ul>
 <p>如下图所示</p>
 <p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-01.png" alt></p>
-<h2 id="浏览器的主要进程"><a href="#浏览器的主要进程" class="headerlink" title="浏览器的主要进程"></a>浏览器的主要进程</h2><p>我们在之前的章节当中已经简单介绍了进程和线程的一些相关内容（可见 <a href="https://heptaluan.github.io/2018/08/12/JavaScript/30/" target="_blank" rel="noopener">JavaScript 中的事件轮询机制</a>），这里我们简单的复习一下</p>
+<h2 id="浏览器的主要进程"><a href="#浏览器的主要进程" class="headerlink" title="浏览器的主要进程"></a>浏览器的主要进程</h2><p>我们在之前的章节当中已经简单介绍了进程和线程的一些相关内容（可见 <a href="http://localhost:4000/2018/08/12/JavaScript/30/" target="_blank" rel="noopener">JavaScript 中的事件轮询机制</a>），这里我们简单的复习一下</p>
 <ul>
 <li>进程是 <code>CPU</code> 资源分配的最小单位（是能拥有资源和独立运行的最小单位）</li>
 <li>线程是 <code>CPU</code> 调度的最小单位（线程是建立在进程的基础上的一次程序运行单位，一个进程中可以有多个线程）</li>
@@ -568,7 +568,7 @@
 <li>使用字节码解释器（<code>Bytecode Interpreter</code>），将字节码转为机器码</li>
 </ul>
 <p>逐行解释将字节码转为机器码，是很低效的，为了提高运行速度，现代浏览器改为采用即时编译（<code>Just In Time compiler</code>，<code>JIT</code>），即字节码只在运行时编译，用到哪一行就编译哪一行，并且把编译结果缓存（<code>Inline Cache</code>），通常来说，一个程序被经常用到的，只是其中一小部分代码，有了缓存的编译结果，整个程序的运行速度就会显著提升</p>
-<p>关于这部分更为详细的内容可以参考我们之前整理过的 <a href="https://heptaluan.github.io/2020/08/02/JavaScript/54/" target="_blank" rel="noopener">V8 引擎机制</a> 这篇文章了解更多</p>
+<p>关于这部分更为详细的内容可以参考我们之前整理过的 <a href="http://localhost:4000/2020/08/02/JavaScript/54/" target="_blank" rel="noopener">V8 引擎机制</a> 这篇文章了解更多</p>
 <h4 id="12-什么是渲染层合并（Composite）"><a href="#12-什么是渲染层合并（Composite）" class="headerlink" title="12. 什么是渲染层合并（Composite）"></a>12. 什么是渲染层合并（Composite）</h4><p>渲染层合并，对于页面中 <code>DOM</code> 元素的绘制（<code>Paint</code>）是在多个层上进行的，在每个层上完成绘制过程之后，浏览器会将绘制的位图发送给 <code>GPU</code> 绘制到屏幕上，将所有层按照合理的顺序合并成一个图层，然后在屏幕上呈现，对于有位置重叠的元素的页面，这个过程尤其重要，因为一旦图层的合并顺序出错，将会导致元素显示异常</p>
 <p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/37-17.png" alt></p>
 <p>如上图</p>
@@ -724,7 +724,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        153
+                        151
                     </p>
                 </div>
             </div>
@@ -989,7 +989,7 @@
                 <span class="level-item">React</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">20</span>
+                <span class="level-item tag">18</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/Vue/">
@@ -1027,44 +1027,6 @@
                 最新文章
             </a>
         </h3>
-        
-        <article class="media">
-            
-            <a href="/2021/04/18/React/21/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
-                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2021/03/28/React/20/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
-                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
         <article class="media">
             
@@ -1123,6 +1085,44 @@
             </div>
         </article>
         
+        <article class="media">
+            
+            <a href="/2021/01/01/JavaScript/57/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/57.webp" alt="深入 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-31T16:00:00.000Z">2021-01-01</time></div>
+                    <a href="/2021/01/01/JavaScript/57/" class="has-link-black-ter is-size-6">深入 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/12/26/JavaScript/56/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/56.webp" alt="重温 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T16:00:00.000Z">2020-12-26</time></div>
+                    <a href="/2020/12/26/JavaScript/56/" class="has-link-black-ter is-size-6">重温 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
     </div>
 </div>
 
@@ -1136,23 +1136,12 @@
         <ul class="menu-list">
         
         <li>
-            <a class="level is-marginless" href="/archives/2021/04/">
-                <span class="level-start">
-                    <span class="level-item">四月 2021</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
             <a class="level is-marginless" href="/archives/2021/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
@@ -1754,7 +1743,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/React/">
                         <span class="tag">React</span>
-                        <span class="tag is-grey">20</span>
+                        <span class="tag is-grey">18</span>
                     </a>
                 </div>
                 

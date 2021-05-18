@@ -16,7 +16,7 @@
 <meta property="og:description" content="最后更新于 2020-11-25  最近打算重新的梳理一下 JavaScript 中数据类型的相关内容，主要分为三部分『数据类型』，『类型转换』和『类型判断』，也算是做一个整合汇总，方便以后进行查阅或是复习，下面我们就先从『数据类型』开始看起">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/25.webp">
-<meta property="og:updated_time" content="2021-03-31T14:18:08.000Z">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.701Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript 中的数据类型">
 <meta name="twitter:description" content="最后更新于 2020-11-25  最近打算重新的梳理一下 JavaScript 中数据类型的相关内容，主要分为三部分『数据类型』，『类型转换』和『类型判断』，也算是做一个整合汇总，方便以后进行查阅或是复习，下面我们就先从『数据类型』开始看起">
@@ -161,7 +161,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    1 小时 读完 (大约 9622 个字)
+                    1 小时 读完 (大约 9618 个字)
                 </span>
                 
                 
@@ -196,7 +196,7 @@
 <ul>
 <li><code>Object</code>，常用的 <code>Object</code>，<code>Array</code>、<code>Function</code> 等都属于特殊的对象</li>
 </ul>
-<h4 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h4><p>像 <code>String</code>，<code>Number</code>，<code>Boolean</code> 等这些我们平常经常使用的，这里我们就不多做提及了，关于 <a href="https://heptaluan.github.io/2019/11/07/JavaScript/48/" target="_blank" rel="noopener">Symbol</a> 的相关内容我们在之前已经梳理过了，而引用类型我们会在下面详细来进行介绍，所以这里我们就只简单的看看 <code>Null</code>，<code>Undefined</code> 和 <code>BigInt</code></p>
+<h4 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h4><p>像 <code>String</code>，<code>Number</code>，<code>Boolean</code> 等这些我们平常经常使用的，这里我们就不多做提及了，关于 <a href="http://localhost:4000/2019/11/07/JavaScript/48/" target="_blank" rel="noopener">Symbol</a> 的相关内容我们在之前已经梳理过了，而引用类型我们会在下面详细来进行介绍，所以这里我们就只简单的看看 <code>Null</code>，<code>Undefined</code> 和 <code>BigInt</code></p>
 <h6 id="Null"><a href="#Null" class="headerlink" title="Null"></a>Null</h6><p>在基本类型中，有两个类型 <code>Null</code> 和 <code>Undefined</code>，它们都有且仅有一个值，<code>null</code> 和 <code>undefined</code>，并且它们都代表无和空，我们一般这样来区分它们</p>
 <p>表示被赋值过的对象，刻意把一个对象赋值为 <code>null</code>，故意表示其为空，不应有值，所以对象的某个属性值为 <code>null</code> 是正常的，并且 <code>null</code> 转换为数值时值为 <code>0</code></p>
 <h6 id="Undefined"><a href="#Undefined" class="headerlink" title="Undefined"></a>Undefined</h6><p>表示『缺少值』，即此处应有一个值，但还没有定义，如果一个对象的某个属性值为 <code>undefined</code> 是不正常的，例如 <code>obj.name = undefined</code>，但是建议不要这样使用，应该直接 <code>delete obj.name</code>，并且 <code>undefined</code> 转为数值时为 <code>NaN</code></p>
@@ -297,7 +297,7 @@
 </ul>
 <p>也就如下图所示</p>
 <p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/js/25-01.png" alt></p>
-<p>因此可以发现，如果采用栈来存储相对基本类型更加复杂的对象数据，那么切换上下文的开销将变得巨大，不过堆内存虽然空间大，能存放大量的数据，但与此同时垃圾内存的回收会带来更大的开销，关于垃圾回收这部分内容，我们会在 <a href="https://heptaluan.github.io/2020/08/02/JavaScript/54/" target="_blank" rel="noopener">V8 引擎机制</a> 一节当中来详细进行介绍</p>
+<p>因此可以发现，如果采用栈来存储相对基本类型更加复杂的对象数据，那么切换上下文的开销将变得巨大，不过堆内存虽然空间大，能存放大量的数据，但与此同时垃圾内存的回收会带来更大的开销，关于垃圾回收这部分内容，我们会在 <a href="http://localhost:4000/2020/08/02/JavaScript/54/" target="_blank" rel="noopener">V8 引擎机制</a> 一节当中来详细进行介绍</p>
 <hr>
 <p>下面我们通过几个操作来详细看看基本类型和引用类型的区别</p>
 <h4 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h4><p>当我们把一个变量的值复制到另一个变量上时，基本类型和引用类型的表现是不一样的，先来看看基本类型</p>
@@ -878,7 +878,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        153
+                        151
                     </p>
                 </div>
             </div>
@@ -1143,7 +1143,7 @@
                 <span class="level-item">React</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">20</span>
+                <span class="level-item tag">18</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/Vue/">
@@ -1181,44 +1181,6 @@
                 最新文章
             </a>
         </h3>
-        
-        <article class="media">
-            
-            <a href="/2021/04/18/React/21/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
-                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2021/03/28/React/20/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
-                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
         <article class="media">
             
@@ -1277,6 +1239,44 @@
             </div>
         </article>
         
+        <article class="media">
+            
+            <a href="/2021/01/01/JavaScript/57/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/57.webp" alt="深入 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-31T16:00:00.000Z">2021-01-01</time></div>
+                    <a href="/2021/01/01/JavaScript/57/" class="has-link-black-ter is-size-6">深入 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/12/26/JavaScript/56/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/56.webp" alt="重温 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T16:00:00.000Z">2020-12-26</time></div>
+                    <a href="/2020/12/26/JavaScript/56/" class="has-link-black-ter is-size-6">重温 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
     </div>
 </div>
 
@@ -1290,23 +1290,12 @@
         <ul class="menu-list">
         
         <li>
-            <a class="level is-marginless" href="/archives/2021/04/">
-                <span class="level-start">
-                    <span class="level-item">四月 2021</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
             <a class="level is-marginless" href="/archives/2021/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
@@ -1908,7 +1897,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/React/">
                         <span class="tag">React</span>
-                        <span class="tag is-grey">20</span>
+                        <span class="tag is-grey">18</span>
                     </a>
                 </div>
                 

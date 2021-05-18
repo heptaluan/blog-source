@@ -16,7 +16,7 @@
 <meta property="og:description" content="本章主要用于记录一些 React 相关知识点，因为最近在复习 React 相关内容，发现版本迭代了许多，废弃了很多 API，也添加了一些新的方法（比如生命周期钩子等），所以就简单的在这里汇总整理一下，也算是查漏补缺">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/11.webp">
-<meta property="og:updated_time" content="2021-03-31T14:18:08.000Z">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.738Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React 查漏补缺">
 <meta name="twitter:description" content="本章主要用于记录一些 React 相关知识点，因为最近在复习 React 相关内容，发现版本迭代了许多，废弃了很多 API，也添加了一些新的方法（比如生命周期钩子等），所以就简单的在这里汇总整理一下，也算是查漏补缺">
@@ -161,7 +161,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    1 小时 读完 (大约 6935 个字)
+                    1 小时 读完 (大约 6933 个字)
                 </span>
                 
                 
@@ -468,7 +468,7 @@
 <h2 id="ReactDOM-createPortal"><a href="#ReactDOM-createPortal" class="headerlink" title="ReactDOM.createPortal()"></a>ReactDOM.createPortal()</h2><p><code>ReactDOM.createPortal()</code> 提供了一种将子节点渲染到存在于父组件以外的 <code>DOM</code> 节点的方案，也就是说组件的 <code>render()</code> 函数返回的元素会被挂载在它的父级组件上</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span></span><br><span class="line"><span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; Button &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> modalRoot = <span class="hljs-built_in">document</span>.body</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Modal</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="hljs-keyword">super</span>(props)</span><br><span class="line">    <span class="hljs-keyword">this</span>.el = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>)</span><br><span class="line">    <span class="hljs-keyword">this</span>.el.style.width = <span class="hljs-string">'200px'</span></span><br><span class="line">    <span class="hljs-keyword">this</span>.el.style.height = <span class="hljs-string">'200px'</span></span><br><span class="line">    <span class="hljs-keyword">this</span>.el.style.backgroundColor = <span class="hljs-string">'green'</span></span><br><span class="line">    <span class="hljs-keyword">this</span>.el.style.position = <span class="hljs-string">'absolute'</span></span><br><span class="line">    <span class="hljs-keyword">this</span>.el.style.top = <span class="hljs-string">'200px'</span></span><br><span class="line">    <span class="hljs-keyword">this</span>.el.style.left = <span class="hljs-string">'400px'</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    modalRoot.appendChild(<span class="hljs-keyword">this</span>.el)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentWillUnmount() &#123;</span><br><span class="line">    modalRoot.removeChild(<span class="hljs-keyword">this</span>.el)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> ReactDOM.createPortal(<span class="hljs-keyword">this</span>.props.children, <span class="hljs-keyword">this</span>.el)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Child</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"modal"</span>&gt;</span>这个是通过 ReactDOM.createPortal 创建的内容<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="hljs-keyword">super</span>(props)</span><br><span class="line">    <span class="hljs-keyword">this</span>.state = &#123; <span class="hljs-attr">clicks</span>: <span class="hljs-number">0</span> &#125;</span><br><span class="line">    <span class="hljs-keyword">this</span>.handleClick = <span class="hljs-keyword">this</span>.handleClick.bind(<span class="hljs-keyword">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleClick() &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">prevState</span> =&gt;</span> (&#123;</span><br><span class="line">      clicks: prevState.clicks + <span class="hljs-number">1</span></span><br><span class="line">    &#125;))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;Button onClick=&#123;<span class="hljs-keyword">this</span>.handleClick&#125;&gt;点击&lt;<span class="hljs-regexp">/Button&gt;</span></span><br><span class="line"><span class="hljs-regexp">        &lt;p&gt;点击次数为 &#123;this.state.clicks&#125;&lt;/</span>p&gt;</span><br><span class="line">        &lt;Modal&gt;</span><br><span class="line">          &lt;Child /&gt;</span><br><span class="line">        &lt;<span class="hljs-regexp">/Modal&gt;</span></span><br><span class="line"><span class="hljs-regexp">      &lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="取消请求"><a href="#取消请求" class="headerlink" title="取消请求"></a>取消请求</h2><p>在 <code>React</code> 中如果当前正在发出请求的组件从页面上卸载了，理想情况下这个请求也应该取消掉，那么如何把请求的取消和页面的卸载关联在一起呢？在这种情况下可以考虑利用 <code>useEffect</code> 的清理函数搭配 <code>Ajax</code> 或是 <code>Fetch</code> 的取消请求 <code>API</code>（使用方式可以参考我们之前整理过的 <a href="https://heptaluan.github.io/2019/08/02/JavaScript/53/#%E7%BB%88%E6%AD%A2%E8%AF%B7%E6%B1%82" target="_blank" rel="noopener">终止请求</a>）</p>
+<h2 id="取消请求"><a href="#取消请求" class="headerlink" title="取消请求"></a>取消请求</h2><p>在 <code>React</code> 中如果当前正在发出请求的组件从页面上卸载了，理想情况下这个请求也应该取消掉，那么如何把请求的取消和页面的卸载关联在一起呢？在这种情况下可以考虑利用 <code>useEffect</code> 的清理函数搭配 <code>Ajax</code> 或是 <code>Fetch</code> 的取消请求 <code>API</code>（使用方式可以参考我们之前整理过的 <a href="http://localhost:4000/2019/08/02/JavaScript/53/#%E7%BB%88%E6%AD%A2%E8%AF%B7%E6%B1%82" target="_blank" rel="noopener">终止请求</a>）</p>
 <p>所以有了这两个方式以后，我们就可以结合 <code>React</code> 来封装一个 <code>useFetch</code> 的自定义 <code>Hook</code></p>
 <figure class="highlight ts hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useFetch</span> = (<span class="hljs-params">config, deps</span>) =&gt; </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> abortController = <span class="hljs-keyword">new</span> AbortController()</span><br><span class="line">  <span class="hljs-keyword">const</span> [loading, setLoading] = useState(<span class="hljs-literal">false</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> [result, setResult] = useState()</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setLoading(<span class="hljs-literal">true</span>)</span><br><span class="line">    fetch(&#123;</span><br><span class="line">      ...config,</span><br><span class="line">      signal: abortController.signal</span><br><span class="line">    &#125;).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> setResult(res))</span><br><span class="line">      .finally(_ =&gt; setLoading(<span class="hljs-literal">false</span>))</span><br><span class="line">  &#125;, deps)</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> abortController.abort()</span><br><span class="line">  &#125;, [])</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> &#123; result, loading &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -594,7 +594,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        153
+                        151
                     </p>
                 </div>
             </div>
@@ -835,7 +835,7 @@
                 <span class="level-item">React</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">20</span>
+                <span class="level-item tag">18</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/Vue/">
@@ -873,44 +873,6 @@
                 最新文章
             </a>
         </h3>
-        
-        <article class="media">
-            
-            <a href="/2021/04/18/React/21/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
-                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2021/03/28/React/20/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
-                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
         <article class="media">
             
@@ -969,6 +931,44 @@
             </div>
         </article>
         
+        <article class="media">
+            
+            <a href="/2021/01/01/JavaScript/57/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/57.webp" alt="深入 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-31T16:00:00.000Z">2021-01-01</time></div>
+                    <a href="/2021/01/01/JavaScript/57/" class="has-link-black-ter is-size-6">深入 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/12/26/JavaScript/56/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/56.webp" alt="重温 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T16:00:00.000Z">2020-12-26</time></div>
+                    <a href="/2020/12/26/JavaScript/56/" class="has-link-black-ter is-size-6">重温 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
     </div>
 </div>
 
@@ -982,23 +982,12 @@
         <ul class="menu-list">
         
         <li>
-            <a class="level is-marginless" href="/archives/2021/04/">
-                <span class="level-start">
-                    <span class="level-item">四月 2021</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
             <a class="level is-marginless" href="/archives/2021/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
@@ -1600,7 +1589,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/React/">
                         <span class="tag">React</span>
-                        <span class="tag is-grey">20</span>
+                        <span class="tag is-grey">18</span>
                     </a>
                 </div>
                 

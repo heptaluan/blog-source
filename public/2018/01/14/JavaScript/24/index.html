@@ -16,7 +16,7 @@
 <meta property="og:description" content="最后更新于 2020-02-22  深浅拷贝也算是一个老生常谈的话题了，它也是一些面试题当中的高频题目，所以今天就抽些时间来深入的了解一下 JavaScript 中的深浅拷贝，也算是记录记录，不过在此之前我们先来了解一下可能会与深浅拷贝所混淆的『赋值』概念">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/24.webp">
-<meta property="og:updated_time" content="2021-03-31T14:18:08.000Z">
+<meta property="og:updated_time" content="2021-03-09T08:29:33.699Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript 中的深浅拷贝">
 <meta name="twitter:description" content="最后更新于 2020-02-22  深浅拷贝也算是一个老生常谈的话题了，它也是一些面试题当中的高频题目，所以今天就抽些时间来深入的了解一下 JavaScript 中的深浅拷贝，也算是记录记录，不过在此之前我们先来了解一下可能会与深浅拷贝所混淆的『赋值』概念">
@@ -161,7 +161,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    37 分钟 读完 (大约 5584 个字)
+                    37 分钟 读完 (大约 5580 个字)
                 </span>
                 
                 
@@ -180,7 +180,7 @@
 <p>深浅拷贝也算是一个老生常谈的话题了，它也是一些面试题当中的高频题目，所以今天就抽些时间来深入的了解一下 <code>JavaScript</code> 中的深浅拷贝，也算是记录记录，不过在此之前我们先来了解一下可能会与深浅拷贝所混淆的『赋值』概念</p>
 <a id="more"></a>
 
-<h2 id="变量的赋值"><a href="#变量的赋值" class="headerlink" title="变量的赋值"></a>变量的赋值</h2><p>我们在之前的 <a href="https://heptaluan.github.io/2018/03/17/JavaScript/25/" target="_blank" rel="noopener">JavaScript 中的数据类型</a> 章节当中曾经提到过，在 <code>JavaScript</code> 中，变量包含两种不同的数据类型，即『基本类型』和『引用类型』，在将一个值赋给变量时，解析器必须确定这个值是基本类型还是引用类型</p>
+<h2 id="变量的赋值"><a href="#变量的赋值" class="headerlink" title="变量的赋值"></a>变量的赋值</h2><p>我们在之前的 <a href="http://localhost:4000/2018/03/17/JavaScript/25/" target="_blank" rel="noopener">JavaScript 中的数据类型</a> 章节当中曾经提到过，在 <code>JavaScript</code> 中，变量包含两种不同的数据类型，即『基本类型』和『引用类型』，在将一个值赋给变量时，解析器必须确定这个值是基本类型还是引用类型</p>
 <ul>
 <li>基本类型的值被直接存储在『栈』中，在变量定义时，栈就为其分配好了内存空间，由于栈中的内存空间的大小是固定的，那么注定了存储在栈中的变量就是不可变的</li>
 <li>相对于具有不可变性的基本类型，我们习惯于把对象称为引用类型，引用类型的值实际存储在『堆内存』中，它在栈中只存储了一个固定长度的地址，这个地址指向堆内存中的值</li>
@@ -270,7 +270,7 @@
 <h2 id="特殊对象的处理"><a href="#特殊对象的处理" class="headerlink" title="特殊对象的处理"></a>特殊对象的处理</h2><p>在上面的代码中，我们其实只考虑了普通的 <code>object</code> 和 <code>array</code> 两种数据类型，实际上引用类型的对象远远不止这两个，而对于特殊的对象，我们可以使用以下方式来进行鉴别</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> getType = <span class="hljs-function"><span class="hljs-params">obj</span> =&gt;</span> <span class="hljs-built_in">Object</span>.prototype.toString.call(obj)</span><br></pre></td></tr></table></figure>
 
-<p>这一部分内容我们在之前的 <a href="https://heptaluan.github.io/2018/03/17/JavaScript/25/#类型判断" target="_blank" rel="noopener">类型判断</a> 章节当中已经详细梳理过了，所以在这里我们就直接抽离出一些常用的数据类型以便后面使用，如下所示</p>
+<p>这一部分内容我们在之前的 <a href="http://localhost:4000/2018/03/17/JavaScript/25/#类型判断" target="_blank" rel="noopener">类型判断</a> 章节当中已经详细梳理过了，所以在这里我们就直接抽离出一些常用的数据类型以便后面使用，如下所示</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> mapTag = <span class="hljs-string">'[object Map]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> setTag = <span class="hljs-string">'[object Set]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> boolTag = <span class="hljs-string">'[object Boolean]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> numberTag = <span class="hljs-string">'[object Number]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> stringTag = <span class="hljs-string">'[object String]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> symbolTag = <span class="hljs-string">'[object Symbol]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> dateTag = <span class="hljs-string">'[object Date]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> errorTag = <span class="hljs-string">'[object Error]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> regexpTag = <span class="hljs-string">'[object RegExp]'</span></span><br><span class="line"><span class="hljs-keyword">const</span> funcTag = <span class="hljs-string">'[object Function]'</span></span><br></pre></td></tr></table></figure>
 
 <p>在上面的这些类型当中，我们可以简单的将它们分为两类</p>
@@ -445,7 +445,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        153
+                        151
                     </p>
                 </div>
             </div>
@@ -614,7 +614,7 @@
                 <span class="level-item">React</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">20</span>
+                <span class="level-item tag">18</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/Vue/">
@@ -652,44 +652,6 @@
                 最新文章
             </a>
         </h3>
-        
-        <article class="media">
-            
-            <a href="/2021/04/18/React/21/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
-                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2021/03/28/React/20/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
-                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
         <article class="media">
             
@@ -748,6 +710,44 @@
             </div>
         </article>
         
+        <article class="media">
+            
+            <a href="/2021/01/01/JavaScript/57/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/57.webp" alt="深入 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-31T16:00:00.000Z">2021-01-01</time></div>
+                    <a href="/2021/01/01/JavaScript/57/" class="has-link-black-ter is-size-6">深入 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/12/26/JavaScript/56/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/56.webp" alt="重温 TypeScript">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T16:00:00.000Z">2020-12-26</time></div>
+                    <a href="/2020/12/26/JavaScript/56/" class="has-link-black-ter is-size-6">重温 TypeScript</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
     </div>
 </div>
 
@@ -761,23 +761,12 @@
         <ul class="menu-list">
         
         <li>
-            <a class="level is-marginless" href="/archives/2021/04/">
-                <span class="level-start">
-                    <span class="level-item">四月 2021</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
             <a class="level is-marginless" href="/archives/2021/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
@@ -1379,7 +1368,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/React/">
                         <span class="tag">React</span>
-                        <span class="tag is-grey">20</span>
+                        <span class="tag is-grey">18</span>
                     </a>
                 </div>
                 
