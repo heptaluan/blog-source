@@ -12,23 +12,23 @@ button,
 input,
 select,
 textarea {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
 }
-@media screen and (min-width: 1772px) {
+@media screen and (min-width: 1408px) {
   .is-1-column .container,
   .is-2-column .container {
-    max-width: 1644px;
-    width: 1644px;
+    max-width: 1280px;
+    width: 1280px;
   }
 }
-@media screen and (min-width: 1772px) {
+@media screen and (min-width: 1408px) {
   .is-2-column .container {
-    max-width: 1644px;
-    width: 1644px;
+    max-width: 1280px;
+    width: 1280px;
   }
   .is-1-column .container {
-    max-width: 1644px;
-    width: 1644px;
+    max-width: 1280px;
+    width: 1280px;
   }
 }
 @media screen and (max-width: 768px) {
@@ -115,7 +115,7 @@ img.thumbnail {
   color: #3273dc;
   background-color: transparent;
 }
-@media screen and (max-width: 1771px) {
+@media screen and (max-width: 1407px) {
   .navbar-main .navbar-menu {
     justify-content: center;
     box-shadow: none;
@@ -220,7 +220,6 @@ img.thumbnail {
 }
 .article .gallery-item img {
   box-shadow: 2px 2px 10px #d7d9d8;
-  max-width: 70%;
 }
 .rtl {
   direction: rtl;
@@ -380,6 +379,10 @@ img.thumbnail {
   width: 150px !important;
   height: 150px !important;
 }
+.menu-label .tips {
+  color: #7a7a7a;
+  font-size: 0.75em;
+}
 /* ---------------------------------
  *        Fix content elements
  * --------------------------------- */
@@ -392,10 +395,10 @@ img.thumbnail {
   font-weight: bold;
 }
 .content h1 {
-  font-size: 1.75em;
+  font-size: 1.55em;
 }
 .content h2 {
-  font-size: 1.5em;
+  font-size: 1.55em;
   border-bottom: 1px solid #ccc;
   padding-bottom: 15px;
 }
@@ -403,10 +406,13 @@ img.thumbnail {
   font-size: 1.25em;
 }
 .content h4 {
-  font-size: 1.125em;
+  font-size: 1.25em;
 }
 .content h5 {
-  font-size: 1em;
+  font-size: 1.1em;
+}
+.content h6 {
+  font-size: 1.02em;
 }
 .content code,
 .content pre {
@@ -417,6 +423,7 @@ img.thumbnail {
   color: #ff3860;
   background: transparent;
   padding: 0;
+  vertical-align: middle;
 }
 .content blockquote footer strong + cite {
   margin-left: 0.5em;
@@ -439,6 +446,7 @@ img.thumbnail {
   background-color: #e5e5e5;
 }
 .content p {
+  text-align: justify;
   word-break: break-all;
 }
 .content > table {

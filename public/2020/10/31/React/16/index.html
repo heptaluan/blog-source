@@ -16,7 +16,7 @@
 <meta property="og:description" content="我们在之前 React 中的 Mixin 和 React 中的 HOC 的章节当中介绍了 Mixin 和 HOC 的相关内容，了解了它们大致的实现原理和使用方式，也知道了 HOC 的出现就是为了替代 Mixin，但是 HOC 也并非完美无缺，它其实也是存在着一些缺陷的，比如  HOC 需要在原组件上进行包裹或者嵌套，如果大量使用 HOC，将会产生非常多的嵌套，这让调试变得非常困难 HOC 可以劫持">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/16.webp">
-<meta property="og:updated_time" content="2021-03-09T08:29:33.741Z">
+<meta property="og:updated_time" content="2021-03-29T02:36:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React 中的 Hook">
 <meta name="twitter:description" content="我们在之前 React 中的 Mixin 和 React 中的 HOC 的章节当中介绍了 Mixin 和 HOC 的相关内容，了解了它们大致的实现原理和使用方式，也知道了 HOC 的出现就是为了替代 Mixin，但是 HOC 也并非完美无缺，它其实也是存在着一些缺陷的，比如  HOC 需要在原组件上进行包裹或者嵌套，如果大量使用 HOC，将会产生非常多的嵌套，这让调试变得非常困难 HOC 可以劫持">
@@ -161,7 +161,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    1 小时 读完 (大约 12346 个字)
+                    1 小时 读完 (大约 10397 个字)
                 </span>
                 
                 
@@ -410,79 +410,6 @@
 <li><code>useCallback</code> 是缓存函数的</li>
 </ul>
 <p>另外如果没有依赖，我们可以添加空的依赖，也就是空数组</p>
-<h2 id="自定义-Hook"><a href="#自定义-Hook" class="headerlink" title="自定义 Hook"></a>自定义 Hook</h2><p>在看完了官方提供的一些 <code>Hook</code> 以后，下面我们来看看自定义 <code>Hook</code>，其实像之前我们介绍过的 <code>HOC</code> 和 <code>Mixin</code> 一样，我们同样可以通过自定义的 <code>Hook</code> 将组件中类似的状态逻辑抽取出来</p>
-<p>自定义 <code>Hook</code> 的实现比较简单，我们只需要定义一个函数，并且把相应需要的状态和 <code>effect</code> 封装进去，同时 <code>Hook</code> 之间也是可以相互引用的，使用 <code>use</code> 开头命名自定义 <code>Hook</code>，这样可以方便 <code>eslint</code> 进行检查，下面我们就来分别看看几类不同的 <code>Hook</code> 封装</p>
-<h4 id="Util"><a href="#Util" class="headerlink" title="Util"></a>Util</h4><p>顾名思义也就是我们常用的工具类，比如 <code>useDebounce</code>、<code>useInterval</code>、<code>useWindowSize</code> 等等，例如下面这个 <code>useWindowSize</code></p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; useEffect, useState &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useWindowSize</span>(<span class="hljs-params">el</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [windowSize, setWindowSize] = useState(&#123;</span><br><span class="line">    width: <span class="hljs-literal">undefined</span>,</span><br><span class="line">    height: <span class="hljs-literal">undefined</span>,</span><br><span class="line">  &#125;)</span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleResize</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      setWindowSize(&#123;</span><br><span class="line">        width: <span class="hljs-built_in">window</span>.innerWidth,</span><br><span class="line">        height: <span class="hljs-built_in">window</span>.innerHeight,</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'resize'</span>, handleResize)</span><br><span class="line">    handleResize()</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">window</span>.removeEventListener(<span class="hljs-string">'resize'</span>, handleResize)</span><br><span class="line">  &#125;, [el])</span><br><span class="line">  <span class="hljs-keyword">return</span> windowSize</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>另外还有我们常用的日志打点功能，这个可以使用上面封装的生命周期 <code>Hook</code></p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> useLogger = <span class="hljs-function">(<span class="hljs-params">componentName, ...params</span>) =&gt;</span> &#123;</span><br><span class="line">  useDidMount(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">$&#123;componentName&#125;</span> 初始化`</span>, ...params)</span><br><span class="line">  &#125;)</span><br><span class="line">  useUnMount(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">$&#123;componentName&#125;</span> 卸载`</span>, ...params)</span><br><span class="line">  &#125;)</span><br><span class="line">  useDidUpdate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">$&#123;componentName&#125;</span> 更新`</span>, ...params)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Page1</span>(<span class="hljs-params">props</span>) </span>&#123;</span><br><span class="line">  useLogger(<span class="hljs-string">'Page1'</span>, props)</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="API"><a href="#API" class="headerlink" title="API"></a>API</h4><p>比如我们有一个公用的城市列表接口，在用 <code>Redux</code> 的时候可以放在全局公用，有了 <code>Hook</code> 以后我们只需要 <code>use</code> 一下就可以在其他地方复用了</p>
-<figure class="highlight ts hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; useState, useEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; getCityList &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'@/services/static'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> useCityList = <span class="hljs-function">(<span class="hljs-params">params</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [cityList, setList] = useState([])</span><br><span class="line">  <span class="hljs-keyword">const</span> [loading, setLoading] = useState(<span class="hljs-literal">true</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> getList = <span class="hljs-keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> &#123; success, data &#125; = <span class="hljs-keyword">await</span> getCityList(params)</span><br><span class="line">    <span class="hljs-keyword">if</span> (success) setList(data)</span><br><span class="line">    setLoading(<span class="hljs-literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123; getList() &#125;, [])</span><br><span class="line">  <span class="hljs-keyword">return</span> &#123;</span><br><span class="line">    cityList,</span><br><span class="line">    loading</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 使用</span></span><br><span class="line"><span class="hljs-keyword">const</span> &#123; cityList, loading &#125; = useCityList(<span class="hljs-string">'beijing'</span>)</span><br></pre></td></tr></table></figure>
-
-<h4 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h4><p>我们在平常开发过程当中也会遇到一些和 <code>UI</code> 绑定在一起的 <code>Hook</code>，最为常见的就是模态框，比如下面这个模态框示例</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> React, &#123; useState &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; Modal &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useModal</span>(<span class="hljs-params">key = <span class="hljs-string">'open'</span></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [opens, setOpen] = useState(&#123;</span><br><span class="line">    [key]: <span class="hljs-literal">false</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="hljs-keyword">const</span> onCancel = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setOpen(&#123; [key]: <span class="hljs-literal">false</span> &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">const</span> showModal = <span class="hljs-function">(<span class="hljs-params">type = key</span>) =&gt;</span> &#123;</span><br><span class="line">    setOpen(&#123; [type]: <span class="hljs-literal">true</span> &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">const</span> MyModal = <span class="hljs-function">(<span class="hljs-params">props</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Modal</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&#123;key&#125;</span> <span class="hljs-attr">visible</span>=<span class="hljs-string">&#123;opens[key]&#125;</span> <span class="hljs-attr">onCancel</span>=<span class="hljs-string">&#123;onCancel&#125;</span> &#123;<span class="hljs-attr">...props</span>&#125; /&gt;</span></span></span><br><span class="line"><span class="hljs-xml">  &#125;</span></span><br><span class="line"><span class="hljs-xml">  return &#123;</span></span><br><span class="line"><span class="hljs-xml">    showModal,</span></span><br><span class="line"><span class="hljs-xml">    MyModal,</span></span><br><span class="line"><span class="hljs-xml">  &#125;</span></span><br><span class="line"><span class="hljs-xml">&#125;</span></span><br><span class="line"><span class="hljs-xml"></span></span><br><span class="line"><span class="hljs-xml">// 使用</span></span><br><span class="line"><span class="hljs-xml">const &#123; showModal, MyModal &#125; = useModal()</span></span><br><span class="line"><span class="hljs-xml">return (</span></span><br><span class="line"><span class="hljs-xml">  <span class="hljs-tag">&lt;&gt;</span></span></span><br><span class="line"><span class="hljs-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;showModal&#125;</span>&gt;</span>展开<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span></span><br><span class="line">    &lt;MyModal onOk=&#123;console.log&#125; /&gt;</span><br><span class="line">  &lt;/&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<h4 id="Logic"><a href="#Logic" class="headerlink" title="Logic"></a>Logic</h4><p>逻辑类，比如我们有一个点击用户头像关注用户或者取消关注的逻辑，可能在评论列表、用户列表都会用到，我们可以这样做</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> &#123; useState, useEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span></span><br><span class="line"><span class="hljs-keyword">import</span> &#123; followUser &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">'@/services/user'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> useFollow = <span class="hljs-function">(<span class="hljs-params">&#123; accountId, isFollowing &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [isFollow, setFollow] = useState(<span class="hljs-literal">false</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> [operationLoading, setLoading] = useState(<span class="hljs-literal">false</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> toggleSection = <span class="hljs-keyword">async</span> () =&gt; &#123;</span><br><span class="line">    setLoading(<span class="hljs-literal">true</span>)</span><br><span class="line">    <span class="hljs-keyword">const</span> &#123; success &#125; = <span class="hljs-keyword">await</span> followUser(&#123; accountId &#125;)</span><br><span class="line">    <span class="hljs-keyword">if</span> (success) &#123;</span><br><span class="line">      setFollow(!isFollow)</span><br><span class="line">    &#125;</span><br><span class="line">    setLoading(<span class="hljs-literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setFollow(isFollowing)</span><br><span class="line">  &#125;, [isFollowing])</span><br><span class="line">  <span class="hljs-keyword">return</span> &#123;</span><br><span class="line">    isFollow,</span><br><span class="line">    toggleSection,</span><br><span class="line">    operationLoading</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> useFollow</span><br></pre></td></tr></table></figure>
-
-<p>接着我们再来看一个平常在业务当中可能是会经常遇到的情况，那就是双向绑定，不过在这里我们会分别采用 <code>HOC</code>、<code>Render Props</code> 和 <code>Hook</code> 的三种实现方式，同时也可以对比一下它们几者之间的优缺点，下面我们就先从 <code>HOC</code> 的实现方式开始看起</p>
-<ul>
-<li><code>HOC</code></li>
-</ul>
-<p>首先我们定义了一个高阶组件 <code>HocInput</code> 和一个普通组件 <code>Input</code>，在返回的时候我们使用高阶组件 <code>HocInput()</code> 将 <code>Input</code> 包裹以后在进行返回</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> HocInput = <span class="hljs-function"><span class="hljs-params">WrapperComponent</span> =&gt;</span></span><br><span class="line">  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>&#123;</span><br><span class="line">    state = &#123;</span><br><span class="line">      value: <span class="hljs-keyword">this</span>.props.initialValue</span><br><span class="line">    &#125;</span><br><span class="line">    onChange = <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.setState(&#123; <span class="hljs-attr">value</span>: e.target.value &#125;)</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.props.onChange) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.props.onChange(e.target.value)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="hljs-keyword">const</span> newProps = &#123;</span><br><span class="line">        value: <span class="hljs-keyword">this</span>.state.value,</span><br><span class="line">        onChange: <span class="hljs-keyword">this</span>.onChange</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-xml"><span class="hljs-tag">&lt;<span class="hljs-name">WrapperComponent</span> &#123;<span class="hljs-attr">...newProps</span>&#125; /&gt;</span></span></span><br><span class="line"><span class="hljs-xml">    &#125;</span></span><br><span class="line"><span class="hljs-xml">  &#125;</span></span><br><span class="line"><span class="hljs-xml"></span></span><br><span class="line"><span class="hljs-xml">const Input = props =&gt; (</span></span><br><span class="line"><span class="hljs-xml">  <span class="hljs-tag">&lt;&gt;</span></span></span><br><span class="line"><span class="hljs-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>&#123;props.value&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span></span><br><span class="line">    &lt;input placeholder="input" &#123;...props&#125; /&gt;</span><br><span class="line">  &lt;/&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">export default HocInput(Input)</span><br></pre></td></tr></table></figure>
-
-<p>然后像下面这样使用既可</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;HocInput initialValue=<span class="hljs-string">"init"</span> onChange=&#123;val =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`HocInput`</span>, val) &#125; /&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>Render Props</code></li>
-</ul>
-<p>与 <code>HOC</code> 不同的是，我们这次在 <code>render()</code> 的时候返回的是 <code>this.props.children()</code>，<code>props</code> 接受两个参数，初始值 <code>initialValue</code> 以及 <code>onChange</code> 方法</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HocBind</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="hljs-keyword">super</span>(props)</span><br><span class="line">    <span class="hljs-keyword">this</span>.state = &#123;</span><br><span class="line">      value: props.initialValue</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  onChange = <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.setState(&#123; <span class="hljs-attr">value</span>: e.target.value &#125;)</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.props.onChange) &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.props.onChange(e.target.value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> (</span><br><span class="line">      &lt;&gt;</span><br><span class="line">        &#123;<span class="hljs-keyword">this</span>.props.children(&#123;</span><br><span class="line">          value: <span class="hljs-keyword">this</span>.state.value,</span><br><span class="line">          onChange: <span class="hljs-keyword">this</span>.onChange</span><br><span class="line">        &#125;)&#125;</span><br><span class="line">      &lt;<span class="hljs-regexp">/&gt;</span></span><br><span class="line"><span class="hljs-regexp">    )</span></span><br><span class="line"><span class="hljs-regexp">  &#125;</span></span><br><span class="line"><span class="hljs-regexp">&#125;</span></span><br><span class="line"><span class="hljs-regexp"></span></span><br><span class="line"><span class="hljs-regexp">export default HocBind</span></span><br></pre></td></tr></table></figure>
-
-<p>使用</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;HocBind initialValue=<span class="hljs-string">"init"</span> onChange=&#123;val =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`HocBind`</span>, val) &#125; &gt;</span><br><span class="line">  &#123;props =&gt; (<span class="hljs-xml"><span class="hljs-tag">&lt;&gt;</span></span></span><br><span class="line"><span class="hljs-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>&#123;props.value&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span></span><br><span class="line">    &lt;input placeholder="input" &#123;...props&#125; /&gt;</span><br><span class="line">  &lt;/&gt;)&#125;</span><br><span class="line"><span class="hljs-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">HocBind</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>Hook</code></li>
-</ul>
-<p>最后我们再来看看 <code>Hook</code> 的实现方式，我们定义了一个 <code>useBind</code> 方法，接受一个 <code>initialValue</code> 参数作为默认输入，使用的时候我们使用 <code>inputProps</code> 来接收调用 <code>useBind()</code> 以后的返回值，然后在使用的时候我们就可以直接用 <code>inputProps.value</code>，然后将剩余的 <code>props</code>（也就是 <code>onChange</code>）传递给 <code>input</code></p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useBind</span>(<span class="hljs-params">initialValue</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [value, setValue] = useState(initialValue || <span class="hljs-string">''</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> onChange = <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> &#123;</span><br><span class="line">    setValue(e.target.value)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> &#123; value, onChange &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">InputBind</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> inputProps = useBind(<span class="hljs-string">'init'</span>)</span><br><span class="line">  <span class="hljs-keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;p&gt;&#123;inputProps.value&#125;&lt;<span class="hljs-regexp">/p&gt;</span></span><br><span class="line"><span class="hljs-regexp">      &lt;input &#123;...inputProps&#125; /</span>&gt;</span><br><span class="line">    &lt;<span class="hljs-regexp">/div&gt;</span></span><br><span class="line"><span class="hljs-regexp">  )</span></span><br><span class="line"><span class="hljs-regexp">&#125;</span></span><br><span class="line"><span class="hljs-regexp"></span></span><br><span class="line"><span class="hljs-regexp">class App extends Component &#123;</span></span><br><span class="line"><span class="hljs-regexp">  render() &#123;</span></span><br><span class="line"><span class="hljs-regexp">    return &lt;InputBind /</span>&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App</span><br></pre></td></tr></table></figure>
-
-<p>最后我们再来看一个稍微复杂点的数据请求示例，即封装我们自己的请求数据的逻辑，也就是自定义的 <code>useFetch</code>，下面来看看第一个版本的实现</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useFetch</span>(<span class="hljs-params">url</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [data, setData] = useState([])</span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fetch(url)</span><br><span class="line">      .then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> response.json())</span><br><span class="line">      .then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> setData(data))</span><br><span class="line">  &#125;, [])</span><br><span class="line">  <span class="hljs-keyword">return</span> data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当然，这只是一个最基本的实现方式，如果你想自定义请求函数，又或者想自定义传入的参数，也是可行的，如下</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useFetch</span>(<span class="hljs-params">fetch, params</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [data, setData] = useState(&#123;&#125;)</span><br><span class="line">  <span class="hljs-keyword">const</span> fetchApi = useCallback(<span class="hljs-keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> fetch(params)</span><br><span class="line">    <span class="hljs-keyword">if</span> (res.code === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">      setData(res.data)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [fetch, params])</span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fetchApi()</span><br><span class="line">  &#125;, [fetchApi])</span><br><span class="line">  <span class="hljs-keyword">return</span> data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> getUrl = <span class="hljs-function"><span class="hljs-params">params</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> url = <span class="hljs-string">`url`</span> + objToString(params)</span><br><span class="line">  <span class="hljs-keyword">return</span> fetch(url).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> res.json())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getUserCode</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> data = useFetch(getUrl, &#123; <span class="hljs-attr">user</span>: <span class="hljs-string">'zhangsan'</span> &#125;)</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>&#123;data.userCode&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>看上去似乎没有什么问题，但是运行以后却会发现，无限循环，浏览器崩溃了，那么问题到底出在哪里呢？其实我们仔细排查后就会发现，问题是出在 <code>useCallback</code> 上，首先我们调用 <code>useFetch(getUrl, { user: &#39;zhangsan&#39; })</code> 的时候，<code>useFetch()</code> 的第二个参数 <code>params</code> 是被 <code>useCallback</code> 所依赖的，我们先来梳理一下执行流程，如下</p>
-<ol>
-<li><code>render</code></li>
-<li>执行 <code>useEffect</code></li>
-<li>调用 <code>useCallback</code> 方法</li>
-<li>更新 <code>data</code></li>
-<li><code>render</code></li>
-<li><code>useEffect</code></li>
-<li>调用 <code>useCallback</code> 方法判断依赖是否变化来确定是否跳过这次执行</li>
-<li>…</li>
-</ol>
-<p>看到问题所在了吗，因为对于 <code>useCallback</code> 来说 <code>params</code> 对象每次都是新的对象，所以这个渲染流程会一直执行，造成死循环，要解决上面的问题，我们可以使用我们之前提到过的 <code>useMemo</code>，<code>useMemo</code> 的作用就是帮助我们缓存 <code>params</code> 且返回一个之前记忆的值，当 <code>useMemo</code> 的依赖值没有变化的时候，记忆的值就是不变的，所以 <code>useCallback</code> 会跳过此次执行</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> params = useMemo(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (&#123; <span class="hljs-attr">user</span>: <span class="hljs-string">'zhangsan'</span> &#125;), [])</span><br><span class="line"><span class="hljs-keyword">const</span> data = useFetch(getUrl, params)</span><br></pre></td></tr></table></figure>
-
-<p>虽然我们的问题解决了，但是可以发现，我们每次在使用 <code>useFetch</code> 的时候都需要先使用 <code>useMemo</code> 将 <code>params</code> 包裹一遍，十分繁琐，那么有没有更好的解决办法呢？方法肯定是有的，在这种情况下我们就可以利用 <code>useState</code> 来帮助我们缓存 <code>params</code>，当它没有变化的时候，<code>useCallback</code> 和 <code>useEffect</code> 都会认为它是不变的，所以会跳过执行回调</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useFetch</span>(<span class="hljs-params">fetch, params</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [data, setData] = useState(&#123;&#125;)</span><br><span class="line">  <span class="hljs-keyword">const</span> [newParams] = useState(params)</span><br><span class="line">  <span class="hljs-keyword">const</span> fetchApi = useCallback(<span class="hljs-keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> fetch(newParams)</span><br><span class="line">    <span class="hljs-keyword">if</span> (res.code === <span class="hljs-number">1000</span>) &#123;</span><br><span class="line">      setData(res.data)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [fetch, newParams])</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fetchApi()</span><br><span class="line">  &#125;, [fetchApi])</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// USE</span></span><br><span class="line"><span class="hljs-keyword">const</span> data = useFetch(getUrl, &#123; <span class="hljs-attr">user</span>: <span class="hljs-string">'zhangsan'</span> &#125;)</span><br></pre></td></tr></table></figure>
-
-<p>任务虽然完成了，但是看上去显然不够通用，比如我们需要更新参数，又或者在不改变参数的情况下，手动点击刷新页面按钮等，所以最后我们再来调整一下，以便让其变得更为通用一些，最终版本代码如下</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useFetch</span>(<span class="hljs-params">fetch, params, visible = true</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> [data, setData] = useState(&#123;&#125;)</span><br><span class="line">  <span class="hljs-keyword">const</span> [loading, setLoading] = useState(<span class="hljs-literal">false</span>)</span><br><span class="line">  <span class="hljs-keyword">const</span> [newParams, setNewParams] = useState(params)</span><br><span class="line">  <span class="hljs-keyword">const</span> fetchApi = useCallback(<span class="hljs-keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (visible) &#123;</span><br><span class="line">      setLoading(<span class="hljs-literal">true</span>)</span><br><span class="line">      <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> fetch(newParams)</span><br><span class="line">      <span class="hljs-keyword">if</span> (res.code === <span class="hljs-number">1000</span>) &#123;</span><br><span class="line">        setData(res.data)</span><br><span class="line">      &#125;</span><br><span class="line">      setLoading(<span class="hljs-literal">false</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [fetch, newParams, visible])</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fetchApi()</span><br><span class="line">  &#125;, [fetchApi])</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">const</span> doFetch = useCallback(<span class="hljs-function"><span class="hljs-params">rest</span> =&gt;</span> &#123;</span><br><span class="line">    setNewParams(rest)</span><br><span class="line">  &#125;, [])</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">const</span> reFetch = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setNewParams(<span class="hljs-built_in">Object</span>.assign(&#123;&#125;, newParams))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">return</span> &#123; loading, data, doFetch, reFetch &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>关于 <code>useCallback</code> 我们多说一句，一般可以只在以下情况使用 <code>useCallback</code>，也就是避免重复执行</p>
-<ul>
-<li>需要同一个函数（如 <code>timer</code>）</li>
-<li>缓存大开销的函数（如 <code>fetch</code>）</li>
-</ul>
 <h2 id="Mixin-Render-Props-HOC-Hook-的优缺点"><a href="#Mixin-Render-Props-HOC-Hook-的优缺点" class="headerlink" title="Mixin/Render Props/HOC/Hook 的优缺点"></a>Mixin/Render Props/HOC/Hook 的优缺点</h2><p>我们在之前的内容当中介绍过了 <code>Mixin/Render Props/HOC/Hook</code> 的一些用法和需要注意的地方，所以在本小节当中我们就来简单的汇总一下，看看它们几者之间的优缺点</p>
 <ul>
 <li><code>Mixin</code> 的缺陷<ul>
@@ -744,7 +671,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        151
+                        153
                     </p>
                 </div>
             </div>
@@ -850,60 +777,40 @@
         <span class="has-mr-6">9</span>
         <span>useCallback()</span>
         </a></li><li>
-        <a class="is-flex" href="#自定义-Hook">
-        <span class="has-mr-6">10</span>
-        <span>自定义 Hook</span>
-        </a><ul class="menu-list"><ul class="menu-list"><li>
-        <a class="is-flex" href="#Util">
-        <span class="has-mr-6">10.1.1</span>
-        <span>Util</span>
-        </a></li><li>
-        <a class="is-flex" href="#API">
-        <span class="has-mr-6">10.1.2</span>
-        <span>API</span>
-        </a></li><li>
-        <a class="is-flex" href="#UI">
-        <span class="has-mr-6">10.1.3</span>
-        <span>UI</span>
-        </a></li><li>
-        <a class="is-flex" href="#Logic">
-        <span class="has-mr-6">10.1.4</span>
-        <span>Logic</span>
-        </a></li></ul></ul></li><li>
         <a class="is-flex" href="#Mixin-Render-Props-HOC-Hook-的优缺点">
-        <span class="has-mr-6">11</span>
+        <span class="has-mr-6">10</span>
         <span>Mixin/Render Props/HOC/Hook 的优缺点</span>
         </a></li><li>
         <a class="is-flex" href="#Hook-的本质">
-        <span class="has-mr-6">12</span>
+        <span class="has-mr-6">11</span>
         <span>Hook 的本质</span>
         </a></li><li>
         <a class="is-flex" href="#深入-Hook-的原理">
-        <span class="has-mr-6">13</span>
+        <span class="has-mr-6">12</span>
         <span>深入 Hook 的原理</span>
         </a><ul class="menu-list"><ul class="menu-list"><li>
         <a class="is-flex" href="#Dispatcher">
-        <span class="has-mr-6">13.1.1</span>
+        <span class="has-mr-6">12.1.1</span>
         <span>Dispatcher</span>
         </a></li><li>
         <a class="is-flex" href="#Hook-队列">
-        <span class="has-mr-6">13.1.2</span>
+        <span class="has-mr-6">12.1.2</span>
         <span>Hook 队列</span>
         </a></li><li>
         <a class="is-flex" href="#Hook-队列的简单实现">
-        <span class="has-mr-6">13.1.3</span>
+        <span class="has-mr-6">12.1.3</span>
         <span>Hook 队列的简单实现</span>
         </a></li></ul><li>
         <a class="is-flex" href="#State-Hook">
-        <span class="has-mr-6">13.2</span>
+        <span class="has-mr-6">12.2</span>
         <span>State Hook</span>
         </a></li><li>
         <a class="is-flex" href="#Effect-Hook">
-        <span class="has-mr-6">13.3</span>
+        <span class="has-mr-6">12.3</span>
         <span>Effect Hook</span>
         </a></li></ul></li><li>
         <a class="is-flex" href="#参考">
-        <span class="has-mr-6">14</span>
+        <span class="has-mr-6">13</span>
         <span>参考</span>
         </a></li></ul>
         </div>
@@ -977,7 +884,7 @@
                 <span class="level-item">React</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">18</span>
+                <span class="level-item tag">20</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/Vue/">
@@ -1015,6 +922,44 @@
                 最新文章
             </a>
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -1073,44 +1018,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2021/01/01/JavaScript/57/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/57.webp" alt="深入 TypeScript">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-31T16:00:00.000Z">2021-01-01</time></div>
-                    <a href="/2021/01/01/JavaScript/57/" class="has-link-black-ter is-size-6">深入 TypeScript</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/12/26/JavaScript/56/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/56.webp" alt="重温 TypeScript">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T16:00:00.000Z">2020-12-26</time></div>
-                    <a href="/2020/12/26/JavaScript/56/" class="has-link-black-ter is-size-6">重温 TypeScript</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1124,12 +1031,23 @@
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2021/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1731,7 +1649,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/React/">
                         <span class="tag">React</span>
-                        <span class="tag is-grey">18</span>
+                        <span class="tag is-grey">20</span>
                     </a>
                 </div>
                 

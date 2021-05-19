@@ -16,7 +16,7 @@
 <meta property="og:description" content="算是一些手写 API，常用方法的一些汇总，反正就是面试可能涉及到的一些手写功能可能都会有所涉及，不仅仅只是为了面试所用，也算是在这里做下汇总记录，方便以后可以快速查询（可以直接参考左边目录）">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/45.webp">
-<meta property="og:updated_time" content="2021-03-09T08:29:33.717Z">
+<meta property="og:updated_time" content="2021-03-31T14:18:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript 中一些常用方法的实现">
 <meta name="twitter:description" content="算是一些手写 API，常用方法的一些汇总，反正就是面试可能涉及到的一些手写功能可能都会有所涉及，不仅仅只是为了面试所用，也算是在这里做下汇总记录，方便以后可以快速查询（可以直接参考左边目录）">
@@ -161,7 +161,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    2 小时 读完 (大约 17696 个字)
+                    2 小时 读完 (大约 17698 个字)
                 </span>
                 
                 
@@ -236,7 +236,7 @@
 <p>我们可以来测试一下</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Foo</span>(<span class="hljs-params">name</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">this</span>.name = name</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-keyword">const</span> newObj = myNew(Foo, <span class="hljs-string">'zhangsan'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(newObj)                           <span class="hljs-comment">// Foo &#123;name: 'zhangsan'&#125;</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(newObj <span class="hljs-keyword">instanceof</span> Foo)            <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h4><p>具体实现过程可以参考 <a href="http://localhost:4000/2020/11/15/JavaScript/55/" target="_blank" rel="noopener">JavaScript 中 Promise 的实现</a>，这里只展示最终代码</p>
+<h4 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h4><p>具体实现过程可以参考 <a href="https://heptaluan.github.io/2020/11/15/JavaScript/55/" target="_blank" rel="noopener">JavaScript 中 Promise 的实现</a>，这里只展示最终代码</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> isFunction = <span class="hljs-function"><span class="hljs-params">variable</span> =&gt;</span> <span class="hljs-keyword">typeof</span> variable === <span class="hljs-string">'function'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 定义 Promise 的三种状态常量</span></span><br><span class="line"><span class="hljs-keyword">const</span> PENDING = <span class="hljs-string">'PENDING'</span></span><br><span class="line"><span class="hljs-keyword">const</span> FULFILLED = <span class="hljs-string">'FULFILLED'</span></span><br><span class="line"><span class="hljs-keyword">const</span> REJECTED = <span class="hljs-string">'REJECTED'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyPromise</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">constructor</span>(handle) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (!isFunction(handle)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'MyPromise must accept a function as a parameter'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">this</span>._status = PENDING      <span class="hljs-comment">// 添加状态</span></span><br><span class="line">    <span class="hljs-keyword">this</span>._value = <span class="hljs-literal">undefined</span>     <span class="hljs-comment">// 添加状态</span></span><br><span class="line">    <span class="hljs-keyword">this</span>._fulfilledQueues = []  <span class="hljs-comment">// 添加成功回调函数队列</span></span><br><span class="line">    <span class="hljs-keyword">this</span>._rejectedQueues = []   <span class="hljs-comment">// 添加失败回调函数队列</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      handle(<span class="hljs-keyword">this</span>._resolve.bind(<span class="hljs-keyword">this</span>), <span class="hljs-keyword">this</span>._reject.bind(<span class="hljs-keyword">this</span>))</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> (err) &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>._reject(err)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _resolve(val) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> run = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._status !== PENDING) <span class="hljs-keyword">return</span></span><br><span class="line">      <span class="hljs-comment">// 依次执行成功队列中的函数，并清空队列</span></span><br><span class="line">      <span class="hljs-keyword">const</span> runFulfilled = <span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">let</span> cb</span><br><span class="line">        <span class="hljs-keyword">while</span> (cb = <span class="hljs-keyword">this</span>._fulfilledQueues.shift()) &#123;</span><br><span class="line">          cb(value)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-comment">// 依次执行失败队列中的函数，并清空队列</span></span><br><span class="line">      <span class="hljs-keyword">const</span> runRejected = <span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">let</span> cb</span><br><span class="line">        <span class="hljs-keyword">while</span> (cb = <span class="hljs-keyword">this</span>._rejectedQueues.shift()) &#123;</span><br><span class="line">          cb(error)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="hljs-comment">// 如果 resolve 的参数为 Promise 对象，则必须等待该 Promise 对象状态改变后</span></span><br><span class="line">      <span class="hljs-comment">// 当前 Promsie 的状态才会改变，且状态取决于参数 Promsie 对象的状态</span></span><br><span class="line">      <span class="hljs-keyword">if</span> (val <span class="hljs-keyword">instanceof</span> MyPromise) &#123;</span><br><span class="line">        val.then(<span class="hljs-function"><span class="hljs-params">value</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="hljs-keyword">this</span>._value = value</span><br><span class="line">          <span class="hljs-keyword">this</span>._status = FULFILLED</span><br><span class="line">          runFulfilled(value)</span><br><span class="line">        &#125;, err =&gt; &#123;</span><br><span class="line">          <span class="hljs-keyword">this</span>._value = err</span><br><span class="line">          <span class="hljs-keyword">this</span>._status = REJECTED</span><br><span class="line">          runRejected(err)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>._value = val</span><br><span class="line">        <span class="hljs-keyword">this</span>._status = FULFILLED</span><br><span class="line">        runFulfilled(val)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 为了支持同步的 Promise，这里采用异步调用</span></span><br><span class="line">    setTimeout(run, <span class="hljs-number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _reject(err) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._status !== PENDING) <span class="hljs-keyword">return</span></span><br><span class="line">    <span class="hljs-comment">// 依次执行失败队列中的函数，并清空队列</span></span><br><span class="line">    <span class="hljs-keyword">const</span> run = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>._status = REJECTED</span><br><span class="line">      <span class="hljs-keyword">this</span>._value = err</span><br><span class="line">      <span class="hljs-keyword">let</span> cb</span><br><span class="line">      <span class="hljs-keyword">while</span> (cb = <span class="hljs-keyword">this</span>._rejectedQueues.shift()) &#123;</span><br><span class="line">        cb(err)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-comment">// 为了支持同步的 Promise，这里采用异步调用</span></span><br><span class="line">    setTimeout(run, <span class="hljs-number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  then(onFulfilled, onRejected) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> &#123; _value, _status &#125; = <span class="hljs-keyword">this</span></span><br><span class="line">    <span class="hljs-comment">// 返回一个新的 Promise 对象</span></span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> MyPromise(<span class="hljs-function">(<span class="hljs-params">onFulfilledNext, onRejectedNext</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-comment">// 封装一个成功时执行的函数</span></span><br><span class="line">      <span class="hljs-keyword">let</span> fulfilled = <span class="hljs-function"><span class="hljs-params">value</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">          <span class="hljs-keyword">if</span> (!isFunction(onFulfilled)) &#123;</span><br><span class="line">            onFulfilledNext(value)</span><br><span class="line">          &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">let</span> res = onFulfilled(value)</span><br><span class="line">            <span class="hljs-keyword">if</span> (res <span class="hljs-keyword">instanceof</span> MyPromise) &#123;</span><br><span class="line">              <span class="hljs-comment">// 如果当前回调函数返回 MyPromise 对象，必须等待其状态改变后在执行下一个回调</span></span><br><span class="line">              res.then(onFulfilledNext, onRejectedNext)</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">              <span class="hljs-comment">// 否则会将返回结果直接作为参数，传入下一个 then 的回调函数，并立即执行下一个 then 的回调函数</span></span><br><span class="line">              onFulfilledNext(res)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (err) &#123;</span><br><span class="line">          <span class="hljs-comment">// 如果函数执行出错，新的 Promise 对象的状态为失败</span></span><br><span class="line">          onRejectedNext(err)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-comment">// 封装一个失败时执行的函数</span></span><br><span class="line">      <span class="hljs-keyword">let</span> rejected = <span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">          <span class="hljs-keyword">if</span> (!isFunction(onRejected)) &#123;</span><br><span class="line">            onRejectedNext(error)</span><br><span class="line">          &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">let</span> res = onRejected(error)</span><br><span class="line">            <span class="hljs-keyword">if</span> (res <span class="hljs-keyword">instanceof</span> MyPromise) &#123;</span><br><span class="line">              <span class="hljs-comment">// 如果当前回调函数返回 MyPromise 对象，必须等待其状态改变后在执行下一个回调</span></span><br><span class="line">              res.then(onFulfilledNext, onRejectedNext)</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">              <span class="hljs-comment">// 否则会将返回结果直接作为参数，传入下一个 then 的回调函数，并立即执行下一个 then 的回调函数</span></span><br><span class="line">              onFulfilledNext(res)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (err) &#123;</span><br><span class="line">          <span class="hljs-comment">// 如果函数执行出错，新的 Promise 对象的状态为失败</span></span><br><span class="line">          onRejectedNext(err)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">switch</span> (_status) &#123;</span><br><span class="line">        <span class="hljs-comment">// 当状态为 pending 时，将 then 方法回调函数加入执行队列等待执行</span></span><br><span class="line">        <span class="hljs-keyword">case</span> PENDING:</span><br><span class="line">          <span class="hljs-keyword">this</span>._fulfilledQueues.push(fulfilled)</span><br><span class="line">          <span class="hljs-keyword">this</span>._rejectedQueues.push(rejected)</span><br><span class="line">          <span class="hljs-keyword">break</span></span><br><span class="line">        <span class="hljs-comment">// 当状态已经改变时，立即执行对应的回调函数</span></span><br><span class="line">        <span class="hljs-keyword">case</span> FULFILLED:</span><br><span class="line">          fulfilled(_value)</span><br><span class="line">          <span class="hljs-keyword">break</span></span><br><span class="line">        <span class="hljs-keyword">case</span> REJECTED:</span><br><span class="line">          rejected(_value)</span><br><span class="line">          <span class="hljs-keyword">break</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">catch</span>(onRejected) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.then(<span class="hljs-literal">undefined</span>, onRejected)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">static</span> resolve(value) &#123;</span><br><span class="line">    <span class="hljs-comment">// 如果参数是 MyPromise 实例，直接返回这个实例</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> MyPromise) <span class="hljs-keyword">return</span> value</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> MyPromise(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> resolve(value))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">static</span> reject(value) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> MyPromise(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> reject(value))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">static</span> all(list) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> MyPromise(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-comment">// 返回值的集合</span></span><br><span class="line">      <span class="hljs-keyword">let</span> values = []</span><br><span class="line">      <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span></span><br><span class="line">      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> [i, p] <span class="hljs-keyword">of</span> list.entries()) &#123;</span><br><span class="line">        <span class="hljs-comment">// 数组参数如果不是 MyPromise 实例，先调用 MyPromise.resolve</span></span><br><span class="line">        <span class="hljs-keyword">this</span>.resolve(p).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> &#123;</span><br><span class="line">          values[i] = res</span><br><span class="line">          count++</span><br><span class="line">          <span class="hljs-comment">// 所有状态都变成 fulfilled 时返回的 MyPromise 状态就变成 fulfilled</span></span><br><span class="line">          <span class="hljs-keyword">if</span> (count === list.length) resolve(values)</span><br><span class="line">        &#125;, err =&gt; &#123;</span><br><span class="line">          <span class="hljs-comment">// 有一个被 rejected 时返回的 MyPromise 状态就变成 rejected</span></span><br><span class="line">          reject(err)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">static</span> race(list) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> MyPromise(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> p <span class="hljs-keyword">of</span> list) &#123;</span><br><span class="line">        <span class="hljs-comment">// 只要有一个实例率先改变状态，新的 MyPromise 的状态就跟着改变</span></span><br><span class="line">        <span class="hljs-keyword">this</span>.resolve(p).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> &#123;</span><br><span class="line">          resolve(res)</span><br><span class="line">        &#125;, err =&gt; &#123;</span><br><span class="line">          reject(err)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">finally</span>(cb) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.then(</span><br><span class="line">      value =&gt; MyPromise.resolve(cb()).then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> value),</span><br><span class="line">      reason =&gt; MyPromise.resolve(cb()).then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123; <span class="hljs-keyword">throw</span> reason &#125;)</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="Object-create"><a href="#Object-create" class="headerlink" title="Object.create()"></a>Object.create()</h4><p>关于 <code>Object.create()</code> 的详细用法可以参考 <a href="https://heptaluan.github.io/2017/03/03/JavaScript/07/" target="_blank" rel="noopener">Object.create()</a>，在了解过它的具体原理后，我们不难可以手动的来进行实现</p>
@@ -856,7 +856,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        151
+                        153
                     </p>
                 </div>
             </div>
@@ -1317,7 +1317,7 @@
                 <span class="level-item">React</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">18</span>
+                <span class="level-item tag">20</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/Vue/">
@@ -1355,6 +1355,44 @@
                 最新文章
             </a>
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/04/18/React/21/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
+                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/03/28/React/20/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
+                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -1413,44 +1451,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2021/01/01/JavaScript/57/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/57.webp" alt="深入 TypeScript">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-31T16:00:00.000Z">2021-01-01</time></div>
-                    <a href="/2021/01/01/JavaScript/57/" class="has-link-black-ter is-size-6">深入 TypeScript</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/12/26/JavaScript/56/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/56.webp" alt="重温 TypeScript">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T16:00:00.000Z">2020-12-26</time></div>
-                    <a href="/2020/12/26/JavaScript/56/" class="has-link-black-ter is-size-6">重温 TypeScript</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1464,12 +1464,23 @@
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2021/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -2071,7 +2082,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/React/">
                         <span class="tag">React</span>
-                        <span class="tag is-grey">18</span>
+                        <span class="tag is-grey">20</span>
                     </a>
                 </div>
                 
