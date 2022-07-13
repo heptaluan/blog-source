@@ -2,7 +2,7 @@
 title: 彩蛋页
 date: 2021-03-03
 toc: true
-thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp
+thumbnail: https://raw.githubusercontent.com/heptaluan/blog-backups/master/cdn/cover/06.webp
 ---
 
 算是备忘页面吧，主要记录一些常用的操作或是小贴士

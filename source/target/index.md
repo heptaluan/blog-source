@@ -2,7 +2,7 @@
 title: 前端知识体系整理
 date: 2019-12-22
 toc: true
-thumbnail: https://gitee.com/heptaluan/backups/raw/master/cdn/cover/23.webp
+thumbnail: https://raw.githubusercontent.com/heptaluan/blog-backups/master/cdn/cover/23.webp
 ---
 
 > 最后更新于 `2020-10-04`
