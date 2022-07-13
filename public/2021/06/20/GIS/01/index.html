@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Leaflet 入门 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="因为在接下来的项目当中会用到 Leaflet 相关内容，所以就打算从头开始系统的学习一下 Leaflet，本文的作用主要是简单的梳理一下在使用 Leaflet 的过程当中遇到的一些问题，主要参考的是 官网 当中提供的一些示例，下面我们就从最为基本的入门知识开始看起  文中所涉及到的所有 Leaflet 示例均可在 leaflet-example 当中找到">
+<meta name="keywords" content="GIS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leaflet 入门">
+<meta property="og:url" content="http://yoursite.com/2021/06/20/GIS/01/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="因为在接下来的项目当中会用到 Leaflet 相关内容，所以就打算从头开始系统的学习一下 Leaflet，本文的作用主要是简单的梳理一下在使用 Leaflet 的过程当中遇到的一些问题，主要参考的是 官网 当中提供的一些示例，下面我们就从最为基本的入门知识开始看起  文中所涉及到的所有 Leaflet 示例均可在 leaflet-example 当中找到">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/01.webp">
+<meta property="og:updated_time" content="2021-08-18T01:49:26.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Leaflet 入门">
+<meta name="twitter:description" content="因为在接下来的项目当中会用到 Leaflet 相关内容，所以就打算从头开始系统的学习一下 Leaflet，本文的作用主要是简单的梳理一下在使用 Leaflet 的过程当中遇到的一些问题，主要参考的是 官网 当中提供的一些示例，下面我们就从最为基本的入门知识开始看起  文中所涉及到的所有 Leaflet 示例均可在 leaflet-example 当中找到">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/01.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="Leaflet 入门" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/01.webp" alt="Leaflet 入门">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2021-06-20</div>
+                <!-- <time class="level-item has-text-grey" datetime="2021-06-19T16:00:00.000Z">2021-06-20</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    21 分钟 读完 (大约 3201 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Leaflet 入门
+            
+        </h1>
+        <div class="content">
+            <p>因为在接下来的项目当中会用到 <code>Leaflet</code> 相关内容，所以就打算从头开始系统的学习一下 <code>Leaflet</code>，本文的作用主要是简单的梳理一下在使用 <code>Leaflet</code> 的过程当中遇到的一些问题，主要参考的是 <a href="https://leafletjs.com/" target="_blank" rel="noopener">官网</a> 当中提供的一些示例，下面我们就从最为基本的入门知识开始看起</p>
+<blockquote>
+<p>文中所涉及到的所有 <code>Leaflet</code> 示例均可在 <a href="https://github.com/heptaluan/leaflet-example" target="_blank" rel="noopener">leaflet-example</a> 当中找到</p>
+</blockquote>
+<a id="more"></a>
+
+
+<h2 id="什么是-Leaflet"><a href="#什么是-Leaflet" class="headerlink" title="什么是 Leaflet"></a>什么是 Leaflet</h2><p>其实简单来说， <code>Leaflet</code> 是一个开放源代码库，通过它我们可以部署简单，交互式，轻量级的 <code>Web</code> 地图，主要有以下三个特点</p>
+<ul>
+<li>允许使用诸如 <code>Tile</code> 图层，<code>WMS</code>，标记，弹出窗口，<code>Vector</code> 图层（折线，多边形，圆形等），图像叠加层和 <code>GeoJSON</code> 等图层</li>
+<li>可以通过拖动地图，缩放（通过双击或滚轮滚动），使用键盘，使用事件处理以及拖动标记来与 <code>Leaflet</code> 地图进行交互</li>
+<li>支持台式机上的 <code>Chrome</code>，<code>Firefox</code>，<code>Safari 5+</code>，<code>Opera 12+</code>，<code>IE 7-11</code> 等浏览器，以及移动设备上的 <code>Safari</code>，<code>Android</code>，<code>Chrome</code>，<code>Firefox</code> 等浏览器</li>
+</ul>
+<h2 id="加载地图"><a href="#加载地图" class="headerlink" title="加载地图"></a>加载地图</h2><p>下面我们就来看看如何在网页上加载地图，首先我们需要一个容器以及加载 <code>Leaflet</code> 对应的 <code>JavaScript</code> 和 <code>CSS</code> 脚本，如下</p>
+<figure class="highlight html hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"map"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"width: 900px height: 580px"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这一步我们就不过多解释了，接下来我们需要配置地图选项，<code>Leaflet</code> 提供了几个选项，例如类型 <code>Control</code>，<code>Interaction</code>，<code>Map State</code>，<code>Animation</code> 等，我们可以根据这些值来设定我们的自定义地图，首先我们需要创建一个 <code>mapOptions</code> 对象，并设置选项 <code>center</code> 和 <code>zoom</code> 的值，其中</p>
+<ul>
+<li><code>center</code> 表示我们需要传递一个 <code>LatLng</code> 对象，该对象指定我们要在地图上居中的位置，它的值是一个包含指定经纬度的数组</li>
+<li><code>zoom</code> 表示我们需要传递一个表示地图缩放级别的整数</li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> mapOptions = &#123;</span><br><span class="line">  center: [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  zoom: <span class="hljs-number">10</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了 <code>mapOptions</code> 以后，下面我们就需要建立地图物件，这里我们可以通过实例化 <code>Leaflet</code> 为我们提供的 <code>Map</code> 类来创建 <code>map</code> 对象，在实例化时，我们需要传递两个参数</p>
+<ul>
+<li>首先就是我们的地图容器</li>
+<li>其次就是我们上面所提到的 <code>mapOptions</code></li>
+</ul>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> L.map(<span class="hljs-string">'map'</span>, mapOptions)</span><br></pre></td></tr></table></figure>
+
+<p>然后我们还需要创建图层对象，我们可以通过实例化 <code>TileLayer</code> 类来加载和显示各种类型的地图（平铺图层），在实例化时我们需要传递一个 <code>URL</code> 模板，它会从服务提供商处请求所需的平铺图层（地图），在这里，我们使用了 <code>openstreetmap</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> layer = <span class="hljs-keyword">new</span> L.TileLayer(<span class="hljs-string">'http://&#123;s&#125;.tile.openstreetmap.org/&#123;z&#125;/&#123;x&#125;/&#123;y&#125;.png'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>当然我们也可以加载各种服务提供商的图层，例如 <code>Open Topo</code>，<code>Thunder forest</code>，<code>Hydda，ESRI</code>，<code>Open weather</code>，<code>NASA GIBS</code> 等，我们只需要在创建 <code>TileLayer</code> 时传递各自的 <code>URL</code> 即可，下面是 <code>Openstreetmap</code> 提供的图层的 <code>URL</code>，在使用过程当中可以自行选择</p>
+<table>
+<thead>
+<tr>
+<th>Map Type</th>
+<th>URL and Output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Mapnik</code></td>
+<td><code>http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</code></td>
+</tr>
+<tr>
+<td><code>Black And White</code></td>
+<td><code>http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png</code></td>
+</tr>
+<tr>
+<td><code>DE</code></td>
+<td><code>http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/ {y}.png</code></td>
+</tr>
+<tr>
+<td><code>France</code></td>
+<td><code>http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png</code></td>
+</tr>
+<tr>
+<td><code>Hot</code></td>
+<td><code>http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png</code></td>
+</tr>
+<tr>
+<td><code>BZH</code></td>
+<td><code>http://tile.openstreetmap.bzh/br/{z}/{x}/{y}.png</code></td>
+</tr>
+</tbody></table>
+<p>最后一步就是在地图上添加图层，我们可以使用 <code>addlayer()</code> 方法将上一步中创建的图层添加到地图对象，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map.addLayer(layer)</span><br></pre></td></tr></table></figure>
+
+<p>我们将上面所涉及到的内容简单梳理一下，其实 <code>Leaflet</code> 的加载原理很简单，就是通过 <code>new L.TileLayer(url, options)</code> 生成一个图层实例，然后将这个图层添加到地图上面就可以了，汇总代码如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 配置地图选项</span></span><br><span class="line"><span class="hljs-keyword">var</span> mapOptions = &#123;</span><br><span class="line">  center: [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  zoom: <span class="hljs-number">10</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建地图对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> L.map(<span class="hljs-string">'map'</span>, mapOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建图层对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> layer = <span class="hljs-keyword">new</span> L.TileLayer(<span class="hljs-string">'http://&#123;s&#125;.tile.openstreetmap.org/&#123;z&#125;/&#123;x&#125;/&#123;y&#125;.png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 在地图上添加图层</span></span><br><span class="line">map.addLayer(layer)</span><br></pre></td></tr></table></figure>
+
+<p>以上代码在页面上会生成以下输出</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-01.png" alt></p>
+<h2 id="标记"><a href="#标记" class="headerlink" title="标记"></a>标记</h2><p>下面我们来看看如何在地图上添加标记以及如何自定义，动画化和删除它们，我们先从添加标记开始看起，我们在上面已经介绍了如何加载地图，在此基础之上，我们只需要通过传递表示要标记位置的 <code>latlng</code> 对象来实例化 <code>Marker</code> 类即可，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> L.Marker([<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>])</span><br></pre></td></tr></table></figure>
+
+<p>然后使用 <code>Marker</code> 类的 <code>addTo()</code> 方法将在先前步骤中创建的标记对象添加到地图当中即可，简单汇总一下如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 配置地图选项</span></span><br><span class="line"><span class="hljs-keyword">var</span> mapOptions = &#123;</span><br><span class="line">  center: [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  zoom: <span class="hljs-number">10</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建地图对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> L.map(<span class="hljs-string">'map'</span>, mapOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建图层对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> layer = <span class="hljs-keyword">new</span> L.TileLayer(<span class="hljs-string">'http://&#123;s&#125;.tile.openstreetmap.org/&#123;z&#125;/&#123;x&#125;/&#123;y&#125;.png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 在地图上添加图层</span></span><br><span class="line">map.addLayer(layer)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 添加标记对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> marker = L.marker([<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>])</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将创建的标记对象添加到地图当中</span></span><br><span class="line">marker.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果如下所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-02.png" alt></p>
+<p>不过光有标记还不行，通常我们会给标记点加上交互事件，比如点击标记后弹出一个提示窗口等，这个也很容易实现，我们只需要使用 <code>bindPopup()</code> 将弹出窗口附加到标记上即可，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 配置地图选项</span></span><br><span class="line"><span class="hljs-keyword">var</span> mapOptions = &#123;</span><br><span class="line">  center: [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  zoom: <span class="hljs-number">10</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建地图对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> L.map(<span class="hljs-string">'map'</span>, mapOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建图层对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> layer = <span class="hljs-keyword">new</span> L.TileLayer(<span class="hljs-string">'http://&#123;s&#125;.tile.openstreetmap.org/&#123;z&#125;/&#123;x&#125;/&#123;y&#125;.png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 在地图上添加图层</span></span><br><span class="line">map.addLayer(layer)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 添加标记对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> marker = L.marker([<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>])</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将弹出窗口附加到标记对象上</span></span><br><span class="line">marker.bindPopup(<span class="hljs-string">'Hi Welcome to Tutorialspoint'</span>).openPopup()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将创建的标记对象添加到地图当中</span></span><br><span class="line">marker.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果如下所示</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-03.png" alt></p>
+<p>当然，我们在创建标记时，除了 <code>latlang</code> 对象外，我们还可以传递标记选项变量，通过该选项我们可以配置标记的各种属性，例如图标，可拖动，<code>alt</code> 等，详细可以参考官方文档 <a href="https://leafletjs.com/reference-1.7.1.html#marker-option" target="_blank" rel="noopener">Marker Options</a>，这里我们只用几个属性来进行测试一下</p>
+<p>和之前的 <code>mapOptions</code> 一样，我们可以创建一个 <code>markerOptions</code> 对象，并设置 <code>clickable</code> 和 <code>draggable</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> markerOptions = &#123;</span><br><span class="line">  title: <span class="hljs-string">'MyLocation'</span>,</span><br><span class="line">  clickable: <span class="hljs-literal">true</span>,</span><br><span class="line">  draggable: <span class="hljs-literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后稍微调整一下之前实例化 <code>Marker</code> 类的过程，不在单单传入 <code>latlng</code> 对象，而是连同 <code>options</code> 对象一起传入</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> marker = L.marker([<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>], markerOptions)</span><br></pre></td></tr></table></figure>
+
+<p>还是老规矩，我们简单的汇总一下，看看效果，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 配置地图选项</span></span><br><span class="line"><span class="hljs-keyword">var</span> mapOptions = &#123;</span><br><span class="line">  center: [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  zoom: <span class="hljs-number">10</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建地图对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> L.map(<span class="hljs-string">'map'</span>, mapOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建图层对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> layer = <span class="hljs-keyword">new</span> L.TileLayer(<span class="hljs-string">'http://&#123;s&#125;.tile.openstreetmap.org/&#123;z&#125;/&#123;x&#125;/&#123;y&#125;.png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 在地图上添加图层</span></span><br><span class="line">map.addLayer(layer)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建标记配置</span></span><br><span class="line"><span class="hljs-keyword">var</span> markerOptions = &#123;</span><br><span class="line">  title: <span class="hljs-string">'MyLocation'</span>,</span><br><span class="line">  clickable: <span class="hljs-literal">true</span>,</span><br><span class="line">  draggable: <span class="hljs-literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 添加标记对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> marker = L.marker([<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>], markerOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将弹出窗口附加到标记对象上</span></span><br><span class="line">marker.bindPopup(<span class="hljs-string">'Hi Welcome to Tutorialspoint'</span>).openPopup()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将创建的标记对象添加到地图当中</span></span><br><span class="line">marker.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果如下所示，操作后可以发现，现在的标记是可以拖动的，并且当鼠标悬停时会显示 <code>MyLocation</code> 的标识</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-04.png" alt></p>
+<p>此外我们还可以单独添加弹出框，只需使用 <code>Leaflet</code> 的 <code>popup</code> 方法即可创建了一个 <code>Popup</code> 实例，并使用 <code>setLatLng</code> 设置 <code>Popup</code> 的位置，然后使用 <code>setContent</code> 设置 <code>Popup</code> 的提示内容，最后使用 <code>addTo</code> 或者 <code>openOn</code> 方法将新建的 <code>Popup</code> 实例添加到地图上就可以了</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> popup = L.popup()</span><br><span class="line">  .setLatLng([<span class="hljs-number">17.438139</span>, <span class="hljs-number">78.395830</span>])</span><br><span class="line">  .setContent(<span class="hljs-string">'一个 Popup 图层'</span>)</span><br><span class="line">  <span class="hljs-comment">// .openOn(map)</span></span><br><span class="line">  .addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们需要注意的就是 <code>addTo</code> 和 <code>openOn</code> 方法的区别，简单来说，使用 <code>addTo</code> 方法添加的 <code>Popup</code> 会按照顺序添加，而 <code>openOn</code> 方法则比较霸道，如果之前添加的 <code>Popup</code> 即使已经使用 <code>openPopup</code> 了，但是也会被收起来，然后让 <code>openOn</code> 的弹出层显示出来</p>
+<p>下面我们再来看看如何使用自定义图标来定义标记，除了 <code>Leaflet</code> 库提供的默认图标，我们其实还可以添加自己的图标，首先使用 <code>L.icon()</code> 的方式创建一个自定义图标，其中传入 <code>iconOptions</code> 配置参数，如下所示</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 自定义 ICON</span></span><br><span class="line"><span class="hljs-keyword">var</span> iconOptions = &#123;</span><br><span class="line">  iconUrl: <span class="hljs-string">'logo.png'</span>,</span><br><span class="line">  iconSize: [<span class="hljs-number">50</span>, <span class="hljs-number">50</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> customIcon = L.icon(iconOptions)</span><br></pre></td></tr></table></figure>
+
+<p>接下来再将我们的 <code>customIcon</code> 配置到我们之前创建的的 <code>markerOptions</code> 当中即可</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> markerOptions = &#123;</span><br><span class="line">  title: <span class="hljs-string">'MyLocation'</span>,</span><br><span class="line">  clickable: <span class="hljs-literal">true</span>,</span><br><span class="line">  draggable: <span class="hljs-literal">true</span>,</span><br><span class="line">  icon: customIcon</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单汇总一下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 配置地图选项</span></span><br><span class="line"><span class="hljs-keyword">var</span> mapOptions = &#123;</span><br><span class="line">  center: [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  zoom: <span class="hljs-number">10</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建地图对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> L.map(<span class="hljs-string">'map'</span>, mapOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建图层对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> layer = <span class="hljs-keyword">new</span> L.TileLayer(<span class="hljs-string">'http://&#123;s&#125;.tile.openstreetmap.org/&#123;z&#125;/&#123;x&#125;/&#123;y&#125;.png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 在地图上添加图层</span></span><br><span class="line">map.addLayer(layer)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// ICON 配置</span></span><br><span class="line"><span class="hljs-keyword">var</span> iconOptions = &#123;</span><br><span class="line">  iconUrl: <span class="hljs-string">'logo.png'</span>,</span><br><span class="line">  iconSize: [<span class="hljs-number">50</span>, <span class="hljs-number">50</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建自定义 ICON</span></span><br><span class="line"><span class="hljs-keyword">var</span> customIcon = L.icon(iconOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 创建标记配置</span></span><br><span class="line"><span class="hljs-keyword">var</span> markerOptions = &#123;</span><br><span class="line">  title: <span class="hljs-string">'MyLocation'</span>,</span><br><span class="line">  clickable: <span class="hljs-literal">true</span>,</span><br><span class="line">  draggable: <span class="hljs-literal">true</span>,</span><br><span class="line">  icon: customIcon</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 添加标记对象</span></span><br><span class="line"><span class="hljs-keyword">var</span> marker = L.marker([<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>], markerOptions)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将弹出窗口附加到标记对象上</span></span><br><span class="line">marker.bindPopup(<span class="hljs-string">'Hi Welcome to Tutorialspoint'</span>).openPopup()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 将创建的标记对象添加到地图当中</span></span><br><span class="line">marker.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<h2 id="矢量层"><a href="#矢量层" class="headerlink" title="矢量层"></a>矢量层</h2><p>我们在上面介绍了加载地图，以及在地图上面添加标记，但是除了标记以外，我们还可以添加各种形状，例如圆形，多边形，矩形，折线等，所以在本小节当中，我们就来看看如何使用 <code>Google Maps</code> 提供的各种形状，我们就先从折线开始看起</p>
+<p>原理其实与添加标记类似，我们首先创建一个 <code>latlangs</code> 变量来保存绘制折线的点，然后使用 <code>L.polyline()</code> 来创建折线，在将我们的 <code>latlangs</code> 变量与一个指定线条的颜色的对象传入，最后在使用对应类当中所提供的的 <code>addTo()</code> 方法将折线添加到地图中即可</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> latlngs = [</span><br><span class="line">  [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  [<span class="hljs-number">16.506174</span>, <span class="hljs-number">80.648015</span>],</span><br><span class="line">  [<span class="hljs-number">17.000538</span>, <span class="hljs-number">81.804034</span>],</span><br><span class="line">  [<span class="hljs-number">17.686816</span>, <span class="hljs-number">83.218482</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> polyline = L.polyline(latlngs, &#123; <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span> &#125;)</span><br><span class="line"></span><br><span class="line">polyline.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-05.png" alt></p>
+<p>同样的，三角形的实现原理也是一样的，我们直接来看代码</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> latlngs = [</span><br><span class="line">  [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">  [<span class="hljs-number">16.506174</span>, <span class="hljs-number">80.648015</span>],</span><br><span class="line">  [<span class="hljs-number">17.686816</span>, <span class="hljs-number">83.218482</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> polygon = L.polygon(latlngs, &#123; <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span> &#125;)</span><br><span class="line"></span><br><span class="line">polygon.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-06.png" alt></p>
+<p>下面我们再来看看矩形的绘制，代码如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> latlngs = [</span><br><span class="line">  [<span class="hljs-number">17.342761</span>, <span class="hljs-number">78.552432</span>],</span><br><span class="line">  [<span class="hljs-number">16.396553</span>, <span class="hljs-number">80.727725</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> rectOptions = &#123; <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span>, <span class="hljs-attr">weight</span>: <span class="hljs-number">1</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> rectangle = L.rectangle(latlngs, rectOptions)</span><br><span class="line"></span><br><span class="line">rectangle.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-07.png" alt></p>
+<p>最后我们再来看看圆的实现方式，它与上面所介绍到的区别就是需要多传入一个半径的参数，代码如下</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> circleCenter = [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> circleOptions = &#123;</span><br><span class="line">  color: <span class="hljs-string">'red'</span>,</span><br><span class="line">  fillColor: <span class="hljs-string">'#f03'</span>,</span><br><span class="line">  fillOpacity: <span class="hljs-number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> circle = L.circle(circleCenter, <span class="hljs-number">50000</span>, circleOptions)</span><br><span class="line"></span><br><span class="line">circle.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-08.png" alt></p>
+<p>另外需要注意的是，使用 <code>L.circle(coordsArr, options)</code> 方法创建的是一个固定半径的圆，它的半径为平面距离，所以会随着地图的缩放，变换大小</p>
+<p>如果想创建一个固定半径的圆，也就是像素值固定，不会跟随地图变换大小的圆我们可以使用 <code>L.circleMarker(coordsArr, options)</code> 方法</p>
+<h2 id="多段线和多图形"><a href="#多段线和多图形" class="headerlink" title="多段线和多图形"></a>多段线和多图形</h2><p>我们在上面介绍了圆形，三角形，矩形，多段线的添加，下面我们再来看看如何添加多个多段线和多个三角形，原理其实是类似的，只是我们创建用来保存绘制点的 <code>latlangs</code> 变量有所不同，先来看看多折线的实现</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> latlang = [</span><br><span class="line">  [</span><br><span class="line">    [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">    [<span class="hljs-number">16.506174</span>, <span class="hljs-number">80.648015</span>],</span><br><span class="line">    [<span class="hljs-number">17.686816</span>, <span class="hljs-number">83.218482</span>]</span><br><span class="line">  ],</span><br><span class="line">  [</span><br><span class="line">    [<span class="hljs-number">13.08268</span>, <span class="hljs-number">80.270718</span>],</span><br><span class="line">    [<span class="hljs-number">12.971599</span>, <span class="hljs-number">77.594563</span>],</span><br><span class="line">    [<span class="hljs-number">15.828126</span>, <span class="hljs-number">78.037279</span>]</span><br><span class="line">  ],</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> multiPolyLineOptions = &#123; <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> multipolyline = L.multiPolyline(latlang , multiPolyLineOptions)</span><br><span class="line"></span><br><span class="line">multipolyline.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>最终实现的效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-09.png" alt></p>
+<p>多个三角形的实现原理类似，我们直接来看代码</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> latlang = [</span><br><span class="line">  [</span><br><span class="line">    [<span class="hljs-number">17.385044</span>, <span class="hljs-number">78.486671</span>],</span><br><span class="line">    [<span class="hljs-number">16.506174</span>, <span class="hljs-number">80.648015</span>],</span><br><span class="line">    [<span class="hljs-number">17.686816</span>, <span class="hljs-number">83.218482</span>]</span><br><span class="line">  ],</span><br><span class="line">  [</span><br><span class="line">    [<span class="hljs-number">13.08268</span>, <span class="hljs-number">80.270718</span>],</span><br><span class="line">    [<span class="hljs-number">12.971599</span>, <span class="hljs-number">77.594563</span>],</span><br><span class="line">    [<span class="hljs-number">15.828126</span>, <span class="hljs-number">78.037279</span>]</span><br><span class="line">  ],</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> multiPolygonOptions = &#123; <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> multipolygon = L.multiPolygon(latlang , multiPolygonOptions)</span><br><span class="line"></span><br><span class="line">multipolygon.addTo(map)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/01-10.png" alt></p>
+<p>基础部分当相关内容我们暂时就介绍到这里，在接下来当章节当中我们会来看看如何将上面介绍到的相关内容组合起来进行使用</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/GIS/">GIS</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2021/06/27/GIS/02/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">图层组与事件处理</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2021/04/18/React/21/">
+                <span class="level-item">关于 Hook 的一些总结</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '1db84ae7223ef882a7bb28a6a1690a44',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        164
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        9
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        9
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#什么是-Leaflet">
+        <span class="has-mr-6">1</span>
+        <span>什么是 Leaflet</span>
+        </a></li><li>
+        <a class="is-flex" href="#加载地图">
+        <span class="has-mr-6">2</span>
+        <span>加载地图</span>
+        </a></li><li>
+        <a class="is-flex" href="#标记">
+        <span class="has-mr-6">3</span>
+        <span>标记</span>
+        </a></li><li>
+        <a class="is-flex" href="#矢量层">
+        <span class="has-mr-6">4</span>
+        <span>矢量层</span>
+        </a></li><li>
+        <a class="is-flex" href="#多段线和多图形">
+        <span class="has-mr-6">5</span>
+        <span>多段线和多图形</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考">
+        <span class="has-mr-6">6</span>
+        <span>参考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/GIS/">
+            <span class="level-start">
+                <span class="level-item">GIS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/GIS/" style="font-size: 11.67px;">GIS</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/08/22/GIS/11/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/11.webp" alt="Cesium 中一些常用方法汇总">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-21T16:00:00.000Z">2021-08-22</time></div>
+                    <a href="/2021/08/22/GIS/11/" class="has-link-black-ter is-size-6">Cesium 中一些常用方法汇总</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/08/08/GIS/10/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/10.webp" alt="Cesium 中的事件与量测工具">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-07T16:00:00.000Z">2021-08-08</time></div>
+                    <a href="/2021/08/08/GIS/10/" class="has-link-black-ter is-size-6">Cesium 中的事件与量测工具</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/08/07/GIS/09/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/09.webp" alt="glTF 与 3D Tiles">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-06T16:00:00.000Z">2021-08-07</time></div>
+                    <a href="/2021/08/07/GIS/09/" class="has-link-black-ter is-size-6">glTF 与 3D Tiles</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/08/01/GIS/08/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp" alt="空间数据可视化">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-07-31T16:00:00.000Z">2021-08-01</time></div>
+                    <a href="/2021/08/01/GIS/08/" class="has-link-black-ter is-size-6">空间数据可视化</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/07/30/GIS/07/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/07.webp" alt="坐标系及坐标变换">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-07-29T16:00:00.000Z">2021-07-30</time></div>
+                    <a href="/2021/07/30/GIS/07/" class="has-link-black-ter is-size-6">坐标系及坐标变换</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/GIS/">
+                        <span class="tag">GIS</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="Leaflet 入门" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

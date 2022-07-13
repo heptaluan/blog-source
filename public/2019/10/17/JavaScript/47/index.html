@@ -16,7 +16,7 @@
 <meta property="og:description" content="今天我们就来简单的复习一下 JavaScript 当中的正则表达式的一些内容，顺便记录记录，关于正则表达式，官网的说法是，正则表达式（regular expression）描述了一种字符串匹配的模式（pattern），可以用来检查一个串是否含有某种子串、将匹配的子串替换或者从某个串中取出符合某个条件的子串等">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/47.webp">
-<meta property="og:updated_time" content="2021-03-09T08:29:33.000Z">
+<meta property="og:updated_time" content="2021-08-11T09:33:25.919Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正则表达式">
 <meta name="twitter:description" content="今天我们就来简单的复习一下 JavaScript 当中的正则表达式的一些内容，顺便记录记录，关于正则表达式，官网的说法是，正则表达式（regular expression）描述了一种字符串匹配的模式（pattern），可以用来检查一个串是否含有某种子串、将匹配的子串替换或者从某个串中取出符合某个条件的子串等">
@@ -161,7 +161,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    11 分钟 读完 (大约 1720 个字)
+                    11 分钟 读完 (大约 1699 个字)
                 </span>
                 
                 
@@ -180,10 +180,10 @@
 
 <h2 id="模式修饰符参数"><a href="#模式修饰符参数" class="headerlink" title="模式修饰符参数"></a>模式修饰符参数</h2><p>如下</p>
 <ul>
-<li><code>i</code>，忽略大小写</li>
-<li><code>g</code>，全局匹配</li>
-<li><code>m</code>，多行匹配</li>
-<li><code>/hello/</code>，两个反斜杠是正则表达式的字面量表示法</li>
+<li><code>i</code> - 忽略大小写</li>
+<li><code>g</code> - 全局匹配</li>
+<li><code>m</code> - 多行匹配</li>
+<li><code>/hello/</code> - 两个反斜杠是正则表达式的字面量表示法</li>
 </ul>
 <h2 id="两个测试方法"><a href="#两个测试方法" class="headerlink" title="两个测试方法"></a>两个测试方法</h2><h4 id="test"><a href="#test" class="headerlink" title="test"></a>test</h4><figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> test = <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">'hello world'</span>, <span class="hljs-string">'ig'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(test.test(<span class="hljs-string">'hello world'</span>))  <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
 
@@ -204,32 +204,32 @@
 
 <h2 id="匹配模式"><a href="#匹配模式" class="headerlink" title="匹配模式"></a>匹配模式</h2><p>有下面这些匹配模式</p>
 <ul>
-<li><code>+</code>，其前导字符必须在目标对象中连续出现一次或多次</li>
-<li><code>*</code>，其前导字符必须在目标对象中出现零次或连续多次</li>
-<li><code>?</code>，其前导对象必须在目标对象中连续出现零次或一次</li>
+<li><code>+</code> - 其前导字符必须在目标对象中连续出现一次或多次</li>
+<li><code>*</code> - 其前导字符必须在目标对象中出现零次或连续多次</li>
+<li><code>?</code> - 其前导对象必须在目标对象中连续出现零次或一次</li>
 </ul>
 <hr>
 <ul>
-<li><code>\s</code>，用于匹配单个空格符，包括 <code>tab</code> 键和换行符 </li>
-<li><code>\S</code>，用于匹配除单个空格符之外的所有字符 </li>
-<li><code>\d</code>，用于匹配从 <code>0</code> 到 <code>9</code> 的数字 </li>
-<li><code>\w</code>，用于匹配字母，数字或下划线字符 </li>
-<li><code>\W</code>，用于匹配所有与 <code>\w</code> 不匹配的字符 </li>
-<li><code>.</code>，用于匹配除换行符之外的所有字符</li>
+<li><code>\s</code> - 用于匹配单个空格符，包括 <code>tab</code> 键和换行符 </li>
+<li><code>\S</code> - 用于匹配除单个空格符之外的所有字符 </li>
+<li><code>\d</code> - 用于匹配从 <code>0</code> 到 <code>9</code> 的数字 </li>
+<li><code>\w</code> - 用于匹配字母，数字或下划线字符 </li>
+<li><code>\W</code> - 用于匹配所有与 <code>\w</code> 不匹配的字符 </li>
+<li><code>.</code> - 用于匹配除换行符之外的所有字符</li>
 </ul>
 <hr>
 <ul>
-<li><code>^</code>，定位符，规定匹配模式必须出现在目标字符串的开头（强制首匹配）</li>
-<li><code>$</code>，定位符，规定匹配模式必须出现在目标对象的结尾（强制尾匹配，并且只匹配一个）</li>
-<li><code>\b</code>，定位符，规定匹配模式必须出现在目标字符串的开头或结尾的两个边界之一 </li>
-<li><code>\B</code>，定位符，则规定匹配对象必须位于目标字符串的开头和结尾两个边界之内，即匹配对象既不能作为目标字符串的开头，也不能作为目标字符串的结尾</li>
+<li><code>^</code> - 定位符，规定匹配模式必须出现在目标字符串的开头（强制首匹配）</li>
+<li><code>$</code> - 定位符，规定匹配模式必须出现在目标对象的结尾（强制尾匹配，并且只匹配一个）</li>
+<li><code>\b</code> - 定位符，规定匹配模式必须出现在目标字符串的开头或结尾的两个边界之一 </li>
+<li><code>\B</code> - 定位符，则规定匹配对象必须位于目标字符串的开头和结尾两个边界之内，即匹配对象既不能作为目标字符串的开头，也不能作为目标字符串的结尾</li>
 </ul>
 <hr>
 <ul>
-<li><code>/[A-Z]/</code>，与从 <code>A</code> 到 <code>Z</code> 范围内任何一个大写字母相匹配 </li>
-<li><code>/[a-z]/</code>，与从 <code>a</code> 到 <code>z</code> 范围内任何一个小写字母相匹配 </li>
-<li><code>/[0-9]/</code>，与从 <code>0</code> 到 <code>9</code> 范围内任何一个数字相匹配 </li>
-<li><code>/([a-z][A-Z][0-9])+/</code>，与任何由字母和数字组成的字符串，如 <code>aB0</code> 等相匹配</li>
+<li><code>/[A-Z]/</code> - 与从 <code>A</code> 到 <code>Z</code> 范围内任何一个大写字母相匹配 </li>
+<li><code>/[a-z]/</code> - 与从 <code>a</code> 到 <code>z</code> 范围内任何一个小写字母相匹配 </li>
+<li><code>/[0-9]/</code> - 与从 <code>0</code> 到 <code>9</code> 范围内任何一个数字相匹配 </li>
+<li><code>/([a-z][A-Z][0-9])+/</code> - 与任何由字母和数字组成的字符串，如 <code>aB0</code> 等相匹配</li>
 </ul>
 <p>下面是一个示例</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> pattern = <span class="hljs-regexp">/^[a-z]oogle\d$/</span></span><br><span class="line"><span class="hljs-keyword">const</span> str = <span class="hljs-string">'aoogle2'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(pattern.test(str)) <span class="hljs-comment">// true</span></span><br></pre></td></tr></table></figure>
@@ -391,7 +391,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        153
+                        164
                     </p>
                 </div>
             </div>
@@ -401,7 +401,7 @@
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        8
+                        9
                     </p>
                 </div>
             </div>
@@ -411,7 +411,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        8
+                        9
                     </p>
                 </div>
             </div>
@@ -575,6 +575,14 @@
                 <span class="level-item tag">29</span>
             </span>
         </a></li><li>
+        <a class="level is-marginless" href="/categories/GIS/">
+            <span class="level-start">
+                <span class="level-item">GIS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
         <a class="level is-marginless" href="/categories/HTTP/">
             <span class="level-start">
                 <span class="level-item">HTTP</span>
@@ -626,7 +634,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/GIS/" style="font-size: 11.67px;">GIS</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
     </div>
 </div>
 
@@ -645,18 +653,18 @@
         
         <article class="media">
             
-            <a href="/2021/04/18/React/21/" class="media-left">
+            <a href="/2021/08/22/GIS/11/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/21.webp" alt="关于 Hook 的一些总结">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/11.webp" alt="Cesium 中一些常用方法汇总">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-17T16:00:00.000Z">2021-04-18</time></div>
-                    <a href="/2021/04/18/React/21/" class="has-link-black-ter is-size-6">关于 Hook 的一些总结</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-21T16:00:00.000Z">2021-08-22</time></div>
+                    <a href="/2021/08/22/GIS/11/" class="has-link-black-ter is-size-6">Cesium 中一些常用方法汇总</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
                     </p>
                 </div>
             </div>
@@ -664,18 +672,18 @@
         
         <article class="media">
             
-            <a href="/2021/03/28/React/20/" class="media-left">
+            <a href="/2021/08/08/GIS/10/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/20.webp" alt="自定义 Hook">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/10.webp" alt="Cesium 中的事件与量测工具">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-27T16:00:00.000Z">2021-03-28</time></div>
-                    <a href="/2021/03/28/React/20/" class="has-link-black-ter is-size-6">自定义 Hook</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-07T16:00:00.000Z">2021-08-08</time></div>
+                    <a href="/2021/08/08/GIS/10/" class="has-link-black-ter is-size-6">Cesium 中的事件与量测工具</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/React/">React</a>
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
                     </p>
                 </div>
             </div>
@@ -683,18 +691,18 @@
         
         <article class="media">
             
-            <a href="/2021/03/07/Vue/06/" class="media-left">
+            <a href="/2021/08/07/GIS/09/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/06.webp" alt="Vite 的工程化流程">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/09.webp" alt="glTF 与 3D Tiles">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-03-06T16:00:00.000Z">2021-03-07</time></div>
-                    <a href="/2021/03/07/Vue/06/" class="has-link-black-ter is-size-6">Vite 的工程化流程</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-06T16:00:00.000Z">2021-08-07</time></div>
+                    <a href="/2021/08/07/GIS/09/" class="has-link-black-ter is-size-6">glTF 与 3D Tiles</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Vue/">Vue</a>
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
                     </p>
                 </div>
             </div>
@@ -702,18 +710,18 @@
         
         <article class="media">
             
-            <a href="/2021/01/10/JavaScript/59/" class="media-left">
+            <a href="/2021/08/01/GIS/08/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/59.webp" alt="在 React 当中使用 TypeScript">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp" alt="空间数据可视化">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-09T16:00:00.000Z">2021-01-10</time></div>
-                    <a href="/2021/01/10/JavaScript/59/" class="has-link-black-ter is-size-6">在 React 当中使用 TypeScript</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-07-31T16:00:00.000Z">2021-08-01</time></div>
+                    <a href="/2021/08/01/GIS/08/" class="has-link-black-ter is-size-6">空间数据可视化</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
                     </p>
                 </div>
             </div>
@@ -721,18 +729,18 @@
         
         <article class="media">
             
-            <a href="/2021/01/09/JavaScript/58/" class="media-left">
+            <a href="/2021/07/30/GIS/07/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/58.webp" alt="深入 TypeScript 当中的泛型">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/07.webp" alt="坐标系及坐标变换">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-08T16:00:00.000Z">2021-01-09</time></div>
-                    <a href="/2021/01/09/JavaScript/58/" class="has-link-black-ter is-size-6">深入 TypeScript 当中的泛型</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-07-29T16:00:00.000Z">2021-07-30</time></div>
+                    <a href="/2021/07/30/GIS/07/" class="has-link-black-ter is-size-6">坐标系及坐标变换</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
                     </p>
                 </div>
             </div>
@@ -749,6 +757,39 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2021/04/">
@@ -1342,6 +1383,13 @@
                     <a class="tags has-addons" href="/tags/Essay/">
                         <span class="tag">Essay</span>
                         <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/GIS/">
+                        <span class="tag">GIS</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 

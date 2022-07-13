@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>空间数据可视化 - heptaluan&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="我们在之前的 Cesium 中的数据加载 章节当中介绍了如何使用 Cesium 加载影像数据、地形数据、以及矢量数据，但是作为一个完整的三维系统，仅仅包括这些数据还是远远不够的，当然还需要一些比如空间可视化数据、三维数据数据等，今天我们先从空间数据的可视化开始看起">
+<meta name="keywords" content="GIS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="空间数据可视化">
+<meta property="og:url" content="http://yoursite.com/2021/08/01/GIS/08/index.html">
+<meta property="og:site_name" content="heptaluan&#39;s blog">
+<meta property="og:description" content="我们在之前的 Cesium 中的数据加载 章节当中介绍了如何使用 Cesium 加载影像数据、地形数据、以及矢量数据，但是作为一个完整的三维系统，仅仅包括这些数据还是远远不够的，当然还需要一些比如空间可视化数据、三维数据数据等，今天我们先从空间数据的可视化开始看起">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp">
+<meta property="og:updated_time" content="2021-08-18T07:38:13.113Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="空间数据可视化">
+<meta name="twitter:description" content="我们在之前的 Cesium 中的数据加载 章节当中介绍了如何使用 Cesium 加载影像数据、地形数据、以及矢量数据，但是作为一个完整的三维系统，仅仅包括这些数据还是远远不够的，当然还需要一些比如空间可视化数据、三维数据数据等，今天我们先从空间数据的可视化开始看起">
+<meta name="twitter:image" content="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp">
+
+
+
+
+
+
+
+<link rel="icon" href="https://gitee.com/heptaluan/backups/raw/master/cdn/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.5.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-2-column">
+    <!-- fork me on github -->
+<a title="Fork me on GitHub" id="forkMe" style="position: fixed;top: 0;right: 0;z-index: 31" href="https://github.com/heptaluan" target="_blank">
+    <svg style="color: #fff;fill: #a0a1a7;height: 80px;width: 80px;" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg>
+</a>
+
+<nav class="navbar navbar-main">
+    <div class="container">
+        <!-- <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="空间数据可视化" height="28">
+            
+            </a>
+        </div> -->
+
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="https://heptaluan.github.io/demos/">Demos</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fa fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp" alt="空间数据可视化">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <div class="level-item has-text-grey">2021-08-01</div>
+                <!-- <time class="level-item has-text-grey" datetime="2021-07-31T16:00:00.000Z">2021-08-01</time> -->
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    34 分钟 读完 (大约 5085 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                空间数据可视化
+            
+        </h1>
+        <div class="content">
+            <p>我们在之前的 <a href="http://localhost:4000/2021/08/12/GIS/06/" target="_blank" rel="noopener">Cesium 中的数据加载</a> 章节当中介绍了如何使用 <code>Cesium</code> 加载影像数据、地形数据、以及矢量数据，但是作为一个完整的三维系统，仅仅包括这些数据还是远远不够的，当然还需要一些比如空间可视化数据、三维数据数据等，今天我们先从空间数据的可视化开始看起</p>
+<a id="more"></a>
+
+<p><code>Cesium</code> 在空间数据可视化方面提供了两种类型的 <code>API</code>，如下</p>
+<ul>
+<li>一种是面向图形开发人员的低级（原始）<code>API</code>，通过 <code>Primitive</code> 类来进行实现</li>
+<li>另一种是用于数据驱动的高级（实体）<code>API</code>，通过 <code>Entity</code> 类实现</li>
+</ul>
+<p>但是相对于 <code>Primitive API</code> 来说，<code>Entity API</code> 实现起来更简单一些，也比较容易上手，<code>Entity API</code> 实际上是对 <code>Primitive API</code> 的二次封装，底层调用的仍然是 <code>Primitive API</code>，目的就是为我们提供灵活的、易学、易用的高性能可视化界面</p>
+<p>本章内容主要介绍的是 <code>Entity API</code>，关于 <code>Primitive API</code> 这里只是简单提及，后续会详细来进行介绍</p>
+<h2 id="Entity-支持的图形类型"><a href="#Entity-支持的图形类型" class="headerlink" title="Entity 支持的图形类型"></a>Entity 支持的图形类型</h2><p>通过文档查看 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity 类的构造函数</a> 我们可知，<code>Entity</code> 支持的图形类型都是以 <code>Graphics</code> 结尾的，一共有十七种类型，我们这里简单汇总一下，下图列出了 <code>Entity</code> 所支持的图形类型以及对应的类</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/08-01.png" alt></p>
+<p>下面我们就来简单看一下每种类型的 <code>Graphic</code> 添加方式</p>
+<h4 id="billboard-广告牌"><a href="#billboard-广告牌" class="headerlink" title="billboard 广告牌"></a>billboard 广告牌</h4><p>描述位于包含 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 的位置的二维图标，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/BillboardGraphics.html" target="_blank" rel="noopener">new Cesium.BillboardGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'billboard'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-75.59777</span>, <span class="hljs-number">40.03883</span>),</span><br><span class="line">  billboard: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    image: <span class="hljs-string">'./images/Cesium_Logo_overlay.png'</span>,</span><br><span class="line">    scale: <span class="hljs-number">2.0</span>,</span><br><span class="line">    pixelOffset: <span class="hljs-keyword">new</span> Cesium.Cartesian2(<span class="hljs-number">0</span>, <span class="hljs-number">-50</span>),                                   <span class="hljs-comment">// 像素偏移</span></span><br><span class="line">    eyeOffset: <span class="hljs-keyword">new</span> Cesium.Cartesian3(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>),                              <span class="hljs-comment">// 眼睛偏移</span></span><br><span class="line">    horizontalOrigin: Cesium.HorizontalOrigin.CENTER,                             <span class="hljs-comment">// 水平对齐方式</span></span><br><span class="line">    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,                                 <span class="hljs-comment">// 垂直对齐方式</span></span><br><span class="line">    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,                      <span class="hljs-comment">// 获取或设置此广告牌的高度参考</span></span><br><span class="line">    color: Cesium.Color.LIME,</span><br><span class="line">    rotation: Cesium.Math.PI_OVER_FOUR,                                           <span class="hljs-comment">// 获取或设置以弧度为单位的旋转角度</span></span><br><span class="line">    alignedAxis: Cesium.Cartesian3.ZERO,                                          <span class="hljs-comment">// 获取或设置世界空间中的对齐轴</span></span><br><span class="line">    width: <span class="hljs-number">100</span>,</span><br><span class="line">    height: <span class="hljs-number">25</span>,</span><br><span class="line">    scaleByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">2.0e3</span>, <span class="hljs-number">1.0</span>),            <span class="hljs-comment">// 根据广告牌与相机的距离获取或设置广告牌的近和远缩放属性</span></span><br><span class="line">    translucencyByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.5e6</span>, <span class="hljs-number">0.5</span>),     <span class="hljs-comment">// 根据广告牌到相机的距离，获取或设置广告牌的近和远半透明属性</span></span><br><span class="line">    pixelOffsetScaleByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.5e6</span>, <span class="hljs-number">0.0</span>), <span class="hljs-comment">// 根据广告牌与摄像头的距离，获取或设置广告牌的近像素偏移量和远像素偏移量缩放属性</span></span><br><span class="line">    disableDepthTestDistance: <span class="hljs-built_in">Number</span>.POSITIVE_INFINITY,                           <span class="hljs-comment">// 指定要禁用深度测试的距相机的距离</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这里关于两种对齐方式简单说明一下，其中水平对齐方式</p>
+<ul>
+<li>默认值为 <code>HorizontalOrigin.CENTER</code></li>
+<li>其中 <code>CENTER</code> 表示原点在对象的水平中心</li>
+<li><code>LEFT</code> 表示原点在对象的左侧</li>
+<li><code>RIGHT</code> 表示原点在对象的右侧</li>
+</ul>
+<p>而垂直对齐方式</p>
+<ul>
+<li>默认值为 <code>VerticalOrigin.CENTER</code></li>
+<li><code>BASELINE</code> 表示如果对象包含文本，则原点位于文本的基线，否则原点位于对象的底部</li>
+<li><code>CENTER</code> 表示原点位于 <code>BASELINE</code> 和 <code>TOP</code> 之间的垂直中心</li>
+<li><code>TOP</code> 表示原点在对象的顶部</li>
+<li><code>BOTTOM</code> 表示原点在对象的底部</li>
+</ul>
+<h4 id="box-盒子"><a href="#box-盒子" class="headerlink" title="box 盒子"></a>box 盒子</h4><p>描述一个盒子，中心位置和方向由包含的 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 确定，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/BoxGraphics.html" target="_blank" rel="noopener">new Cesium.BoxGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'box'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-107.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">300000.0</span>),</span><br><span class="line">  box: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    dimensions: <span class="hljs-keyword">new</span> Cesium.Cartesian3(<span class="hljs-number">400000.0</span>, <span class="hljs-number">300000.0</span>, <span class="hljs-number">500000.0</span>),  <span class="hljs-comment">// 用于指定框的长度，宽度和高度</span></span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,                     <span class="hljs-comment">// 指定距实体位置的高度是相对于什么的高度</span></span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.RED.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">    outline: <span class="hljs-literal">true</span>,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这里的 <code>heightReference</code> 有三个取值</p>
+<ul>
+<li><code>Cesium.HeightReference.NONE</code> 表示位置绝对</li>
+<li><code>Cesium.HeightReference.CLAMP_TO_GROUND</code> 表示位置固定在地形上</li>
+<li><code>Cesium.HeightReference.RELATIVE_TO_GROUND</code> 表示位置高度是指地形上方的高度</li>
+</ul>
+<h4 id="corridor-走廊"><a href="#corridor-走廊" class="headerlink" title="corridor 走廊"></a>corridor 走廊</h4><p>走廊是由中心线和宽度定义的形状符合地球的曲率，它可以放置在地面上或高空并可以选择挤出成一个体积，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/CorridorGraphics.html" target="_blank" rel="noopener">new Cesium.CorridorGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'corridor'</span>,</span><br><span class="line">  corridor: &#123;</span><br><span class="line">    positions: Cesium.Cartesian3.fromDegreesArray(            <span class="hljs-comment">// 指定定义走廊中心线的 Cartesian3 位置的数组</span></span><br><span class="line">      [<span class="hljs-number">-80.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">-85.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">-85.0</span>, <span class="hljs-number">35.0</span>,]</span><br><span class="line">    ),  </span><br><span class="line">    width: <span class="hljs-number">200000.0</span>,</span><br><span class="line">    height: <span class="hljs-number">200000.0</span>,</span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    extrudedHeight: <span class="hljs-number">100000.0</span>,</span><br><span class="line">    extrudedHeightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    cornerType: Cesium.CornerType.ROUNDED,                    <span class="hljs-comment">// 拐角的样式，其中 OUNDED 角有光滑的边缘，MITERED 拐角点是相邻边的交点，BEVELED 角被修剪</span></span><br><span class="line">    granularity: Cesium.Math.RADIANS_PER_DEGREE,              <span class="hljs-comment">// 每个纬度和经度之间的距离</span></span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.BLUE.withAlpha(<span class="hljs-number">0.5</span>),               <span class="hljs-comment">// 材质</span></span><br><span class="line">    outline: <span class="hljs-literal">true</span>, </span><br><span class="line">    outlineColor: Cesium.Color.WHITE,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">    classificationType: Cesium.ClassificationType.BOTH,       <span class="hljs-comment">// TERRAIN 将仅对地形进行分类，CESIUM_3D_TILE 将仅对 3D Tiles 进行分类，BOTH 将同时对 Terrain 和 3D Tiles 进行分类</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="cylinder-圆柱、圆锥"><a href="#cylinder-圆柱、圆锥" class="headerlink" title="cylinder 圆柱、圆锥"></a>cylinder 圆柱、圆锥</h4><p>描述圆柱体，圆锥台或由长度，顶部半径和底部半径定义的圆锥，中心位置和方向由包含的 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 确定，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/CylinderGraphics.html" target="_blank" rel="noopener">new Cesium.CylinderGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'cylinder'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-105.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">200000.0</span>),</span><br><span class="line">  cylinder: &#123;</span><br><span class="line">    length: <span class="hljs-number">400000.0</span>,           <span class="hljs-comment">// 圆柱体长度</span></span><br><span class="line">    topRadius: <span class="hljs-number">200000.0</span>,        <span class="hljs-comment">// 圆柱体顶部半径</span></span><br><span class="line">    bottomRadius: <span class="hljs-number">200000.0</span>,     <span class="hljs-comment">// 圆柱体底部半径</span></span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.GREEN.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">    outline: <span class="hljs-literal">true</span>,</span><br><span class="line">    outlineColor: Cesium.Color.DARK_GREEN,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    numberOfVerticalLines: <span class="hljs-number">16</span>,  <span class="hljs-comment">// 沿轮廓的周长绘制的垂直线的数量</span></span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">    slices: <span class="hljs-number">128</span>,                <span class="hljs-comment">// 圆柱周围的边缘数量</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="ellipse-椭圆或拉伸的椭圆"><a href="#ellipse-椭圆或拉伸的椭圆" class="headerlink" title="ellipse 椭圆或拉伸的椭圆"></a>ellipse 椭圆或拉伸的椭圆</h4><p>描述由中心点，半长轴和半短轴定义的椭圆，椭圆符合地球的曲率，可以放置在表面或可以选择将其挤出成一定体积，中心点由包含的 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 确定，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/EllipseGraphics.html" target="_blank" rel="noopener">new Cesium.EllipseGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Circles and Ellipses'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-95.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">100000.0</span>),</span><br><span class="line">  ellipse: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    semiMajorAxis: <span class="hljs-number">300000.0</span>,                      <span class="hljs-comment">// 长半轴距离</span></span><br><span class="line">    semiMinorAxis: <span class="hljs-number">150000.0</span>,                      <span class="hljs-comment">// 短半轴距离</span></span><br><span class="line"></span><br><span class="line">    height: <span class="hljs-number">20000.0</span>,</span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    extrudedHeight: <span class="hljs-number">20000.0</span>,</span><br><span class="line">    extrudedHeightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    stRotation: <span class="hljs-number">0.0</span>,                              <span class="hljs-comment">// 纹理从北方逆时针旋转</span></span><br><span class="line">    granularity: Cesium.Math.RADIANS_PER_DEGREE,  <span class="hljs-comment">// 椭圆上各点之间的角距离</span></span><br><span class="line">    material: Cesium.Color.BLUE.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    outline: <span class="hljs-literal">true</span>,</span><br><span class="line">    outlineColor: Cesium.Color.DARK_GREEN,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    numberOfVerticalLines: <span class="hljs-number">16</span>,                    <span class="hljs-comment">// 沿轮廓的周长绘制的垂直线的数量</span></span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">    classificationType: Cesium.ClassificationType.BOTH</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="ellipsoid-椭球体"><a href="#ellipsoid-椭球体" class="headerlink" title="ellipsoid 椭球体"></a>ellipsoid 椭球体</h4><p>描述一个椭球或球体，中心位置和方向由包含的 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 确定，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/EllipsoidGraphics.html" target="_blank" rel="noopener">new Cesium.EllipsoidGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Spheres and Ellipsoids'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-100.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">300000.0</span>),</span><br><span class="line">  ellipsoid: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    radii: <span class="hljs-keyword">new</span> Cesium.Cartesian3(<span class="hljs-number">200000.0</span>, <span class="hljs-number">200000.0</span>, <span class="hljs-number">300000.0</span>),  <span class="hljs-comment">// 椭球半径</span></span><br><span class="line">    minimumClock: <span class="hljs-number">0.0</span>,                                           <span class="hljs-comment">// 最小时钟角度</span></span><br><span class="line">    maximumClock: <span class="hljs-number">2</span> * <span class="hljs-built_in">Math</span>.PI,                                   <span class="hljs-comment">// 最大时钟角度</span></span><br><span class="line">    minimumCone: <span class="hljs-number">0.0</span>,                                            <span class="hljs-comment">// 最小圆锥角</span></span><br><span class="line">    maximumCone: <span class="hljs-built_in">Math</span>.PI,                                        <span class="hljs-comment">// 最大圆锥角</span></span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.BLUE.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">    outline: <span class="hljs-literal">true</span>,</span><br><span class="line">    outlineColor: Cesium.Color.YELLOW,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    stackPartitions: <span class="hljs-number">64</span>,                                         <span class="hljs-comment">// 延纬度线切割的次数</span></span><br><span class="line">    slicePartitions: <span class="hljs-number">64</span>,                                         <span class="hljs-comment">// 延经度线切割的次数</span></span><br><span class="line">    subdivisions: <span class="hljs-number">128</span>,                                           <span class="hljs-comment">// 每个轮廓环的样本数，确定曲率的粒度</span></span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="label-标签"><a href="#label-标签" class="headerlink" title="label 标签"></a>label 标签</h4><p>描述位于包含位置的二维标签，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/LabelGraphics.html" target="_blank" rel="noopener">new Cesium.LabelGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'label'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-75.1641667</span>, <span class="hljs-number">39.9522222</span>, <span class="hljs-number">300000.0</span>),</span><br><span class="line">  label: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    text: <span class="hljs-string">'label标签'</span>,</span><br><span class="line">    font: <span class="hljs-string">'24px Helvetica'</span>,</span><br><span class="line">    style: Cesium.LabelStyle.FILL_AND_OUTLINE,</span><br><span class="line">    scale: <span class="hljs-number">1.0</span>,</span><br><span class="line">    showBackground: <span class="hljs-literal">true</span>,</span><br><span class="line">    backgroundColor: Cesium.Color.BLUE,</span><br><span class="line">    backgroundPadding: <span class="hljs-keyword">new</span> Cartesian2(<span class="hljs-number">7</span>, <span class="hljs-number">5</span>),</span><br><span class="line">    pixelOffset: Cartesian2.ZERO,</span><br><span class="line">    eyeOffset: Cartesian3.ZERO,</span><br><span class="line">    horizontalOrigin: Cesium.HorizontalOrigin.CENTER,</span><br><span class="line">    verticalOrigin: Cesium.VerticalOrigin.CENTER,</span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    fillColor: Cesium.Color.SKYBLUE,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">2</span>,</span><br><span class="line">    translucencyByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.5e6</span>, <span class="hljs-number">0.5</span>),</span><br><span class="line">    pixelOffsetScaleByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.5e6</span>, <span class="hljs-number">0.0</span>),</span><br><span class="line">    scaleByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">2.0e3</span>, <span class="hljs-number">1.0</span>),</span><br><span class="line">    disableDepthTestDistance: <span class="hljs-built_in">Number</span>.POSITIVE_INFINITY,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="model-模型"><a href="#model-模型" class="headerlink" title="model 模型"></a>model 模型</h4><p>基于 <a href="https://github.com/KhronosGroup/glTF" target="_blank" rel="noopener">glTF</a> 的 <code>3D</code> 模型，模型的位置和方向由包含的 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 确定，不过 <code>Cesium</code> 虽然包括对 <code>glTF</code> 几何，材质，动画和蒙皮的支持，但是目前不支持照相机和灯光，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/ModelGraphics.html" target="_blank" rel="noopener">new Cesium.ModelGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> position = Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-123.0744619</span>, <span class="hljs-number">44.0503706</span>, <span class="hljs-number">5000.0</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> heading = Cesium.Math.toRadians(<span class="hljs-number">135</span>)</span><br><span class="line"><span class="hljs-keyword">var</span> pitch = <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-keyword">var</span> roll = <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-keyword">var</span> hpr = <span class="hljs-keyword">new</span> Cesium.HeadingPitchRoll(heading, pitch, roll)</span><br><span class="line"><span class="hljs-keyword">var</span> orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr)</span><br><span class="line"><span class="hljs-keyword">var</span> url = <span class="hljs-string">'./data/models/CesiumAir/Cesium_Air.glb'</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'model'</span>,</span><br><span class="line">  position: position,</span><br><span class="line">  orientation: orientation,</span><br><span class="line">  model: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    uri: url,</span><br><span class="line">    scale: <span class="hljs-number">1.0</span>,</span><br><span class="line">    minimumPixelSize: <span class="hljs-number">128</span>,                                      <span class="hljs-comment">// 模型的最小最小像素大小，而不考虑缩放</span></span><br><span class="line">    maximumScale: <span class="hljs-number">20000</span>,                                        <span class="hljs-comment">// 模型的最大比例尺大小</span></span><br><span class="line">    incrementallyLoadTextures: <span class="hljs-literal">true</span>,                            <span class="hljs-comment">// 确定在加载模型后纹理是否可以继续流入</span></span><br><span class="line">    runAnimations: <span class="hljs-literal">true</span>,                                        <span class="hljs-comment">// 是否应启动模型中指定的 glTF 动画</span></span><br><span class="line">    clampAnimations: <span class="hljs-literal">true</span>,                                      <span class="hljs-comment">// glTF 动画是否应在没有关键帧的持续时间内保持最后一个姿势</span></span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    silhouetteColor: Cesium.Color.RED,                          <span class="hljs-comment">// 轮廓的颜色</span></span><br><span class="line">    silhouetteSize: <span class="hljs-number">0.0</span>,                                        <span class="hljs-comment">// 轮廓的宽度</span></span><br><span class="line">    color: Cesium.Color.WHITE,                                  <span class="hljs-comment">// 模型的颜色</span></span><br><span class="line">    colorBlendMode: Cesium.ColorBlendMode.HIGHLIGHT,            <span class="hljs-comment">// 目标颜色和图元的源颜色之间混合的不同模式，HIGHLIGHT 表示将源颜色乘以目标颜色，REPLACE 表示将源颜色替换为目标颜色，MIX 表示将源颜色和目标颜色混合在一起</span></span><br><span class="line">    colorBlendAmount: <span class="hljs-number">0.5</span>,                                      <span class="hljs-comment">// 用于指定 colorBlendMode 为 MIX 时的颜色强度，值 0.0 会产生模型的着色，而值 1.0 会导致纯色，介于两者之间的任何值都会导致两者混合</span></span><br><span class="line">    imageBasedLightingFactor: <span class="hljs-keyword">new</span> Cesium.Cartesian2(<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>),  <span class="hljs-comment">// 指定基于漫反射和镜面反射的图像照明的贡献</span></span><br><span class="line">    lightColor: <span class="hljs-literal">undefined</span>                                       <span class="hljs-comment">// 为模型着色时指定浅色的属性，如果为 undefined 则使用场景的浅色</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="path-路径"><a href="#path-路径" class="headerlink" title="path 路径"></a>path 路径</h4><p>描述一条折线，该折线定义为 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 随着时间的推移所形成的路径，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/PathGraphics.html" target="_blank" rel="noopener">new Cesium.PathGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> entityPath = viewer.entities.add(&#123;</span><br><span class="line">  position: pathPosition,</span><br><span class="line">  name: <span class="hljs-string">'path'</span>,</span><br><span class="line">  path: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    leadTime: <span class="hljs-number">0</span>,</span><br><span class="line">    trailTime: <span class="hljs-number">60</span>,</span><br><span class="line">    width: <span class="hljs-number">10</span>,</span><br><span class="line">    resolution: <span class="hljs-number">1</span>,</span><br><span class="line">    material: <span class="hljs-keyword">new</span> Cesium.PolylineGlowMaterialProperty(&#123;</span><br><span class="line">      glowPower: <span class="hljs-number">0.3</span>,</span><br><span class="line">      taperPower: <span class="hljs-number">0.3</span>,</span><br><span class="line">      color: Cesium.Color.PALEGOLDENROD,</span><br><span class="line">    &#125;),</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="plane-平面"><a href="#plane-平面" class="headerlink" title="plane 平面"></a>plane 平面</h4><p>描述一处平面，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/PlaneGraphics.html" target="_blank" rel="noopener">new Cesium.PlaneGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> bluePlane = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Blue plane'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-114.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">300000.0</span>),</span><br><span class="line">  plane: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    plane: <span class="hljs-keyword">new</span> Cesium.Plane(Cesium.Cartesian3.UNIT_X, <span class="hljs-number">0.0</span>),   <span class="hljs-comment">// 用于指定平面的法线和距离</span></span><br><span class="line">    dimensions: <span class="hljs-keyword">new</span> Cesium.Cartesian2(<span class="hljs-number">400000.0</span>, <span class="hljs-number">300000.0</span>),    <span class="hljs-comment">// 指定平面的宽度和高度</span></span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.BLUE,</span><br><span class="line">    outline: <span class="hljs-literal">false</span>,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="point-点"><a href="#point-点" class="headerlink" title="point 点"></a>point 点</h4><p>描述位于包含 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Entity.html" target="_blank" rel="noopener">Entity</a> 的位置的图形点，详细见 <a href>new Cesium.PointGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> point = viewer.entities.add(&#123;</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-75.59777</span>, <span class="hljs-number">40.03883</span>),</span><br><span class="line">  point: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    pixelSize: <span class="hljs-number">10</span>,  <span class="hljs-comment">// 像素大小</span></span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    color: Cesium.Color.YELLOW,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">0</span>,</span><br><span class="line">    scaleByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">10.0</span>, <span class="hljs-number">2.0e3</span>, <span class="hljs-number">1.0</span>),</span><br><span class="line">    translucencyByDistance: <span class="hljs-keyword">new</span> Cesium.NearFarScalar(<span class="hljs-number">1.0e3</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.5e6</span>, <span class="hljs-number">0.5</span>),</span><br><span class="line">    disableDepthTestDistance: <span class="hljs-built_in">Number</span>.POSITIVE_INFINITY,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="polygon-多边形"><a href="#polygon-多边形" class="headerlink" title="polygon 多边形"></a>polygon 多边形</h4><p>描述由构成外部形状和任何嵌套孔的线性环的层次结构定义的多边形，多边形符合地球的曲率，可以放置在表面或可以选择将其挤出成一定体积，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/PolygonGraphics.html" target="_blank" rel="noopener">new Cesium.PolygonGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> redPolygon = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Red polygon on surface'</span>,</span><br><span class="line">  polygon: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    hierarchy: Cesium.Cartesian3.fromDegreesArray([<span class="hljs-number">-115.0</span>, <span class="hljs-number">37.0</span>, <span class="hljs-number">-115.0</span>, <span class="hljs-number">32.0</span>, <span class="hljs-number">-107.0</span>, <span class="hljs-number">33.0</span>, <span class="hljs-number">-102.0</span>, <span class="hljs-number">31.0</span>, <span class="hljs-number">-102.0</span>, <span class="hljs-number">35.0</span>]),</span><br><span class="line">    height: <span class="hljs-number">0</span>,                                      <span class="hljs-comment">// 多边形相对于椭球面的高度</span></span><br><span class="line">    heightReference: Cesium.HeightReference.NONE,</span><br><span class="line">    stRotation: <span class="hljs-number">0.0</span>,                                <span class="hljs-comment">// 多边形纹理从北方逆时针旋转</span></span><br><span class="line">    granularity: Cesium.Math.RADIANS_PER_DEGREE,    <span class="hljs-comment">// 每个纬度和经度点之间的角距离</span></span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.RED,</span><br><span class="line">    outline: <span class="hljs-literal">false</span>,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    perPositionHeight: <span class="hljs-literal">false</span>,                       <span class="hljs-comment">// 是否使用每个位置的高度</span></span><br><span class="line">    closeTop: <span class="hljs-literal">true</span>,                                 <span class="hljs-comment">// 如果为 false，则将挤出的多边形顶部留空</span></span><br><span class="line">    closeBottom: <span class="hljs-literal">true</span>,                              <span class="hljs-comment">// 如果为 false，则将挤出的多边形的底部保留为开放状态</span></span><br><span class="line">    arcType: Cesium.ArcType.GEODESIC,               <span class="hljs-comment">// 多边形边缘必须遵循的线型</span></span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">    classificationType: Cesium.ClassificationType.BOTH,</span><br><span class="line">    zIndex: <span class="hljs-number">0</span>,                                      <span class="hljs-comment">// 指定用于订购地面几何形状的 z 索引，仅在多边形为常数且未指定高度或拉伸高度的情况下才有效</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="polyline-多线段"><a href="#polyline-多线段" class="headerlink" title="polyline 多线段"></a>polyline 多线段</h4><p>描述折线，前两个位置定义线段，并且每个其他位置都从前一个位置定义了一个线段，细分可以是线性连接点，大弧或固定在地形上，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/PolylineGraphics.html" target="_blank" rel="noopener">new Cesium.PolylineGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> redLine = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Red line on terrain'</span>,</span><br><span class="line">  polyline: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    positions: Cesium.Cartesian3.fromDegreesArray([<span class="hljs-number">-75</span>, <span class="hljs-number">35</span>, <span class="hljs-number">-125</span>, <span class="hljs-number">35</span>]),   <span class="hljs-comment">// 定义线条的 Cartesian3 位置的数组</span></span><br><span class="line">    width: <span class="hljs-number">5</span>,</span><br><span class="line">    material: Cesium.Color.RED,</span><br><span class="line">    clampToGround: <span class="hljs-literal">true</span>,                                                  <span class="hljs-comment">// 是否贴地</span></span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,                                  <span class="hljs-comment">// 折线是投射还是接收光源的阴影</span></span><br><span class="line">    classificationType: Cesium.ClassificationType.BOTH,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="polylineVolume-多线段柱体"><a href="#polylineVolume-多线段柱体" class="headerlink" title="polylineVolume 多线段柱体"></a>polylineVolume 多线段柱体</h4><p>描述折线体积，该折线体积定义为线带和沿其拉伸的相应二维形状，生成的体积符合地球的曲率，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/PolylineVolumeGraphics.html" target="_blank" rel="noopener">new Cesium.PolylineVolumeGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">computeCircle</span>(<span class="hljs-params">radius</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> positions = []</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">360</span>; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">var</span> radians = Cesium.Math.toRadians(i)</span><br><span class="line">    positions.push(<span class="hljs-keyword">new</span> Cesium.Cartesian2(radius * <span class="hljs-built_in">Math</span>.cos(radians), radius * <span class="hljs-built_in">Math</span>.sin(radians)))</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> positions</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> redTube = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Red tube with rounded corners'</span>,</span><br><span class="line">  polylineVolume: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    positions: Cesium.Cartesian3.fromDegreesArray(  <span class="hljs-comment">// 定义线带的 Cartesian3 位置的数组</span></span><br><span class="line">      [<span class="hljs-number">-85.0</span>, <span class="hljs-number">32.0</span>, <span class="hljs-number">-85.0</span>, <span class="hljs-number">36.0</span>, <span class="hljs-number">-89.0</span>, <span class="hljs-number">36.0</span>]</span><br><span class="line">    ),</span><br><span class="line">    shape: computeCircle(<span class="hljs-number">60000.0</span>),                  <span class="hljs-comment">// 指定 Cartesian2 位置的数组，这些位置定义了要拉伸的形状</span></span><br><span class="line">    cornerType: Cesium.CornerType.ROUNDED,          <span class="hljs-comment">// 拐角的样式</span></span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.RED,</span><br><span class="line">    outline: <span class="hljs-literal">false</span>,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,            <span class="hljs-comment">// 体积是投射还是接收光源的阴影</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="rectangle-矩形"><a href="#rectangle-矩形" class="headerlink" title="rectangle 矩形"></a>rectangle 矩形</h4><p>描述 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Rectangle.html" target="_blank" rel="noopener">Rectangle</a> 的图形，矩形符合地球的曲率，可以放置在表面或可以选择将其挤出成一定体积，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/RectangleGraphics.html" target="_blank" rel="noopener">new Cesium.RectangleGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> redRectangle = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Red translucent rectangle'</span>,</span><br><span class="line">  rectangle: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    coordinates: Cesium.Rectangle.fromDegrees(<span class="hljs-number">-110.0</span>, <span class="hljs-number">20.0</span>, <span class="hljs-number">-80.0</span>, <span class="hljs-number">25.0</span>),</span><br><span class="line">    rotation: <span class="hljs-number">0.0</span>,                                <span class="hljs-comment">// 矩形从北方向顺时针方向的旋转</span></span><br><span class="line">    stRotation: <span class="hljs-number">0.0</span>,                              <span class="hljs-comment">// 矩形纹理从北方逆时针旋转</span></span><br><span class="line">    granularity: Cesium.Math.RADIANS_PER_DEGREE,  <span class="hljs-comment">// 指定矩形上各点之间的角度距离</span></span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.RED.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">    outline: <span class="hljs-literal">false</span>,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">    classificationType: Cesium.ClassificationType.BOTH,</span><br><span class="line">    zIndex: <span class="hljs-number">0</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="wall-墙"><a href="#wall-墙" class="headerlink" title="wall 墙"></a>wall 墙</h4><p>描述定义为线带和可选的最大和最小高度的二维墙，墙符合地球仪的曲率，可以沿着地面或在高处放置，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/WallGraphics.html" target="_blank" rel="noopener">new Cesium.WallGraphics(options)</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> redWall = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'Red wall at height'</span>,</span><br><span class="line">  wall: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    positions: Cesium.Cartesian3.fromDegreesArrayHeights([<span class="hljs-number">-115.0</span>, <span class="hljs-number">44.0</span>, <span class="hljs-number">200000.0</span>, <span class="hljs-number">-90.0</span>, <span class="hljs-number">44.0</span>, <span class="hljs-number">200000.0</span>]),</span><br><span class="line">    minimumHeights: [<span class="hljs-number">100000.0</span>, <span class="hljs-number">100000.0</span>],         <span class="hljs-comment">// 用于墙底而不是地球表面的高度数组</span></span><br><span class="line">    granularity: Cesium.Math.RADIANS_PER_DEGREE,  <span class="hljs-comment">// 指定矩形上各点之间的角度距离</span></span><br><span class="line">    fill: <span class="hljs-literal">true</span>,</span><br><span class="line">    material: Cesium.Color.RED,</span><br><span class="line">    outline: <span class="hljs-literal">false</span>,</span><br><span class="line">    outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    outlineWidth: <span class="hljs-number">1.0</span>,</span><br><span class="line">    shadows: Cesium.ShadowMode.DISABLED,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="tileset-3D-Tiles-瓦片集"><a href="#tileset-3D-Tiles-瓦片集" class="headerlink" title="tileset 3D Tiles 瓦片集"></a>tileset 3D Tiles 瓦片集</h4><p>一个 <code>3D Tiles</code> 的图块集，用于流式传输海量 <code>3D</code> 地理空间数据集，详细见 <a href="http://cesium.xin/cesium/cn/Documentation1.62/Cesium3DTileset.html" target="_blank" rel="noopener">new Cesium.Cesium3DTileset(options)</a> 和 <a href="https://github.com/CesiumGS/3d-tiles/tree/main/specification" target="_blank" rel="noopener">3d-tiles</a></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> tileset = viewer.entities.add(&#123;</span><br><span class="line">  name: <span class="hljs-string">'3D Tiles'</span>,</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-114.0</span>, <span class="hljs-number">40.0</span>, <span class="hljs-number">300000.0</span>),</span><br><span class="line">  tileset: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    uri: <span class="hljs-keyword">new</span> Cesium.Plane(Cesium.Cartesian3.UNIT_X, <span class="hljs-number">0.0</span>),</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Entity-聚合"><a href="#Entity-聚合" class="headerlink" title="Entity 聚合"></a>Entity 聚合</h2><p>同时，针对 <code>Billboard</code>、<code>Label</code>、<code>Point</code>，<code>Cesium</code> 提供了 <code>EntityCluster</code> 类用于实现聚合效果，但必须结合 <code>PinBuilder</code> 类实现，下面为实现聚合效果的核心代码</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> options = &#123;</span><br><span class="line">  camera: viewer.scene.camera,</span><br><span class="line">  canvas: viewer.scene.canvas,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> dataSourcePromise = viewer.dataSources.add(Cesium.KmlDataSource.load(<span class="hljs-string">'./data/kml/facilities/facilities.kml'</span>, options))</span><br><span class="line"></span><br><span class="line">dataSourcePromise.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">dataSource</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> pixelRange = <span class="hljs-number">15</span></span><br><span class="line">  <span class="hljs-keyword">var</span> minimumClusterSize = <span class="hljs-number">3</span></span><br><span class="line">  <span class="hljs-keyword">var</span> enabled = <span class="hljs-literal">true</span></span><br><span class="line"></span><br><span class="line">  dataSource.clustering.enabled = enabled</span><br><span class="line">  dataSource.clustering.pixelRange = pixelRange <span class="hljs-comment">// 扩展屏幕空间边界框的像素范围</span></span><br><span class="line">  dataSource.clustering.minimumClusterSize = minimumClusterSize <span class="hljs-comment">// 可以聚合的最小屏幕空间对象</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">var</span> removeListener</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">var</span> pinBuilder = <span class="hljs-keyword">new</span> Cesium.PinBuilder()</span><br><span class="line">  <span class="hljs-keyword">var</span> pin50 = pinBuilder.fromText(<span class="hljs-string">'50+'</span>, Cesium.Color.RED, <span class="hljs-number">48</span>).toDataURL()</span><br><span class="line">  <span class="hljs-keyword">var</span> pin40 = pinBuilder.fromText(<span class="hljs-string">'40+'</span>, Cesium.Color.ORANGE, <span class="hljs-number">48</span>).toDataURL()</span><br><span class="line">  <span class="hljs-keyword">var</span> pin30 = pinBuilder.fromText(<span class="hljs-string">'30+'</span>, Cesium.Color.YELLOW, <span class="hljs-number">48</span>).toDataURL()</span><br><span class="line">  <span class="hljs-keyword">var</span> pin20 = pinBuilder.fromText(<span class="hljs-string">'20+'</span>, Cesium.Color.GREEN, <span class="hljs-number">48</span>).toDataURL()</span><br><span class="line">  <span class="hljs-keyword">var</span> pin10 = pinBuilder.fromText(<span class="hljs-string">'10+'</span>, Cesium.Color.BLUE, <span class="hljs-number">48</span>).toDataURL()</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">var</span> singleDigitPins = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">8</span>)</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; singleDigitPins.length; ++i) &#123;</span><br><span class="line">    singleDigitPins[i] = pinBuilder.fromText(<span class="hljs-string">''</span> + (i + <span class="hljs-number">2</span>), Cesium.Color.VIOLET, <span class="hljs-number">48</span>).toDataURL()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">customStyle</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (Cesium.defined(removeListener)) &#123;</span><br><span class="line">      removeListener()</span><br><span class="line">      removeListener = <span class="hljs-literal">undefined</span></span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      removeListener = dataSource.clustering.clusterEvent.addEventListener(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">clusteredEntities, cluster</span>) </span>&#123;</span><br><span class="line">        cluster.label.show = <span class="hljs-literal">false</span></span><br><span class="line">        cluster.billboard.show = <span class="hljs-literal">true</span></span><br><span class="line">        cluster.billboard.id = cluster.label.id</span><br><span class="line">        cluster.billboard.verticalOrigin = Cesium.VerticalOrigin.BOTTOM</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">if</span> (clusteredEntities.length &gt;= <span class="hljs-number">50</span>) &#123;</span><br><span class="line">          cluster.billboard.image = pin50</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (clusteredEntities.length &gt;= <span class="hljs-number">40</span>) &#123;</span><br><span class="line">          cluster.billboard.image = pin40</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (clusteredEntities.length &gt;= <span class="hljs-number">30</span>) &#123;</span><br><span class="line">          cluster.billboard.image = pin30</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (clusteredEntities.length &gt;= <span class="hljs-number">20</span>) &#123;</span><br><span class="line">          cluster.billboard.image = pin20</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (clusteredEntities.length &gt;= <span class="hljs-number">10</span>) &#123;</span><br><span class="line">          cluster.billboard.image = pin10</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">          cluster.billboard.image = singleDigitPins[clusteredEntities.length - <span class="hljs-number">2</span>]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// force a re-cluster with the new styling</span></span><br><span class="line">    <span class="hljs-keyword">var</span> pixelRange = dataSource.clustering.pixelRange</span><br><span class="line">    dataSource.clustering.pixelRange = <span class="hljs-number">0</span></span><br><span class="line">    dataSource.clustering.pixelRange = pixelRange</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// start with custom style</span></span><br><span class="line">  customStyle()</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">var</span> handler = <span class="hljs-keyword">new</span> Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)</span><br><span class="line">  handler.setInputAction(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">movement</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">var</span> pickedLabel = viewer.scene.pick(movement.position)</span><br><span class="line">    <span class="hljs-keyword">if</span> (Cesium.defined(pickedLabel)) &#123;</span><br><span class="line">      <span class="hljs-keyword">var</span> ids = pickedLabel.id</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Array</span>.isArray(ids)) &#123;</span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; ids.length; ++i) &#123;</span><br><span class="line">          ids[i].billboard.color = Cesium.Color.RED</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, Cesium.ScreenSpaceEventType.LEFT_CLICK)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/08-02.png" alt></p>
+<h2 id="Entity-管理"><a href="#Entity-管理" class="headerlink" title="Entity 管理"></a>Entity 管理</h2><p>我们在上面介绍了 <code>Entity</code> 的图形类型，有这么多类型的实体，<code>Cesium</code> 是如何管理这些实体对象的呢？这就需要我们从初始化 <code>Viewer</code> 对象开始说起了</p>
+<p>当我们初始化 <code>Viewer</code> 类之后，会得到一个实例化对象 <code>viewer</code>，这个 <code>viewer</code> 会包含一个属性 <code>entities</code>，它的类型是 <code>EntityCollection</code>，也就是 <code>Entity</code> 的集合，它包括了 <code>EntityCollection</code> 类里面的所有属性和方法，所以 <code>Cesium</code> 管理 <code>Entity</code> 本质上是通过 <code>EntityCollection</code> 类进行管理的，比如下面这些方法</p>
+<ul>
+<li><code>add</code> - 添加 <code>Entity</code></li>
+<li><code>contains</code> - 是否存在某个 <code>Entity</code></li>
+<li><code>getById</code> - 通过 <code>ID</code> 获取 <code>Entity</code></li>
+<li><code>remove</code> - 移除某个 <code>Entity</code></li>
+<li><code>removeAll</code> - 移除所有的 <code>Entity</code></li>
+<li><code>removeById</code> - 通过 <code>ID</code> 移除 <code>Entity</code></li>
+</ul>
+<p>下面是一个简单的示例</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> point = viewer.entities.add(&#123;</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-105.0</span>, <span class="hljs-number">41</span>, <span class="hljs-number">50010</span>),</span><br><span class="line">  point: &#123;</span><br><span class="line">    show: <span class="hljs-literal">true</span>,</span><br><span class="line">    pixelSize: <span class="hljs-number">10</span>, <span class="hljs-comment">// 像素大小</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> entity = viewer.entities.getById(<span class="hljs-string">'entity_1'</span>)</span><br><span class="line">viewer.entities.remove(entity)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// viewer.entities.removeById('entity_1')</span></span><br><span class="line"><span class="hljs-comment">// viewer.entities.removeAll()</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Entity-拾取"><a href="#Entity-拾取" class="headerlink" title="Entity 拾取"></a>Entity 拾取</h2><p>在三维场景中，有一种比较常见的交互方式，那就就是鼠标点击三维场景种某一个几何图形，查看该图形的包含的属性信息，并显示在对应的信息窗体中，单击事件通过 <code>ScreenSpaceEventHandler</code> 类注册，拾取到的信息可通过以下两种方式获取</p>
+<ul>
+<li><code>scene.pick</code> - 获取窗体坐标处最顶部的实体</li>
+<li><code>scene.drillPick</code> - 窗体坐标处的实体列表</li>
+</ul>
+<p>下面是一个简单的示例</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 添加拾取事件</span></span><br><span class="line"><span class="hljs-keyword">var</span> handler = <span class="hljs-keyword">new</span> Cesium.ScreenSpaceEventHandler(viewer.canvas)</span><br><span class="line"></span><br><span class="line">handler.setInputAction(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">movement</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> pickedEntity = pickEntity(viewer, movement.position)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(pickedEntity)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">var</span> pickedEntities = drillPickEntities(viewer, movement.position)</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(pickedEntities)</span><br><span class="line">&#125;, Cesium.ScreenSpaceEventType.LEFT_CLICK)</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pickEntity</span>(<span class="hljs-params">viewer, windowPosition</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> picked = viewer.scene.pick(windowPosition)</span><br><span class="line">  <span class="hljs-keyword">if</span> (Cesium.defined(picked)) &#123;</span><br><span class="line">    <span class="hljs-keyword">var</span> id = Cesium.defaultValue(picked.id, picked.primitive.id)</span><br><span class="line">    <span class="hljs-keyword">if</span> (id <span class="hljs-keyword">instanceof</span> Cesium.Entity) &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> id</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-literal">undefined</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drillPickEntities</span>(<span class="hljs-params">viewer, windowPosition</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> i</span><br><span class="line">  <span class="hljs-keyword">var</span> entity</span><br><span class="line">  <span class="hljs-keyword">var</span> picked</span><br><span class="line">  <span class="hljs-keyword">var</span> pickedPrimitives = viewer.scene.drillPick(windowPosition)</span><br><span class="line">  <span class="hljs-keyword">var</span> length = pickedPrimitives.length</span><br><span class="line">  <span class="hljs-keyword">var</span> result = []</span><br><span class="line">  <span class="hljs-keyword">var</span> hash = &#123;&#125;</span><br><span class="line">  <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">    picked = pickedPrimitives[i]</span><br><span class="line">    entity = Cesium.defaultValue(picked.id, picked.primitive.id)</span><br><span class="line">    <span class="hljs-keyword">if</span> (entity <span class="hljs-keyword">instanceof</span> Cesium.Entity &amp;&amp; !Cesium.defined(hash[entity.id])) &#123;</span><br><span class="line">      result.push(entity)</span><br><span class="line">      hash[entity.id] = <span class="hljs-literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Entity-固定"><a href="#Entity-固定" class="headerlink" title="Entity 固定"></a>Entity 固定</h2><p>在实际的应用系统中，会有这样的需求，要求画的实体附着在地形表面、或三维建筑表面（比如视频融合），这时候就需要设置 <code>xxGraphics</code> 的相关属性了，可通过 <code>heightReference</code> 或 <code>classificationType</code> 这两个属性去控制</p>
+<p>关于 <code>heightReference</code> 属性值有三个取值</p>
+<ul>
+<li><code>NONE</code> - 位置绝对（默认值）</li>
+<li><code>CLAMP_TO_GROUND</code> - 位置固定在地形上</li>
+<li><code>RELATIVE_TO_GROUND</code> - 位置高度是指地形上方的高度</li>
+</ul>
+<p>关于 <code>classificationType</code> 属性值有三个取值</p>
+<ul>
+<li><code>TERRAIN</code> - 将仅对地形进行分类;</li>
+<li><code>CESIUM_3D_TILE</code> - 将仅对 <code>3D Tiles</code> 进行分类</li>
+<li><code>BOTH</code> - 将同时对 <code>Terrain</code> 和 <code>3D Tiles</code> 进行分类</li>
+</ul>
+<p>但是有两点需要注意</p>
+<ul>
+<li>其中 <code>corridor</code>、<code>ellipse</code>、<code>polygon</code>、<code>polyline</code>、<code>rectangle</code> 可通过设置 <code>classificationType</code> 属性值显示仅贴地、仅贴建筑或者两者都贴的效果</li>
+<li>而 <code>billboard</code>、<code>box</code>、<code>corridor</code>、<code>cylinder</code>、<code>ellipse</code>、<code>ellipsoid</code>、<code>label</code>、<code>model</code>、<code>point</code>、<code>polygon</code>、<code>tectangle</code> 则是通过设置 <code>heightReference</code> 属性值为 <code>CLAMP_TO_GROUND</code> 显示贴地效果</li>
+</ul>
+<p>这里需要注意的是，如果是 <code>polyline</code> 则必须设置 <code>clampToGround</code> 属性为 <code>true</code></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 其中 corridor ellipse polygon retangle 会自动贴地</span></span><br><span class="line">viewer.entities.add(&#123;</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-122.1958</span>, <span class="hljs-number">46.1915</span>),</span><br><span class="line">  billboard: &#123;</span><br><span class="line">    image: <span class="hljs-string">'./images/facility.gif'</span>,</span><br><span class="line">    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,</span><br><span class="line">  &#125;,</span><br><span class="line">  point: &#123;</span><br><span class="line">    color: Cesium.Color.SKYBLUE,</span><br><span class="line">    pixelSize: <span class="hljs-number">10</span>,</span><br><span class="line">    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,</span><br><span class="line">  &#125;,</span><br><span class="line">  label: &#123;</span><br><span class="line">    text: <span class="hljs-string">'Clamped to ground'</span>,</span><br><span class="line">    font: <span class="hljs-string">'14pt sans-serif'</span>,</span><br><span class="line">    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,</span><br><span class="line">    horizontalOrigin: Cesium.HorizontalOrigin.LEFT,</span><br><span class="line">    verticalOrigin: Cesium.VerticalOrigin.BASELINE,</span><br><span class="line">    fillColor: Cesium.Color.BLACK,</span><br><span class="line">    showBackground: <span class="hljs-literal">true</span>,</span><br><span class="line">    backgroundColor: <span class="hljs-keyword">new</span> Cesium.Color(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0.7</span>),</span><br><span class="line">    backgroundPadding: <span class="hljs-keyword">new</span> Cesium.Cartesian2(<span class="hljs-number">8</span>, <span class="hljs-number">4</span>),</span><br><span class="line">    disableDepthTestDistance: <span class="hljs-built_in">Number</span>.POSITIVE_INFINITY,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">viewer.entities.add(&#123;</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-122.1958</span>, <span class="hljs-number">46.1915</span>),</span><br><span class="line">  model: &#123;</span><br><span class="line">    uri: <span class="hljs-string">'./data/models/CesiumMan/Cesium_Man.glb'</span>,</span><br><span class="line">    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,</span><br><span class="line">    minimumPixelSize: <span class="hljs-number">128</span>,</span><br><span class="line">    maximumScale: <span class="hljs-number">100</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">viewer.entities.add(&#123;</span><br><span class="line">  position: Cesium.Cartesian3.fromDegrees(<span class="hljs-number">-122.195</span>, <span class="hljs-number">46.1915</span>),</span><br><span class="line">  corridor: &#123;</span><br><span class="line">    positions: Cesium.Cartesian3.fromDegreesArray([<span class="hljs-number">-122.19</span>, <span class="hljs-number">46.1914</span>, <span class="hljs-number">-122.2</span>, <span class="hljs-number">46.1924</span>, <span class="hljs-number">-122.21</span>, <span class="hljs-number">46.193</span>]),</span><br><span class="line">    width: <span class="hljs-number">500.0</span>,</span><br><span class="line">    material: Cesium.Color.GREEN.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">  &#125;,</span><br><span class="line">  ellipse: &#123;</span><br><span class="line">    semiMajorAxis: <span class="hljs-number">300.0</span>, <span class="hljs-comment">// 长半轴距离</span></span><br><span class="line">    semiMinorAxis: <span class="hljs-number">150.0</span>, <span class="hljs-comment">// 短半轴距离</span></span><br><span class="line">    material: Cesium.Color.BLUE.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">  &#125;,</span><br><span class="line">  polygon: &#123;</span><br><span class="line">    hierarchy: &#123;</span><br><span class="line">      positions: [</span><br><span class="line">        <span class="hljs-keyword">new</span> Cesium.Cartesian3(<span class="hljs-number">-2358138.847340281</span>, <span class="hljs-number">-3744072.459541374</span>, <span class="hljs-number">4581158.5714175375</span>),</span><br><span class="line">        <span class="hljs-keyword">new</span> Cesium.Cartesian3(<span class="hljs-number">-2357231.4925370603</span>, <span class="hljs-number">-3745103.7886602185</span>, <span class="hljs-number">4580702.9757762635</span>),</span><br><span class="line">        <span class="hljs-keyword">new</span> Cesium.Cartesian3(<span class="hljs-number">-2355912.902205431</span>, <span class="hljs-number">-3744249.029778454</span>, <span class="hljs-number">4582402.154378103</span>),</span><br><span class="line">        <span class="hljs-keyword">new</span> Cesium.Cartesian3(<span class="hljs-number">-2357208.0209552636</span>, <span class="hljs-number">-3743553.4420488174</span>, <span class="hljs-number">4581961.863286629</span>),</span><br><span class="line">      ],</span><br><span class="line">    &#125;,</span><br><span class="line">    material: <span class="hljs-string">'./images/Cesium_Logo_Color.jpg'</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  rectangle: &#123;</span><br><span class="line">    coordinates: Cesium.Rectangle.fromDegrees(<span class="hljs-number">-122.2</span>, <span class="hljs-number">46.2</span>, <span class="hljs-number">-122.1</span>, <span class="hljs-number">46.3</span>),</span><br><span class="line">    material: Cesium.Color.RED.withAlpha(<span class="hljs-number">0.5</span>),</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 其中 polyline 必须设置 clampToGround = true</span></span><br><span class="line">viewer.entities.add(&#123;</span><br><span class="line">  polyline: &#123;</span><br><span class="line">    positions: Cesium.Cartesian3.fromDegreesArray([<span class="hljs-number">-122.1968</span>, <span class="hljs-number">46.1915</span>, <span class="hljs-number">-122.1968</span>, <span class="hljs-number">46.2015</span>, <span class="hljs-number">-122.1968</span>, <span class="hljs-number">46.2015</span>]),</span><br><span class="line">    clampToGround: <span class="hljs-literal">true</span>,</span><br><span class="line">    width: <span class="hljs-number">5</span>,</span><br><span class="line">    material: Cesium.Color.ORANGE,</span><br><span class="line">    depthFailMaterial: Cesium.Color.RED,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/08-03.png" alt></p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> polygon = viewer.entities.add(&#123;</span><br><span class="line">  polygon: &#123;</span><br><span class="line">    hierarchy: <span class="hljs-keyword">new</span> Cesium.PolygonHierarchy(</span><br><span class="line">      Cesium.Cartesian3.fromRadiansArray([</span><br><span class="line">        <span class="hljs-number">-1.3194369277314022</span>, <span class="hljs-number">0.6988062530900625</span>,</span><br><span class="line">        <span class="hljs-number">-1.3193955980204217</span>, <span class="hljs-number">0.6988091578771254</span>,</span><br><span class="line">        <span class="hljs-number">-1.3193931220959367</span>, <span class="hljs-number">0.698743632490865</span>,</span><br><span class="line">        <span class="hljs-number">-1.3194358224045408</span>, <span class="hljs-number">0.6987471965556998</span>,</span><br><span class="line">      ])</span><br><span class="line">    ),</span><br><span class="line">    material: <span class="hljs-string">'./images/Cesium_Logo_Color.jpg'</span>,</span><br><span class="line">    classificationType: Cesium.ClassificationType.CESIUM_3D_TILE,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> polyline = viewer.entities.add(&#123;</span><br><span class="line">  polyline: &#123;</span><br><span class="line">    positions: Cesium.Cartesian3.fromDegreesArray([</span><br><span class="line">      <span class="hljs-number">-75.60217330403601</span>, <span class="hljs-number">40.04102882709425</span>,</span><br><span class="line">      <span class="hljs-number">-75.59968252414251</span>, <span class="hljs-number">40.04093615560871</span>,</span><br><span class="line">      <span class="hljs-number">-75.598020153828</span>, <span class="hljs-number">40.04079437042357</span>,</span><br><span class="line">      <span class="hljs-number">-75.59674934074435</span>, <span class="hljs-number">40.040816173283304</span>,</span><br><span class="line">      <span class="hljs-number">-75.59630042791713</span>, <span class="hljs-number">40.03986900370842</span>,</span><br><span class="line">      <span class="hljs-number">-75.59563636849978</span>, <span class="hljs-number">40.03930996506271</span>,</span><br><span class="line">      <span class="hljs-number">-75.59492397899098</span>, <span class="hljs-number">40.03873932846581</span>,</span><br><span class="line">      <span class="hljs-number">-75.59457991226778</span>, <span class="hljs-number">40.038392701955786</span>,</span><br><span class="line">      <span class="hljs-number">-75.59424838652453</span>, <span class="hljs-number">40.03775403572295</span>,</span><br><span class="line">      <span class="hljs-number">-75.59387104290336</span>, <span class="hljs-number">40.03677022167725</span>,</span><br><span class="line">      <span class="hljs-number">-75.59355000490342</span>, <span class="hljs-number">40.03588760913535</span>,</span><br><span class="line">    ]),</span><br><span class="line">    width: <span class="hljs-number">8</span>,</span><br><span class="line">    material: <span class="hljs-keyword">new</span> Cesium.PolylineOutlineMaterialProperty(&#123;</span><br><span class="line">      color: Cesium.Color.YELLOW,</span><br><span class="line">      outlineWidth: <span class="hljs-number">2</span>,</span><br><span class="line">      outlineColor: Cesium.Color.BLACK,</span><br><span class="line">    &#125;),</span><br><span class="line">    clampToGround: <span class="hljs-literal">true</span>,</span><br><span class="line">    classificationType: Cesium.ClassificationType.TERRAIN,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>效果是下面这样的</p>
+<p><img src="https://gitee.com/heptaluan/backups/raw/master/cdn/gis/08-04.png" alt></p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/GIS/">GIS</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2021/08/07/GIS/09/">
+                <i class="level-item fa fa-chevron-left"></i>
+                <span class="level-item">glTF 与 3D Tiles</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2021/07/30/GIS/07/">
+                <span class="level-item">坐标系及坐标变换</span>
+                <i class="level-item fa fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: '584b59de0d23cd48fbdd',
+        clientSecret: '5554c9aab0a640015867806f438bd2e10f297e5a',
+        id: '86057b118b5ee05b53166a216f596d33',
+        repo: 'gitalk',
+        owner: 'heptaluan',
+        admin: "heptaluan"
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="avatar image is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://gitee.com/heptaluan/backups/raw/master/cdn/avatar.png" alt="heptaluan">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        heptaluan
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Torches@Aimer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>WuHan China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <!-- <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        164
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        9
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        9
+                    </p>
+                </div>
+            </div>
+        </nav> -->
+        <!-- <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div> -->
+        
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#Entity-支持的图形类型">
+        <span class="has-mr-6">1</span>
+        <span>Entity 支持的图形类型</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#billboard-广告牌">
+        <span class="has-mr-6">1.1</span>
+        <span>billboard 广告牌</span>
+        </a></li><li>
+        <a class="is-flex" href="#box-盒子">
+        <span class="has-mr-6">1.2</span>
+        <span>box 盒子</span>
+        </a></li><li>
+        <a class="is-flex" href="#corridor-走廊">
+        <span class="has-mr-6">1.3</span>
+        <span>corridor 走廊</span>
+        </a></li><li>
+        <a class="is-flex" href="#cylinder-圆柱、圆锥">
+        <span class="has-mr-6">1.4</span>
+        <span>cylinder 圆柱、圆锥</span>
+        </a></li><li>
+        <a class="is-flex" href="#ellipse-椭圆或拉伸的椭圆">
+        <span class="has-mr-6">1.5</span>
+        <span>ellipse 椭圆或拉伸的椭圆</span>
+        </a></li><li>
+        <a class="is-flex" href="#ellipsoid-椭球体">
+        <span class="has-mr-6">1.6</span>
+        <span>ellipsoid 椭球体</span>
+        </a></li><li>
+        <a class="is-flex" href="#label-标签">
+        <span class="has-mr-6">1.7</span>
+        <span>label 标签</span>
+        </a></li><li>
+        <a class="is-flex" href="#model-模型">
+        <span class="has-mr-6">1.8</span>
+        <span>model 模型</span>
+        </a></li><li>
+        <a class="is-flex" href="#path-路径">
+        <span class="has-mr-6">1.9</span>
+        <span>path 路径</span>
+        </a></li><li>
+        <a class="is-flex" href="#plane-平面">
+        <span class="has-mr-6">1.10</span>
+        <span>plane 平面</span>
+        </a></li><li>
+        <a class="is-flex" href="#point-点">
+        <span class="has-mr-6">1.11</span>
+        <span>point 点</span>
+        </a></li><li>
+        <a class="is-flex" href="#polygon-多边形">
+        <span class="has-mr-6">1.12</span>
+        <span>polygon 多边形</span>
+        </a></li><li>
+        <a class="is-flex" href="#polyline-多线段">
+        <span class="has-mr-6">1.13</span>
+        <span>polyline 多线段</span>
+        </a></li><li>
+        <a class="is-flex" href="#polylineVolume-多线段柱体">
+        <span class="has-mr-6">1.14</span>
+        <span>polylineVolume 多线段柱体</span>
+        </a></li><li>
+        <a class="is-flex" href="#rectangle-矩形">
+        <span class="has-mr-6">1.15</span>
+        <span>rectangle 矩形</span>
+        </a></li><li>
+        <a class="is-flex" href="#wall-墙">
+        <span class="has-mr-6">1.16</span>
+        <span>wall 墙</span>
+        </a></li><li>
+        <a class="is-flex" href="#tileset-3D-Tiles-瓦片集">
+        <span class="has-mr-6">1.17</span>
+        <span>tileset 3D Tiles 瓦片集</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Entity-聚合">
+        <span class="has-mr-6">2</span>
+        <span>Entity 聚合</span>
+        </a></li><li>
+        <a class="is-flex" href="#Entity-管理">
+        <span class="has-mr-6">3</span>
+        <span>Entity 管理</span>
+        </a></li><li>
+        <a class="is-flex" href="#Entity-拾取">
+        <span class="has-mr-6">4</span>
+        <span>Entity 拾取</span>
+        </a></li><li>
+        <a class="is-flex" href="#Entity-固定">
+        <span class="has-mr-6">5</span>
+        <span>Entity 固定</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Angular/">
+            <span class="level-start">
+                <span class="level-item">Angular</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/CSS/">
+            <span class="level-start">
+                <span class="level-item">CSS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Essay/">
+            <span class="level-start">
+                <span class="level-item">Essay</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">29</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/GIS/">
+            <span class="level-start">
+                <span class="level-item">GIS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/HTTP/">
+            <span class="level-start">
+                <span class="level-item">HTTP</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">45</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/React/">
+            <span class="level-start">
+                <span class="level-item">React</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">20</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Vue/">
+            <span class="level-start">
+                <span class="level-item">Vue</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Angular/" style="font-size: 15px;">Angular</a> <a href="/tags/CSS/" style="font-size: 13.33px;">CSS</a> <a href="/tags/Essay/" style="font-size: 18.33px;">Essay</a> <a href="/tags/GIS/" style="font-size: 11.67px;">GIS</a> <a href="/tags/HTTP/" style="font-size: 11.67px;">HTTP</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 13.33px;">Node.js</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow  ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            <a href="/tips" class="tips">
+                最新文章
+            </a>
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/08/22/GIS/11/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/11.webp" alt="Cesium 中一些常用方法汇总">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-21T16:00:00.000Z">2021-08-22</time></div>
+                    <a href="/2021/08/22/GIS/11/" class="has-link-black-ter is-size-6">Cesium 中一些常用方法汇总</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/08/08/GIS/10/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/10.webp" alt="Cesium 中的事件与量测工具">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-07T16:00:00.000Z">2021-08-08</time></div>
+                    <a href="/2021/08/08/GIS/10/" class="has-link-black-ter is-size-6">Cesium 中的事件与量测工具</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/08/07/GIS/09/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/09.webp" alt="glTF 与 3D Tiles">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-06T16:00:00.000Z">2021-08-07</time></div>
+                    <a href="/2021/08/07/GIS/09/" class="has-link-black-ter is-size-6">glTF 与 3D Tiles</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/08/01/GIS/08/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/08.webp" alt="空间数据可视化">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-07-31T16:00:00.000Z">2021-08-01</time></div>
+                    <a href="/2021/08/01/GIS/08/" class="has-link-black-ter is-size-6">空间数据可视化</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/07/30/GIS/07/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://gitee.com/heptaluan/backups/raw/master/cdn/cover/07.webp" alt="坐标系及坐标变换">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-07-29T16:00:00.000Z">2021-07-30</time></div>
+                    <a href="/2021/07/30/GIS/07/" class="has-link-black-ter is-size-6">坐标系及坐标变换</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/GIS/">GIS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Angular/">
+                        <span class="tag">Angular</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CSS/">
+                        <span class="tag">CSS</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Essay/">
+                        <span class="tag">Essay</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/GIS/">
+                        <span class="tag">GIS</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HTTP/">
+                        <span class="tag">HTTP</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">45</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/React/">
+                        <span class="tag">React</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vue/">
+                        <span class="tag">Vue</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <!-- <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="空间数据可视化" height="28">
+                
+                </a> -->
+                <p class="is-size-7">
+                &copy; 2016 - 2021
+                Made with ✿  heptaluan&nbsp;
+                
+                </p>
+            </div>
+            <!-- <div class="level-end">
+            
+            </div> -->
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fa fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
